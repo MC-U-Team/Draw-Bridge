@@ -1,0 +1,16 @@
+[
+{
+  "modid": "uteam_drawbridges",
+  "name": "UTeam Drawbridges",
+  "description": "A nice standalone Drawbridge mod.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["MrTroble"],
+  "credits": "MrTroble",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
