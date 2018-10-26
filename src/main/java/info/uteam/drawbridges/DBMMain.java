@@ -18,7 +18,7 @@ package info.uteam.drawbridges;
 
 import info.uteam.drawbridges.proxy.DBMCommonProxy;
 import net.minecraftforge.fml.common.*;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.*;
 import net.minecraftforge.fml.common.event.*;
 
 /**
@@ -30,6 +30,9 @@ import net.minecraftforge.fml.common.event.*;
 @Mod(modid = DBMConstants.MODID, name = DBMConstants.MODNAME, version = DBMConstants.VERSION,  acceptedMinecraftVersions = DBMConstants.MCVERSION, dependencies = DBMConstants.DEPENDENCIES)
 public class DBMMain {
 
+	@Instance
+	private static DBMMain instance;
+	
 	@SidedProxy(clientSide=DBMConstants.CLIENT_PROXY,serverSide=DBMConstants.SERVER_PROXY)
 	public static DBMCommonProxy PROXY;
 	

@@ -19,16 +19,18 @@ package info.uteam.drawbridges.gui;
 import info.u_team.u_team_core.container.UContainer;
 import info.u_team.u_team_core.gui.UGuiContainer;
 import info.uteam.drawbridges.DBMConstants;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 /**
  * @author MrTroble
  *
  */
-public class DBMDrawbridgeGui extends UGuiContainer{
+public class DBMDrawbridgeGui extends UGuiContainer {
 
-	public static final ResourceLocation BACKGROUND = new ResourceLocation(DBMConstants.MODID, "gui/drawbridge_gui.png");
-	
+	public static final ResourceLocation BACKGROUND = new ResourceLocation(DBMConstants.MODID,
+			"textures/gui/drawbridge_gui.png");
+
 	/**
 	 * @param container
 	 */
@@ -36,4 +38,32 @@ public class DBMDrawbridgeGui extends UGuiContainer{
 		super(container, BACKGROUND);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.minecraft.client.gui.inventory.GuiContainer#drawScreen(int, int,
+	 * float)
+	 */
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		this.drawDefaultBackground();
+		super.drawScreen(mouseX, mouseY, partialTicks);
+		this.renderHoveredToolTip(mouseX, mouseY);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * info.u_team.u_team_core.gui.UGuiContainer#drawGuiContainerBackgroundLayer(
+	 * float, int, int)
+	 */
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		this.mc.getTextureManager().bindTexture(BACKGROUND);
+		int i = (this.width - this.xSize) / 2;
+		int j = (this.height - this.ySize) / 2;
+		this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
+	}
 }

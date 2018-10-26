@@ -17,6 +17,9 @@
 package info.uteam.drawbridges.container;
 
 import info.u_team.u_team_core.container.UContainer;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 /**
  * @author MrTroble
@@ -24,4 +27,13 @@ import info.u_team.u_team_core.container.UContainer;
  */
 public class DBMDrawbridgeContainer extends UContainer {
 
+	/**
+	 * @param player
+	 * @param world
+	 * @param pos
+	 */
+	public DBMDrawbridgeContainer(EntityPlayer player, World world, BlockPos pos) {
+		appendPlayerInventory(player.inventory, 8, 84);
+	}
+	
 }

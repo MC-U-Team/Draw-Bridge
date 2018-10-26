@@ -33,8 +33,8 @@ public class DBMConstants {
 	public static final String MCVERSION = "${mcversion}";
     public static final String DEPENDENCIES = "required-after:uteamcore@[2.0.0.75-SNAPSHOT,)";
 	
-	public static final String CLIENT_PROXY = "info.uteam.drawbridges.proxy";
-	public static final String SERVER_PROXY = "info.uteam.drawbridges.proxy";
+	public static final String CLIENT_PROXY = "info.uteam.drawbridges.proxy.DBMClientProxy";
+	public static final String SERVER_PROXY = "info.uteam.drawbridges.proxy.DBMCommonProxy";
 	
 	public static final Logger LOGGER = LogManager.getLogger(MODNAME);
 	

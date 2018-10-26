@@ -28,6 +28,7 @@ public class DBMCommonProxy {
 
 	public void preinit() {
 		DBMBlocks.preinit();
+		DBMGuis.preinit();
 	}
 	
 	public void init() {
