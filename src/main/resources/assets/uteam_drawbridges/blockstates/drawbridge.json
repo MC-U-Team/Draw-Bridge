@@ -14,6 +14,14 @@
 		"facing=east": {
 			"model": "umod:drawbridge",
 			"y": 90
+		},
+		"facing=up": {
+			"model": "umod:drawbridge",
+			"x": 90
+		},
+		"facing=down": {
+			"model": "umod:drawbridge",
+			"x": 270
 		}
 	}
 }

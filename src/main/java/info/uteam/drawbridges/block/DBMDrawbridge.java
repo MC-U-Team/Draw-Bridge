@@ -41,7 +41,7 @@ import net.minecraftforge.fml.relauncher.Side;
  */
 public class DBMDrawbridge extends UBlockTileEntity {
 
-	public static final PropertyDirection FACING = BlockHorizontal.FACING;
+	public static final PropertyDirection FACING = PropertyDirection.create("facing");
 	protected int gui;
 
 	/**
