@@ -16,6 +16,7 @@
 
 package info.uteam.drawbridges.tiles;
 
+import info.uteam.drawbridges.container.DBMDrawbridgeContainer;
 import net.minecraft.entity.player.*;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
@@ -28,7 +29,7 @@ import net.minecraft.util.EnumFacing;
 public class DBMDrawbridgeTile extends DBMTileEntityGUI {
 
 	public DBMDrawbridgeTile() {
-		super(4, "dbm_drawbridge_tile");
+		super(11, "dbm_drawbridge_tile");
 	}
 
 	/* (non-Javadoc)
@@ -77,7 +78,7 @@ public class DBMDrawbridgeTile extends DBMTileEntityGUI {
 	 */
 	@Override
 	public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
-		return null;
+		return new DBMDrawbridgeContainer(playerIn, world, pos);
 	}
 	
 

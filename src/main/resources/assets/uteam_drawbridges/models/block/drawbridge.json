@@ -1,0 +1,12 @@
+{
+    "parent": "block/cube",
+	"textures": {
+		"up": "umod:blocks/drawbridge",
+		"down": "umod:blocks/drawbridge",
+		"north": "umod:blocks/drawbridge",
+		"east": "umod:blocks/drawbridge",
+		"west": "umod:blocks/drawbridge",
+		"south": "umod:blocks/drawbridge",
+		"particle": "umod:blocks/drawbridge"
+    }
+}

@@ -1,0 +1,19 @@
+{
+	"variants": {
+		"facing=north": {
+			"model": "umod:drawbridge"
+		},
+		"facing=south": {
+			"model": "umod:drawbridge",
+			"y": 180
+		},
+		"facing=west": {
+			"model": "umod:drawbridge",
+			"y": 270
+		},
+		"facing=east": {
+			"model": "umod:drawbridge",
+			"y": 90
+		}
+	}
+}
