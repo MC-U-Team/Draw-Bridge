@@ -1,27 +1,27 @@
 {
 	"variants": {
 		"facing=north": {
-			"model": "umod:drawbridge"
+			"model": "uteam_drawbridges:drawbridge"
 		},
 		"facing=south": {
-			"model": "umod:drawbridge",
+			"model": "uteam_drawbridges:drawbridge",
 			"y": 180
 		},
 		"facing=west": {
-			"model": "umod:drawbridge",
+			"model": "uteam_drawbridges:drawbridge",
 			"y": 270
 		},
 		"facing=east": {
-			"model": "umod:drawbridge",
+			"model": "uteam_drawbridges:drawbridge",
 			"y": 90
 		},
 		"facing=up": {
-			"model": "umod:drawbridge",
-			"x": 90
+			"model": "uteam_drawbridges:drawbridge",
+			"x": 270
 		},
 		"facing=down": {
-			"model": "umod:drawbridge",
-			"x": 270
+			"model": "uteam_drawbridges:drawbridge",
+			"x": 90
 		}
 	}
 }

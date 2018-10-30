@@ -1,12 +1,12 @@
 {
     "parent": "block/cube",
 	"textures": {
-		"up": "umod:blocks/drawbridge",
-		"down": "umod:blocks/drawbridge",
-		"north": "umod:blocks/drawbridge",
-		"east": "umod:blocks/drawbridge",
-		"west": "umod:blocks/drawbridge",
-		"south": "umod:blocks/drawbridge",
-		"particle": "umod:blocks/drawbridge"
+		"up": "uteam_drawbridges:blocks/drawbridge_side",
+		"down": "uteam_drawbridges:blocks/drawbridge_side",
+		"north": "uteam_drawbridges:blocks/drawbridge_front",
+		"east": "uteam_drawbridges:blocks/drawbridge_side",
+		"west": "uteam_drawbridges:blocks/drawbridge_side",
+		"south": "uteam_drawbridges:blocks/drawbridge_back",
+		"particle": "uteam_drawbridges:blocks/drawbridge_side"
     }
 }
