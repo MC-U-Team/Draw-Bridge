@@ -28,9 +28,10 @@ import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.*;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
-import net.minecraft.world.World;
+import net.minecraft.world.*;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -77,7 +78,7 @@ public class DBMDrawbridge extends UBlockTileEntity {
 			float hitZ, int meta, EntityLivingBase placer) {
 		return getDefaultState().withProperty(FACING, facing);
 	}
-
+	
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		return getDefaultState().withProperty(FACING, EnumFacing.byIndex(meta));
@@ -96,6 +97,29 @@ public class DBMDrawbridge extends UBlockTileEntity {
 	@Override
 	public IBlockState withMirror(IBlockState state, Mirror mirror) {
 		return state.withRotation(mirror.toRotation(state.getValue(FACING)));
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.minecraft.block.Block#shouldSideBeRendered(net.minecraft.block.state.IBlockState, net.minecraft.world.IBlockAccess, net.minecraft.util.math.BlockPos, net.minecraft.util.EnumFacing)
+	 */
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos,
+			EnumFacing side) {
+		TileEntity ent = blockAccess.getTileEntity(pos);
+		if(ent != null && ent instanceof DBMDrawbridgeTile) {
+			DBMDrawbridgeTile tile = (DBMDrawbridgeTile) ent;
+			return !tile.hasRender();
+		}
+		return super.shouldSideBeRendered(blockState, blockAccess, pos, side);
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.minecraft.block.Block#isBlockNormalCube(net.minecraft.block.state.IBlockState)
+	 */
+	@Override
+	public boolean isBlockNormalCube(IBlockState state) {
+		return false;
 	}
 
 	@Override

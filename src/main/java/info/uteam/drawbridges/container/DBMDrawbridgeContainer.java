@@ -18,6 +18,8 @@ package info.uteam.drawbridges.container;
 
 import info.u_team.u_team_core.container.UContainer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.*;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -33,7 +35,22 @@ public class DBMDrawbridgeContainer extends UContainer {
 	 * @param pos
 	 */
 	public DBMDrawbridgeContainer(EntityPlayer player, World world, BlockPos pos) {
+		IInventory inv = (IInventory) world.getTileEntity(pos);
+		for (int height = 0; height < 2; height++) {
+			for (int width = 0; width < 5; width++) {
+				addSlotToContainer(new SlotBlock(inv, width + height * 5, width * 18 + 8, height * 18 + 8));
+			}
+		}
+		addSlotToContainer(new SlotBlock(inv, 10, 151, 8));
 		appendPlayerInventory(player.inventory, 8, 84);
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.minecraft.inventory.Container#transferStackInSlot(net.minecraft.entity.player.EntityPlayer, int)
+	 */
+	@Override
+	public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+		return ItemStack.EMPTY;
 	}
 	
 }

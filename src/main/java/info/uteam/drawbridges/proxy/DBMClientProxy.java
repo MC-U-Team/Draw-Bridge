@@ -16,6 +16,9 @@
 
 package info.uteam.drawbridges.proxy;
 
+import info.u_team.u_team_core.registry.ClientRegistry;
+import info.uteam.drawbridges.tiles.*;
+
 /**
  * 
  * @author MrTroble
@@ -32,6 +35,7 @@ public class DBMClientProxy extends DBMCommonProxy {
 	@Override
 	public void init() {
 		super.init();
+		ClientRegistry.registerSpecialTileEntityRenderer(DBMDrawbridgeTile.class ,new SpecialDrawbridgeRender());
 	}
 	
 	@Override
