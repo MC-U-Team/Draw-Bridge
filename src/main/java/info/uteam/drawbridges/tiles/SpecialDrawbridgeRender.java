@@ -18,14 +18,22 @@ package info.uteam.drawbridges.tiles;
 
 import java.util.List;
 
-import info.uteam.drawbridges.DBMConstants;
+import org.lwjgl.opengl.GL11;
+
+import com.enderio.core.client.render.RenderUtil;
+
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.*;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.EnumSkyBlock;
+import net.minecraftforge.client.model.pipeline.*;
 
 /**
  * @author MrTroble
@@ -43,47 +51,43 @@ public class SpecialDrawbridgeRender extends TileEntitySpecialRenderer<DBMDrawbr
 	@Override
 	public void render(DBMDrawbridgeTile te, double x, double y, double z, float partialTicks, int destroyStage,
 			float alpha) {
-		if (te.hasRender()) {
-			GlStateManager.pushMatrix();
-			GlStateManager.translate(x, y, z);
-			GlStateManager.color(1, 1, 1);
-			IBlockState state = te.getRender().getActualState(te.getWorld(), te.getPos());
-			DBMConstants.LOGGER.info(state);
-            IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState(state);
-            state = state.getBlock().getExtendedState(state, te.getWorld(), te.getPos());
-            Minecraft.getMinecraft().getBlockRendererDispatcher().renderBlock(state, te.getPos(), te.getWorld(), Tessellator.getInstance().getBuffer());
-			GlStateManager.popMatrix();
-		}
+//		if (te.hasRender()) {
+//			GlStateManager.pushMatrix();
+//		    float brightness = te.getWorld().getLightFor(EnumSkyBlock.SKY, te.getPos());
+//
+//		    RenderUtil.setupLightmapCoords(te.getPos(), te.getWorld());
+//		    RenderUtil.bindBlockTexture();
+//		    RenderHelper.disableStandardItemLighting();
+//		    GlStateManager.disableLighting();
+//		    GlStateManager.enableNormalize();
+//		    GlStateManager.enableBlend();
+//		    GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+//		    GlStateManager.shadeModel(GL11.GL_SMOOTH);
+//
+//			GlStateManager.translate(x, y, z);
+//			GlStateManager.color(1, 1, 1);
+//			ItemStack stack = te.getRender();
+//			GlStateManager.enableLighting();
+//			@SuppressWarnings("deprecation")
+//			IBlockState state = Block.getBlockFromItem(stack.getItem()).getStateFromMeta(stack.getMetadata());
+//			state = state.getActualState(te.getWorld(), te.getPos());
+//			IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState(state);
+//			Tessellator tes = Tessellator.getInstance();
+//			BufferBuilder build = tes.getBuffer();
+//			build.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+//			for(EnumFacing face : EnumFacing.VALUES) {
+//				List<BakedQuad> quads = model.getQuads(state, face, 0);
+//				quads.forEach(quad -> {
+//					LightUtil.putBakedQuad(this, quad);
+//				});
+//			}
+//			tes.draw();
+//			GlStateManager.disableNormalize();
+//		    GlStateManager.disableBlend();
+//		    GlStateManager.shadeModel(GL11.GL_FLAT);
+//		    RenderHelper.enableStandardItemLighting();
+//			GlStateManager.popMatrix();
+//		}
 	}
 	
-	private void renderModel(IBakedModel model, int color) {
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuffer();
-		bufferbuilder.begin(7, DefaultVertexFormats.ITEM);
-		
-		for (EnumFacing enumfacing : EnumFacing.values()) {
-			this.renderQuads(bufferbuilder, model.getQuads((IBlockState) null, enumfacing, 0L), color);
-		}
-		
-		this.renderQuads(bufferbuilder, model.getQuads((IBlockState) null, (EnumFacing) null, 0L), color);
-		tessellator.draw();
-}
-	
-
-	private void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, int color) {
-		boolean flag = color == 1;
-		int i = 0;
-		
-		for (int j = quads.size(); i < j; ++i) {
-			BakedQuad bakedquad = quads.get(i);
-			int k = color;
-			
-			if (flag && bakedquad.hasTintIndex()) {								
-				k = k | -16777216;
-			}
-			
-			net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(renderer, bakedquad, k);
-		}
-}
-
 }

@@ -16,8 +16,10 @@
 
 package info.uteam.drawbridges.proxy;
 
-import info.u_team.u_team_core.registry.ClientRegistry;
+import info.u_team.u_team_core.registry.*;
+import info.uteam.drawbridges.model.DBMModelLoader;
 import info.uteam.drawbridges.tiles.*;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 
 /**
  * 
@@ -29,6 +31,7 @@ public class DBMClientProxy extends DBMCommonProxy {
 
 	@Override
 	public void preinit() {
+		ModelLoaderRegistry.registerLoader(new DBMModelLoader());
 		super.preinit();
 	}
 	

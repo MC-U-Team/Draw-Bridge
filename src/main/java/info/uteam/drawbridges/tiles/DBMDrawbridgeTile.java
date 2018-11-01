@@ -20,7 +20,6 @@ import java.util.ArrayList;
 
 import com.google.common.collect.Lists;
 
-import info.uteam.drawbridges.DBMConstants;
 import info.uteam.drawbridges.block.DBMDrawbridge;
 import info.uteam.drawbridges.container.DBMDrawbridgeContainer;
 import net.minecraft.block.Block;
@@ -38,10 +37,10 @@ import net.minecraft.util.math.BlockPos;
  */
 public class DBMDrawbridgeTile extends DBMTileEntityGUI {
 
-	private boolean last_state = false;
+	private boolean last_state = false, costum = false;
 	private int count = 0;
 	private ArrayList<Integer> offsets = Lists.newArrayList();
-	
+
 	public DBMDrawbridgeTile() {
 		super(11, "dbm_drawbridge_tile");
 	}
@@ -54,25 +53,31 @@ public class DBMDrawbridgeTile extends DBMTileEntityGUI {
 	@Override
 	@SuppressWarnings("deprecation")
 	public void update() {
-		if(world.isRemote)return;
+		if (world.isRemote)
+			return;
+		if (this.hasRender() != costum) {
+			costum = this.hasRender();
+			world.setBlockState(pos, world.getBlockState(pos).withProperty(DBMDrawbridge.COSTUM, costum));
+		}
 		boolean state = world.isBlockPowered(pos);
-		if(state != last_state) {
+		if (state != last_state) {
 			IBlockState bstate = world.getBlockState(pos);
-			if(bstate == null || bstate.getBlock() == null || !(bstate.getBlock() instanceof DBMDrawbridge))return;
+			if (bstate == null || bstate.getBlock() == null || !(bstate.getBlock() instanceof DBMDrawbridge))
+				return;
 			EnumFacing face = bstate.getValue(DBMDrawbridge.FACING);
 			last_state = state;
-			if(last_state) {
-			    count = 0;
+			if (last_state) {
+				count = 0;
 				BlockPos last_pos = pos;
 				offsets.clear();
 				for (int i = 0; i < 10; i++) {
 					last_pos = last_pos.offset(face);
-					if(!world.isAirBlock(last_pos)) {
+					if (!world.isAirBlock(last_pos)) {
 						offsets.add(new Integer(i));
 						count++;
 						continue;
 					}
-					if(this.itemstacks.get(i) == ItemStack.EMPTY) {
+					if (this.itemstacks.get(i) == ItemStack.EMPTY) {
 						last_pos = last_pos.offset(face);
 						world.setBlockToAir(last_pos);
 						count++;
@@ -85,8 +90,8 @@ public class DBMDrawbridgeTile extends DBMTileEntityGUI {
 					this.decrStackSize(i, 1);
 				}
 			} else {
-				for (;count > 0;count--) {
-					if(world.isAirBlock(pos.offset(face, count)) || offsets.contains(new Integer(count - 1))) {
+				for (; count > 0; count--) {
+					if (world.isAirBlock(pos.offset(face, count)) || offsets.contains(new Integer(count - 1))) {
 						continue;
 					}
 					IBlockState bstb = world.getBlockState(pos.offset(face, count));
@@ -98,26 +103,25 @@ public class DBMDrawbridgeTile extends DBMTileEntityGUI {
 			}
 		}
 	}
-	
+
 	public boolean hasRender() {
-		DBMConstants.LOGGER.info(this.getStackInSlot(10));
 		return !this.getStackInSlot(10).isEmpty();
 	}
-	
-	@SuppressWarnings("deprecation")
-	public IBlockState getRender() {
-		Block b = Block.getBlockFromItem(this.getStackInSlot(10).getItem());
-		return b.getStateFromMeta(this.getStackInSlot(10).getMetadata());
+
+	public ItemStack getRender() {
+		return this.getStackInSlot(10);
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see info.uteam.drawbridges.tiles.DBMTileEntityGUI#getInventoryStackLimit()
 	 */
 	@Override
 	public int getInventoryStackLimit() {
 		return 1;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -131,7 +135,7 @@ public class DBMDrawbridgeTile extends DBMTileEntityGUI {
 		compound.setBoolean("state", last_state);
 		compound.setInteger("count", count);
 		NBTTagList list = new NBTTagList();
-		for(Integer nt : offsets) {
+		for (Integer nt : offsets) {
 			list.appendTag(new NBTTagInt(nt));
 		}
 		compound.setTag("offsets", list);
