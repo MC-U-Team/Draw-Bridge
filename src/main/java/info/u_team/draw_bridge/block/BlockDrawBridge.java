@@ -1,9 +1,7 @@
 package info.u_team.draw_bridge.block;
 
 import info.u_team.draw_bridge.DrawBridgeConstants;
-import info.u_team.draw_bridge.container.ContainerDrawBridge;
-import info.u_team.draw_bridge.gui.GuiDrawBridge;
-import info.u_team.draw_bridge.init.*;
+import info.u_team.draw_bridge.init.DrawBridgeCreativeTabs;
 import info.u_team.draw_bridge.tileentity.DBMDrawbridgeTile;
 import info.u_team.u_team_core.block.UBlockTileEntity;
 import info.u_team.u_team_core.tileentity.UTileEntityProvider;
@@ -18,27 +16,20 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.*;
 import net.minecraftforge.common.property.*;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
 
 public class BlockDrawBridge extends UBlockTileEntity {
 	
 	public static final PropertyDirection FACING = PropertyDirection.create("facing");
 	public static final PropertyBool COSTUM = PropertyBool.create("costum");
-	protected int gui;
 	
-	public BlockDrawBridge(String name, Material materialIn) {
-		super(name, materialIn, DrawBridgeCreativeTabs.dbm_tab, new UTileEntityProvider(new ResourceLocation(DrawBridgeConstants.MODID, "draw_bridge"), true, DBMDrawbridgeTile.class));
-		gui = DBMGuis.addContainer(ContainerDrawBridge.class);
-		if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
-			DBMGuis.addGuiContainer(GuiDrawBridge.class, gui);
-		}
+	public BlockDrawBridge(String name) {
+		super(name, Material.IRON, DrawBridgeCreativeTabs.tab, new UTileEntityProvider(new ResourceLocation(DrawBridgeConstants.MODID, "draw_bridge"), true, DBMDrawbridgeTile.class));
 		setDefaultState(getDefaultState().withProperty(FACING, EnumFacing.NORTH).withProperty(COSTUM, false));
 	}
 	
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		playerIn.openGui(DrawBridgeConstants.MODID, gui, worldIn, pos.getX(), pos.getY(), pos.getZ());
+		playerIn.openGui(DrawBridgeConstants.MODID, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
 		return true;
 	}
 	

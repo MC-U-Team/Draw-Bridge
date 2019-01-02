@@ -9,7 +9,7 @@ import net.minecraft.block.material.Material;
 
 public class DrawBridgeBlocks {
 	
-	public static final Block draw_bridge = new BlockDrawBridge("drawbridge", Material.IRON);
+	public static final Block draw_bridge = new BlockDrawBridge("drawbridge");
 	
 	public static void preinit() {
 		BlockRegistry.register(DrawBridgeConstants.MODID, RegistryUtil.getRegistryEntries(Block.class, DrawBridgeBlocks.class));
