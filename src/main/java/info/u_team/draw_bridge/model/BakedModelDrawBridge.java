@@ -7,6 +7,7 @@ import javax.vecmath.Matrix4f;
 import org.apache.commons.lang3.tuple.Pair;
 
 import info.u_team.draw_bridge.block.BlockDrawBridge;
+import info.u_team.draw_bridge.init.DrawBridgeBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -17,7 +18,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.fml.relauncher.*;
 
+@SideOnly(Side.CLIENT)
 public class BakedModelDrawBridge implements IBakedModel {
 	
 	private final IBakedModel defaultModel;
@@ -42,7 +45,7 @@ public class BakedModelDrawBridge implements IBakedModel {
 				Block block = Block.getBlockFromItem(stack.getItem());
 				IBlockState newBlockState = block.getStateFromMeta(stack.getMetadata());
 				
-				if (newBlockState != Blocks.AIR.getDefaultState()) {
+				if (newBlockState != Blocks.AIR.getDefaultState() && newBlockState.getBlock() != DrawBridgeBlocks.draw_bridge) {
 					Minecraft minecraft = Minecraft.getMinecraft();
 					BlockRendererDispatcher blockrender = minecraft.getBlockRendererDispatcher();
 					BlockModelShapes modelshapes = blockrender.getBlockModelShapes();

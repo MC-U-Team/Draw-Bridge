@@ -54,8 +54,8 @@ public class BlockDrawBridge extends UBlockTileEntity {
 			TileEntity tileentity = world instanceof ChunkCache ? ((ChunkCache) world).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : world.getTileEntity(pos);
 			System.out.println("UPDATE " + tileentity);
 			if (tileentity instanceof TileEntityDrawBridge) {
-				System.out.println(((TileEntityDrawBridge) tileentity).getStackInSlot(10));
-				return extended.withProperty(ITEMSTACK, ((TileEntityDrawBridge) tileentity).getStackInSlot(10));
+				System.out.println(((TileEntityDrawBridge) tileentity).getRenderSlot().getStackInSlot(0));
+				return extended.withProperty(ITEMSTACK, ((TileEntityDrawBridge) tileentity).getRenderSlot().getStackInSlot(0));
 			} else if (tileentity == null) {
 			}
 		}

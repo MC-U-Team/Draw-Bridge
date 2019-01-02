@@ -5,8 +5,8 @@ import net.minecraft.item.ItemStack;
 
 public class SlotDrawBridgeChangeModel extends SlotDrawBridge {
 	
-	public SlotDrawBridgeChangeModel(TileEntityDrawBridge drawbridge, int index, int xPosition, int yPosition) {
-		super(drawbridge, index, xPosition, yPosition);
+	public SlotDrawBridgeChangeModel(TileEntityDrawBridge drawbridge, int xPosition, int yPosition) {
+		super(drawbridge, drawbridge.getRenderSlot(), 0, xPosition, yPosition);
 	}
 	
 	@Override
@@ -14,5 +14,4 @@ public class SlotDrawBridgeChangeModel extends SlotDrawBridge {
 		super.putStack(stack);
 		drawbridge.forceRerendering(); // Force chunk rerendering
 	}
-	
 }

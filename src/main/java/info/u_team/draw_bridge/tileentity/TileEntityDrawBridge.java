@@ -1,6 +1,8 @@
 package info.u_team.draw_bridge.tileentity;
 
 import info.u_team.draw_bridge.block.BlockDrawBridge;
+import info.u_team.draw_bridge.inventory.InventoryOneSlotImplemention;
+import info.u_team.u_team_core.api.ISyncedContainerTileEntity;
 import info.u_team.u_team_core.tileentity.UTileEntity;
 import info.u_team.u_team_core.util.NonNullListUtil;
 import net.minecraft.block.Block;
@@ -11,30 +13,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.relauncher.*;
 
-public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInventory {
+public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInventory, ISyncedContainerTileEntity {
 	
 	private NonNullList<ItemStack> itemstacks;
 	
 	private boolean extended;
 	private boolean[] ourBlocks = new boolean[10];
 	
+	private InventoryOneSlotImplemention renderSlot;
+	
 	public TileEntityDrawBridge() {
-		itemstacks = NonNullListUtil.withSize(11, ItemStack.EMPTY);
-	}
-	
-	@Override
-	public void onLoad() {
-		super.onLoad();
-		if (world.isRemote)
-			System.out.println("LOADED");
-	}
-	
-	@Override
-	public void validate() {
-		super.validate();
-		if (world.isRemote)
-			System.out.println("VALIDATED");
+		itemstacks = NonNullListUtil.withSize(10, ItemStack.EMPTY);
+		renderSlot = new InventoryOneSlotImplemention(this, 1);
 	}
 	
 	@Override
@@ -67,7 +59,6 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 			}
 		}
 		extended = true;
-		sendChangesToClient();
 	}
 	
 	private void retract() {
@@ -87,7 +78,44 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 			}
 		}
 		extended = false;
-		sendChangesToClient();
+	}
+	
+	// Chunk update
+	
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void getChunkLoadServerSyncData(NBTTagCompound compound) {
+		writeRenderSlot(compound);
+	}
+	
+	@Override
+	public void handleChunkLoadClientSyncData(NBTTagCompound compound) {
+		readRenderSlot(compound);
+	}
+	
+	// Container synchronization
+	
+	// Server -> client
+	@Override
+	public void getServerSyncContainerData(NBTTagCompound compound) {
+		compound.setBoolean("extended", extended);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void handleFromServerSyncContainerData(NBTTagCompound compound) {
+		extended = compound.getBoolean("extended");
+		System.out.println(extended);
+	}
+	
+	// Client -> server (unused here)
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void getClientSyncContainerData(NBTTagCompound compound) {
+	}
+	
+	@Override
+	public void handleFromClientSyncContainerData(NBTTagCompound compound) {
 	}
 	
 	// Force render update
@@ -96,27 +124,14 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		getWorld().markBlockRangeForRenderUpdate(getPos(), getPos());
 	}
 	
-	// sync data server -> client
-	
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		NBTTagCompound compound = new NBTTagCompound();
-		compound.setInteger("x", pos.getX());
-		compound.setInteger("y", pos.getY());
-		compound.setInteger("z", pos.getZ());
-		return compound;
-		
-	}
-	
-	@Override
-	public void handleUpdateTag(NBTTagCompound compound) {
-		System.out.println(compound);
-	}
-	
 	// getter
 	
 	public boolean isExtended() {
 		return extended;
+	}
+	
+	public InventoryOneSlotImplemention getRenderSlot() {
+		return renderSlot;
 	}
 	
 	// Nbt
@@ -135,6 +150,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 				ourBlocks[i] = false;
 			}
 		}
+		readRenderSlot(compound);
 	}
 	
 	@Override
@@ -148,6 +164,23 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 			ourBlocksTag.setBoolean("" + i, ourBlocks[i]);
 		}
 		compound.setTag("ourBlocks", ourBlocksTag);
+		
+		writeRenderSlot(compound);
+	}
+	
+	// Special nbt reading
+	
+	private void readRenderSlot(NBTTagCompound compound) {
+		NBTTagCompound renderSlotTag = compound.getCompoundTag("renderSlot");
+		if (renderSlotTag != null && !renderSlotTag.isEmpty()) {
+			renderSlot.setInventorySlotContents(0, new ItemStack(renderSlotTag));
+		}
+	}
+	
+	private void writeRenderSlot(NBTTagCompound compound) {
+		NBTTagCompound renderSlotTag = new NBTTagCompound();
+		renderSlot.getStackInSlot(0).writeToNBT(renderSlotTag);
+		compound.setTag("renderSlot", renderSlotTag);
 	}
 	
 	// Inventory handling
