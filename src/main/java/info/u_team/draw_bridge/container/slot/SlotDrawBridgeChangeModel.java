@@ -1,6 +1,8 @@
 package info.u_team.draw_bridge.container.slot;
 
 import info.u_team.draw_bridge.tileentity.TileEntityDrawBridge;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 
 public class SlotDrawBridgeChangeModel extends SlotDrawBridge {
@@ -13,5 +15,17 @@ public class SlotDrawBridgeChangeModel extends SlotDrawBridge {
 	public void putStack(ItemStack stack) {
 		super.putStack(stack);
 		drawbridge.forceRerendering(); // Force chunk rerendering
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isItemValid(ItemStack stack) {
+		if (super.isItemValid(stack)) {
+			Block block = Block.getBlockFromItem(stack.getItem());
+			IBlockState state = block.getStateFromMeta(stack.getMetadata());
+			System.out.println(state);
+			return state.isFullBlock();
+		}
+		return false;
 	}
 }

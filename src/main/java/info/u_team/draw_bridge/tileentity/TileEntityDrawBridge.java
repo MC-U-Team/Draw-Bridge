@@ -105,7 +105,6 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	@Override
 	public void handleFromServerSyncContainerData(NBTTagCompound compound) {
 		extended = compound.getBoolean("extended");
-		System.out.println(extended);
 	}
 	
 	// Client -> server (unused here)
