@@ -1,12 +1,12 @@
 {
-    "parent": "block/cube",
+	"parent": "block/cube",
 	"textures": {
-		"up": "uteam_drawbridges:blocks/drawbridge_side",
-		"down": "uteam_drawbridges:blocks/drawbridge_side",
-		"north": "uteam_drawbridges:blocks/drawbridge_front",
-		"east": "uteam_drawbridges:blocks/drawbridge_side",
-		"west": "uteam_drawbridges:blocks/drawbridge_side",
-		"south": "uteam_drawbridges:blocks/drawbridge_back",
-		"particle": "uteam_drawbridges:blocks/drawbridge_side"
-    }
+		"up": "drawbridge:blocks/drawbridge_side",
+		"down": "drawbridge:blocks/drawbridge_side",
+		"north": "drawbridge:blocks/drawbridge_front",
+		"east": "drawbridge:blocks/drawbridge_side",
+		"west": "drawbridge:blocks/drawbridge_side",
+		"south": "drawbridge:blocks/drawbridge_back",
+		"particle": "drawbridge:blocks/drawbridge_side"
+	}
 }

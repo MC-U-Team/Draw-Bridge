@@ -1,3 +1,3 @@
 {
-	"parent": "uteam_drawbridges:block/drawbridge"
+	"parent": "drawbridge:block/drawbridge"
 }

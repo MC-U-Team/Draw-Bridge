@@ -1,9 +1,7 @@
 package info.u_team.draw_bridge.proxy;
 
-import info.u_team.draw_bridge.model.DBMModelLoader;
-import info.u_team.draw_bridge.tileentity.*;
-import info.u_team.u_team_core.registry.*;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
+import info.u_team.draw_bridge.event.EventHandlerModelBake;
+import info.u_team.u_team_core.registry.CommonRegistry;
 import net.minecraftforge.fml.common.event.*;
 
 public class ClientProxy extends CommonProxy {
@@ -11,13 +9,12 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void preinit(FMLPreInitializationEvent event) {
 		super.preinit(event);
-		ModelLoaderRegistry.registerLoader(new DBMModelLoader());
+		CommonRegistry.registerEventHandler(EventHandlerModelBake.class);
 	}
 	
 	@Override
 	public void init(FMLInitializationEvent event) {
 		super.init(event);
-		ClientRegistry.registerSpecialTileEntityRenderer(DBMDrawbridgeTile.class, new SpecialDrawbridgeRender());
 	}
 	
 	@Override
