@@ -1,0 +1,25 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"ICI",
+		"RPR",
+		"RPR"
+	],
+	"key": {
+		"P": {
+			"item": "minecraft:piston"
+		},
+		"I": {
+			"item": "minecraft:iron_ingot"
+		},
+		"R": {
+			"item": "minecraft:redstone"
+		},
+		"C": {
+			"item": "minecraft:chest"
+		}
+	},
+	"result": {
+		"item": "drawbridge:drawbridge"
+	}
+}

@@ -23,9 +23,6 @@ public class ContainerDrawBridge extends UContainerTileEntity {
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
 		ItemStack itemstack = ItemStack.EMPTY;
-		
-		System.out.println(index);
-		
 		Slot slot = this.inventorySlots.get(index);
 		
 		if (slot != null && slot.getHasStack()) {

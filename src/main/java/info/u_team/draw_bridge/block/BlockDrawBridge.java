@@ -32,8 +32,11 @@ public class BlockDrawBridge extends UBlockTileEntity {
 	
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		player.openGui(DrawBridgeConstants.MODID, 0, world, pos.getX(), pos.getY(), pos.getZ());
-		return true;
+		if (!player.isSneaking()) {
+			player.openGui(DrawBridgeConstants.MODID, 0, world, pos.getX(), pos.getY(), pos.getZ());
+			return true;
+		}
+		return super.onBlockActivated(world, pos, state, player, hand, facing, hitX, hitY, hitZ);
 	}
 	
 	@Override

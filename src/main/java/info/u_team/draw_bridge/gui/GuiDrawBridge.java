@@ -4,6 +4,7 @@ import info.u_team.draw_bridge.DrawBridgeConstants;
 import info.u_team.draw_bridge.container.ContainerDrawBridge;
 import info.u_team.draw_bridge.tileentity.TileEntityDrawBridge;
 import info.u_team.u_team_core.gui.UGuiContainer;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.*;
@@ -15,6 +16,11 @@ public class GuiDrawBridge extends UGuiContainer {
 	
 	public GuiDrawBridge(TileEntityDrawBridge tileentity, EntityPlayer entityplayer) {
 		super(new ContainerDrawBridge(tileentity, entityplayer), BACKGROUND);
+	}
+	
+	@Override
+	public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+		fontRenderer.drawString(I18n.format("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
 	}
 	
 	@Override

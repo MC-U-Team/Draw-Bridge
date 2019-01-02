@@ -23,7 +23,6 @@ public class SlotDrawBridgeChangeModel extends SlotDrawBridge {
 		if (super.isItemValid(stack)) {
 			Block block = Block.getBlockFromItem(stack.getItem());
 			IBlockState state = block.getStateFromMeta(stack.getMetadata());
-			System.out.println(state);
 			return state.isFullBlock();
 		}
 		return false;
