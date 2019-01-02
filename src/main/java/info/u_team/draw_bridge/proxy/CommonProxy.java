@@ -6,12 +6,11 @@ import net.minecraftforge.fml.common.event.*;
 public class CommonProxy {
 	
 	public void preinit(FMLPreInitializationEvent event) {
-		DBMBlocks.preinit();
-		DBMGuis.preinit();
+		DrawBridgeBlocks.preinit();
 	}
 	
 	public void init(FMLInitializationEvent event) {
-		DBMCreativeTabs.init();
+		DrawBridgeCreativeTabs.init();
 	}
 	
 	public void postinit(FMLPostInitializationEvent event) {
