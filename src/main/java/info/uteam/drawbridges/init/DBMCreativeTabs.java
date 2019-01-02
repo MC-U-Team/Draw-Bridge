@@ -16,8 +16,8 @@
 
 package info.uteam.drawbridges.init;
 
+import info.u_team.draw_bridge.DrawBridgeConstants;
 import info.u_team.u_team_core.creativetab.UCreativeTab;
-import info.uteam.drawbridges.DBMConstants;
 
 /**
  * @author MrTroble
@@ -25,7 +25,7 @@ import info.uteam.drawbridges.DBMConstants;
  */
 public class DBMCreativeTabs {
 
-	public static final UCreativeTab dbm_tab = new UCreativeTab(DBMConstants.MODID, "dbm_tab");
+	public static final UCreativeTab dbm_tab = new UCreativeTab(DrawBridgeConstants.MODID, "dbm_tab");
 	
 	public static void init() {
 		dbm_tab.setIcon(DBMBlocks.draw_bridge);

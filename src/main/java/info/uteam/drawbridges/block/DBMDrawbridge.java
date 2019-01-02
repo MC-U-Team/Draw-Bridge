@@ -16,9 +16,9 @@
 
 package info.uteam.drawbridges.block;
 
+import info.u_team.draw_bridge.DrawBridgeConstants;
 import info.u_team.u_team_core.block.UBlockTileEntity;
 import info.u_team.u_team_core.tileentity.UTileEntityProvider;
-import info.uteam.drawbridges.DBMConstants;
 import info.uteam.drawbridges.container.DBMDrawbridgeContainer;
 import info.uteam.drawbridges.gui.DBMDrawbridgeGui;
 import info.uteam.drawbridges.init.*;
@@ -53,7 +53,7 @@ public class DBMDrawbridge extends UBlockTileEntity {
 	 */
 	public DBMDrawbridge(String name, Material materialIn) {
 		super(name, materialIn, DBMCreativeTabs.dbm_tab, new UTileEntityProvider(
-				new ResourceLocation(DBMConstants.MODID, "draw_bridge"), true, DBMDrawbridgeTile.class));
+				new ResourceLocation(DrawBridgeConstants.MODID, "draw_bridge"), true, DBMDrawbridgeTile.class));
 		gui = DBMGuis.addContainer(DBMDrawbridgeContainer.class);
 		if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
 			DBMGuis.addGuiContainer(DBMDrawbridgeGui.class, gui);
@@ -72,7 +72,7 @@ public class DBMDrawbridge extends UBlockTileEntity {
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
 			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		playerIn.openGui(DBMConstants.MODID, gui, worldIn, pos.getX(), pos.getY(), pos.getZ());
+		playerIn.openGui(DrawBridgeConstants.MODID, gui, worldIn, pos.getX(), pos.getY(), pos.getZ());
 		return true;
 	}
 

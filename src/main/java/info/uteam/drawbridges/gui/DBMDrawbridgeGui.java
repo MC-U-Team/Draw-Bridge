@@ -16,9 +16,9 @@
 
 package info.uteam.drawbridges.gui;
 
+import info.u_team.draw_bridge.DrawBridgeConstants;
 import info.u_team.u_team_core.container.UContainer;
 import info.u_team.u_team_core.gui.UGuiContainer;
-import info.uteam.drawbridges.DBMConstants;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
@@ -28,7 +28,7 @@ import net.minecraft.util.ResourceLocation;
  */
 public class DBMDrawbridgeGui extends UGuiContainer {
 
-	public static final ResourceLocation BACKGROUND = new ResourceLocation(DBMConstants.MODID,
+	public static final ResourceLocation BACKGROUND = new ResourceLocation(DrawBridgeConstants.MODID,
 			"textures/gui/drawbridge_gui.png");
 
 	/**

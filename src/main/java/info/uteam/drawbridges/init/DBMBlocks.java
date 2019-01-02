@@ -16,9 +16,9 @@
 
 package info.uteam.drawbridges.init;
 
+import info.u_team.draw_bridge.DrawBridgeConstants;
 import info.u_team.u_team_core.registry.BlockRegistry;
 import info.u_team.u_team_core.util.RegistryUtil;
-import info.uteam.drawbridges.DBMConstants;
 import info.uteam.drawbridges.block.DBMDrawbridge;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -32,7 +32,7 @@ public class DBMBlocks {
 	public static final Block draw_bridge = new DBMDrawbridge("drawbridge", Material.IRON);
 	
 	public static void preinit() {
-		BlockRegistry.register(DBMConstants.MODID, RegistryUtil.getRegistryEntries(Block.class, DBMBlocks.class));
+		BlockRegistry.register(DrawBridgeConstants.MODID, RegistryUtil.getRegistryEntries(Block.class, DBMBlocks.class));
 	}
 	
 }

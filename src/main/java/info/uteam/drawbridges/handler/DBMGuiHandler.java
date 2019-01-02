@@ -16,9 +16,9 @@
 
 package info.uteam.drawbridges.handler;
 
+import info.u_team.draw_bridge.DrawBridgeConstants;
 import info.u_team.u_team_core.container.UContainer;
 import info.u_team.u_team_core.gui.UGuiContainer;
-import info.uteam.drawbridges.DBMConstants;
 import info.uteam.drawbridges.init.DBMGuis;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
@@ -37,7 +37,7 @@ public class DBMGuiHandler implements IGuiHandler {
 			return DBMGuis.getContainer(ID).getConstructor(EntityPlayer.class, World.class, BlockPos.class)
 					.newInstance(player, world, new BlockPos(x, y, z));
 		} catch (Exception ex) {
-			DBMConstants.LOGGER.error("Some gui container seems to be wrong.", ex);
+			DrawBridgeConstants.LOGGER.error("Some gui container seems to be wrong.", ex);
 			return null;
 		}
 	}
@@ -54,7 +54,7 @@ public class DBMGuiHandler implements IGuiHandler {
 				return gui.getConstructor(UContainer.class).newInstance(container);
 			}
 		} catch (Exception ex) {
-			DBMConstants.LOGGER.error("Some gui seems to be wrong.", ex);
+			DrawBridgeConstants.LOGGER.error("Some gui seems to be wrong.", ex);
 			return null;
 		}
 	}

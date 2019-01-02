@@ -20,8 +20,6 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import com.enderio.core.client.render.RenderUtil;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;

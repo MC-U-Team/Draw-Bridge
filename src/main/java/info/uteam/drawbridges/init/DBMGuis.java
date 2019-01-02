@@ -18,9 +18,9 @@ package info.uteam.drawbridges.init;
 
 import java.util.*;
 
+import info.u_team.draw_bridge.DrawBridgeConstants;
 import info.u_team.u_team_core.container.UContainer;
 import info.u_team.u_team_core.gui.UGuiContainer;
-import info.uteam.drawbridges.DBMConstants;
 import info.uteam.drawbridges.handler.DBMGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.*;
@@ -35,7 +35,7 @@ public class DBMGuis {
 	private static final List<Class<? extends UContainer>> container_list = new ArrayList<Class<? extends UContainer>>();
 	
 	public static void preinit() {
-		NetworkRegistry.INSTANCE.registerGuiHandler(DBMConstants.MODID, new DBMGuiHandler());
+		NetworkRegistry.INSTANCE.registerGuiHandler(DrawBridgeConstants.MODID, new DBMGuiHandler());
 	}
 	
 	public static int addContainer(Class<? extends UContainer> container) {
