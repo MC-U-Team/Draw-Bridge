@@ -17,7 +17,7 @@
 package info.uteam.drawbridges.container;
 
 import info.u_team.u_team_core.container.UContainer;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.*;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -50,6 +50,7 @@ public class DBMDrawbridgeContainer extends UContainer {
 	 */
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+		System.out.println(index);
 		return ItemStack.EMPTY;
 	}
 	

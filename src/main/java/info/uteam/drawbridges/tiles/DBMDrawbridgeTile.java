@@ -25,8 +25,9 @@ import info.uteam.drawbridges.container.DBMDrawbridgeContainer;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.*;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.nbt.*;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -71,13 +72,16 @@ public class DBMDrawbridgeTile extends DBMTileEntityGUI {
 				BlockPos last_pos = pos;
 				offsets.clear();
 				for (int i = 0; i < 10; i++) {
+					BlockPos before = last_pos;
 					last_pos = last_pos.offset(face);
+					System.out.println(last_pos);
 					if (!world.isAirBlock(last_pos)) {
 						offsets.add(new Integer(i));
 						count++;
 						continue;
 					}
-					if (this.itemstacks.get(i) == ItemStack.EMPTY) {
+					System.out.println(i + " -> " + this.itemstacks.get(i));
+					if (this.itemstacks.get(i) == ItemStack.EMPTY || this.itemstacks.get(i) == null || this.itemstacks.get(i).getItem() == Item.getItemFromBlock(Blocks.AIR)) {
 						last_pos = last_pos.offset(face);
 						world.setBlockToAir(last_pos);
 						count++;
@@ -85,12 +89,13 @@ public class DBMDrawbridgeTile extends DBMTileEntityGUI {
 					}
 					Block bl = Block.getBlockFromItem(this.itemstacks.get(i).getItem());
 					IBlockState bst = bl.getStateFromMeta(this.itemstacks.get(i).getMetadata());
-					world.setBlockState(last_pos, bst);
+					world.setBlockState(before, bst);
 					count++;
 					this.decrStackSize(i, 1);
+					System.out.println("setState");
 				}
 			} else {
-				for (; count > 0; count--) {
+				for ( ; count > 0; count--) {
 					if (world.isAirBlock(pos.offset(face, count)) || offsets.contains(new Integer(count - 1))) {
 						continue;
 					}
