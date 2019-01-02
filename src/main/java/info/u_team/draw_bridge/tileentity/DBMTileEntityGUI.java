@@ -14,7 +14,7 @@
  * the License.
  ******************************************************************************/
 
-package info.uteam.drawbridges.tiles;
+package info.u_team.draw_bridge.tileentity;
 
 import info.u_team.u_team_core.tileentity.UTileEntity;
 import net.minecraft.entity.player.EntityPlayer;

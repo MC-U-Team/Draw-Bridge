@@ -14,7 +14,7 @@
  * the License.
  ******************************************************************************/
 
-package info.uteam.drawbridges.container;
+package info.u_team.draw_bridge.container;
 
 import info.u_team.u_team_core.container.UContainer;
 import net.minecraft.entity.player.*;

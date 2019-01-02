@@ -14,7 +14,7 @@
  * the License.
  ******************************************************************************/
 
-package info.uteam.drawbridges.model;
+package info.u_team.draw_bridge.model;
 
 import java.util.List;
 import java.util.function.Function;

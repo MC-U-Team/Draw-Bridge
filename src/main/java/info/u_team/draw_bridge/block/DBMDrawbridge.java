@@ -14,15 +14,15 @@
  * the License.
  ******************************************************************************/
 
-package info.uteam.drawbridges.block;
+package info.u_team.draw_bridge.block;
 
 import info.u_team.draw_bridge.DrawBridgeConstants;
+import info.u_team.draw_bridge.container.DBMDrawbridgeContainer;
+import info.u_team.draw_bridge.gui.DBMDrawbridgeGui;
+import info.u_team.draw_bridge.init.*;
+import info.u_team.draw_bridge.tileentity.DBMDrawbridgeTile;
 import info.u_team.u_team_core.block.UBlockTileEntity;
 import info.u_team.u_team_core.tileentity.UTileEntityProvider;
-import info.uteam.drawbridges.container.DBMDrawbridgeContainer;
-import info.uteam.drawbridges.gui.DBMDrawbridgeGui;
-import info.uteam.drawbridges.init.*;
-import info.uteam.drawbridges.tiles.DBMDrawbridgeTile;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.*;
 import net.minecraft.block.state.*;

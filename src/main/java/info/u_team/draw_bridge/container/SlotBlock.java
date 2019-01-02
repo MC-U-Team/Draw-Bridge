@@ -14,9 +14,9 @@
  * the License.
  ******************************************************************************/
 
-package info.uteam.drawbridges.container;
+package info.u_team.draw_bridge.container;
 
-import info.uteam.drawbridges.tiles.DBMDrawbridgeTile;
+import info.u_team.draw_bridge.tileentity.DBMDrawbridgeTile;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;

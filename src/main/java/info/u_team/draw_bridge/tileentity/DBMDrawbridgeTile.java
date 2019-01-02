@@ -14,14 +14,14 @@
  * the License.
  ******************************************************************************/
 
-package info.uteam.drawbridges.tiles;
+package info.u_team.draw_bridge.tileentity;
 
 import java.util.ArrayList;
 
 import com.google.common.collect.Lists;
 
-import info.uteam.drawbridges.block.DBMDrawbridge;
-import info.uteam.drawbridges.container.DBMDrawbridgeContainer;
+import info.u_team.draw_bridge.block.DBMDrawbridge;
+import info.u_team.draw_bridge.container.DBMDrawbridgeContainer;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.*;

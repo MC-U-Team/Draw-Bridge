@@ -14,7 +14,7 @@
  * the License.
  ******************************************************************************/
 
-package info.uteam.drawbridges.model;
+package info.u_team.draw_bridge.model;
 
 import info.u_team.u_team_core.registry.ModelRegistry;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;

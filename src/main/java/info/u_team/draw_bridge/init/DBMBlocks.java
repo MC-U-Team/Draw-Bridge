@@ -14,21 +14,25 @@
  * the License.
  ******************************************************************************/
 
-package info.uteam.drawbridges.init;
+package info.u_team.draw_bridge.init;
 
 import info.u_team.draw_bridge.DrawBridgeConstants;
-import info.u_team.u_team_core.creativetab.UCreativeTab;
+import info.u_team.draw_bridge.block.DBMDrawbridge;
+import info.u_team.u_team_core.registry.BlockRegistry;
+import info.u_team.u_team_core.util.RegistryUtil;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 
 /**
  * @author MrTroble
  *
  */
-public class DBMCreativeTabs {
+public class DBMBlocks {
 
-	public static final UCreativeTab dbm_tab = new UCreativeTab(DrawBridgeConstants.MODID, "dbm_tab");
+	public static final Block draw_bridge = new DBMDrawbridge("drawbridge", Material.IRON);
 	
-	public static void init() {
-		dbm_tab.setIcon(DBMBlocks.draw_bridge);
+	public static void preinit() {
+		BlockRegistry.register(DrawBridgeConstants.MODID, RegistryUtil.getRegistryEntries(Block.class, DBMBlocks.class));
 	}
 	
 }

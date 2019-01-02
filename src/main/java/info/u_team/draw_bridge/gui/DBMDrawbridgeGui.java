@@ -14,7 +14,7 @@
  * the License.
  ******************************************************************************/
 
-package info.uteam.drawbridges.gui;
+package info.u_team.draw_bridge.gui;
 
 import info.u_team.draw_bridge.DrawBridgeConstants;
 import info.u_team.u_team_core.container.UContainer;

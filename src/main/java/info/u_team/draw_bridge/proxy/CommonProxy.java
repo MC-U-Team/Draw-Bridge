@@ -1,6 +1,6 @@
 package info.u_team.draw_bridge.proxy;
 
-import info.uteam.drawbridges.init.*;
+import info.u_team.draw_bridge.init.*;
 import net.minecraftforge.fml.common.event.*;
 
 public class CommonProxy {

@@ -14,7 +14,7 @@
  * the License.
  ******************************************************************************/
 
-package info.uteam.drawbridges.tiles;
+package info.u_team.draw_bridge.tileentity;
 
 import java.util.List;
 

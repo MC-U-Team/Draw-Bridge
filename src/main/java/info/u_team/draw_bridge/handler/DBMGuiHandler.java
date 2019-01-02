@@ -14,12 +14,12 @@
  * the License.
  ******************************************************************************/
 
-package info.uteam.drawbridges.handler;
+package info.u_team.draw_bridge.handler;
 
 import info.u_team.draw_bridge.DrawBridgeConstants;
+import info.u_team.draw_bridge.init.DBMGuis;
 import info.u_team.u_team_core.container.UContainer;
 import info.u_team.u_team_core.gui.UGuiContainer;
-import info.uteam.drawbridges.init.DBMGuis;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

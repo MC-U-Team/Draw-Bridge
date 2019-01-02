@@ -1,8 +1,8 @@
 package info.u_team.draw_bridge.proxy;
 
+import info.u_team.draw_bridge.model.DBMModelLoader;
+import info.u_team.draw_bridge.tileentity.*;
 import info.u_team.u_team_core.registry.*;
-import info.uteam.drawbridges.model.DBMModelLoader;
-import info.uteam.drawbridges.tiles.*;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fml.common.event.*;
 

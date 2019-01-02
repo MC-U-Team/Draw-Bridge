@@ -14,14 +14,14 @@
  * the License.
  ******************************************************************************/
 
-package info.uteam.drawbridges.init;
+package info.u_team.draw_bridge.init;
 
 import java.util.*;
 
 import info.u_team.draw_bridge.DrawBridgeConstants;
+import info.u_team.draw_bridge.handler.DBMGuiHandler;
 import info.u_team.u_team_core.container.UContainer;
 import info.u_team.u_team_core.gui.UGuiContainer;
-import info.uteam.drawbridges.handler.DBMGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.*;
 
