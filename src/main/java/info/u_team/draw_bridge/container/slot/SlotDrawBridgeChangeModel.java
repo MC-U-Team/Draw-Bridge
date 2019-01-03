@@ -28,4 +28,9 @@ public class SlotDrawBridgeChangeModel extends SlotDrawBridge {
 		}
 		return false;
 	}
+	
+	@Override
+	public boolean shouldCheckExtended() {
+		return false;
+	}
 }

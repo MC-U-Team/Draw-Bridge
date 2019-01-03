@@ -13,11 +13,11 @@ public class ContainerDrawBridge extends UContainerTileEntity {
 		super(tileentity);
 		for (int height = 0; height < 2; height++) {
 			for (int width = 0; width < 5; width++) {
-				addSlotToContainer(new SlotDrawBridge(tileentity, tileentity, width + height * 5, width * 18 + 8, height * 18 + 8));
+				addSlotToContainer(new SlotDrawBridge(tileentity, tileentity, width + height * 5, width * 18 + 8, height * 18 + 18));
 			}
 		}
-		addSlotToContainer(new SlotDrawBridgeChangeModel(tileentity, 151, 8));
-		appendPlayerInventory(player.inventory, 8, 84);
+		addSlotToContainer(new SlotDrawBridgeChangeModel(tileentity, 130, 18));
+		appendPlayerInventory(player.inventory, 8, 98);
 	}
 	
 	@Override

@@ -22,7 +22,7 @@ public class SlotDrawBridge extends Slot {
 	
 	@Override
 	public boolean isItemValid(ItemStack stack) {
-		if (drawbridge.isExtended()) {
+		if (shouldCheckExtended() && drawbridge.isExtended()) {
 			return false;
 		}
 		if (stack == null || !(stack.getItem() instanceof ItemBlock)) {
@@ -31,6 +31,10 @@ public class SlotDrawBridge extends Slot {
 		if (stack.getItem() == DrawBridgeBlocks.draw_bridge.getItem()) {
 			return false;
 		}
+		return true;
+	}
+	
+	public boolean shouldCheckExtended() {
 		return true;
 	}
 	

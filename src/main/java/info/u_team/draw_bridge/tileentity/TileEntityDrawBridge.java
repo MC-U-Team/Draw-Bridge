@@ -19,10 +19,13 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	
 	private NonNullList<ItemStack> itemstacks;
 	
-	private boolean extended;
+	private int speed;
+	private int extended;
 	private boolean[] ourBlocks = new boolean[10];
 	
 	private InventoryOneSlotImplemention renderSlot;
+	
+	private int localSpeed;
 	
 	public TileEntityDrawBridge() {
 		itemstacks = NonNullListUtil.withSize(10, ItemStack.EMPTY);
@@ -34,50 +37,72 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		if (world.isRemote) {
 			return;
 		}
-		boolean powered = world.isBlockPowered(pos);
-		if (powered && !extended) {
-			extend();
-		} else if (!powered && extended) {
-			retract();
+		if (localSpeed <= 1) {
+			localSpeed = speed;
+			boolean powered = world.isBlockPowered(pos);
+			if (powered && extended < 10) {
+				if (localSpeed == 0) {
+					for (int i = extended; i < 10; i++) {
+						extend();
+					}
+				} else {
+					extend();
+				}
+				markDirty();
+			} else if (!powered && extended > 0) {
+				if (localSpeed == 0) {
+					for (int i = extended; i > 0; i--) {
+						retract();
+					}
+				} else {
+					retract();
+				}
+				markDirty();
+			}
 		}
+		localSpeed--;
+	}
+	
+	private void extend() {
+		EnumFacing facing = world.getBlockState(pos).getValue(BlockDrawBridge.FACING);
+		trySetBlock(facing);
+		extended++;
 	}
 	
 	@SuppressWarnings("deprecation")
-	private void extend() {
-		EnumFacing facing = world.getBlockState(pos).getValue(BlockDrawBridge.FACING);
-		for (int i = 0; i < 10; i++) {
-			BlockPos newPos = pos.offset(facing, i + 1);
-			if (world.isAirBlock(newPos)) {
-				ItemStack itemstack = getStackInSlot(i);
-				
-				Block block = Block.getBlockFromItem(itemstack.getItem());
-				world.setBlockState(newPos, block.getStateFromMeta(itemstack.getMetadata()));
-				removeStackFromSlot(i);
-				ourBlocks[i] = true;
-			} else {
-				ourBlocks[i] = false;
-			}
+	private void trySetBlock(EnumFacing facing) {
+		BlockPos newPos = pos.offset(facing, extended + 1);
+		if (world.isAirBlock(newPos)) {
+			ItemStack itemstack = getStackInSlot(extended);
+			
+			Block block = Block.getBlockFromItem(itemstack.getItem());
+			world.setBlockState(newPos, block.getStateFromMeta(itemstack.getMetadata()));
+			removeStackFromSlot(extended);
+			ourBlocks[extended] = true;
+		} else {
+			ourBlocks[extended] = false;
 		}
-		extended = true;
 	}
 	
 	private void retract() {
 		EnumFacing facing = world.getBlockState(pos).getValue(BlockDrawBridge.FACING);
-		for (int i = 0; i < 10; i++) {
-			if (ourBlocks[i]) {
-				BlockPos newPos = pos.offset(facing, i + 1);
-				if (!world.isAirBlock(newPos)) {
-					IBlockState state = world.getBlockState(newPos);
-					Block block = state.getBlock();
-					
-					ItemStack stack = new ItemStack(block, 1, block.getMetaFromState(state));
-					setInventorySlotContents(i, stack);
-					
-					world.setBlockToAir(newPos);
-				}
+		extended--;
+		tryRemoveBlock(facing);
+	}
+	
+	private void tryRemoveBlock(EnumFacing facing) {
+		if (ourBlocks[extended]) {
+			BlockPos newPos = pos.offset(facing, extended + 1);
+			if (!world.isAirBlock(newPos)) {
+				IBlockState state = world.getBlockState(newPos);
+				Block block = state.getBlock();
+				
+				ItemStack stack = new ItemStack(block, 1, block.getMetaFromState(state));
+				setInventorySlotContents(extended, stack);
+				
+				world.setBlockToAir(newPos);
 			}
 		}
-		extended = false;
 	}
 	
 	// Chunk update
@@ -98,23 +123,27 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	// Server -> client
 	@Override
 	public void getServerSyncContainerData(NBTTagCompound compound) {
-		compound.setBoolean("extended", extended);
+		compound.setInteger("extended", extended);
+		compound.setInteger("speed", speed);
 	}
 	
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void handleFromServerSyncContainerData(NBTTagCompound compound) {
-		extended = compound.getBoolean("extended");
+		extended = compound.getInteger("extended");
+		speed = compound.getInteger("speed");
 	}
 	
-	// Client -> server (unused here)
+	// Client -> server
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void getClientSyncContainerData(NBTTagCompound compound) {
+		compound.setInteger("speed", speed);
 	}
 	
 	@Override
 	public void handleFromClientSyncContainerData(NBTTagCompound compound) {
+		speed = Math.min(100, compound.getInteger("speed"));
 	}
 	
 	// Force render update
@@ -123,14 +152,22 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		getWorld().markBlockRangeForRenderUpdate(getPos(), getPos());
 	}
 	
-	// getter
+	// getter and setter
 	
 	public boolean isExtended() {
-		return extended;
+		return extended > 0;
 	}
 	
 	public InventoryOneSlotImplemention getRenderSlot() {
 		return renderSlot;
+	}
+	
+	public int getSpeed() {
+		return speed;
+	}
+	
+	public void setSpeed(int speed) {
+		this.speed = speed;
 	}
 	
 	// Nbt
@@ -139,7 +176,8 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	public void readNBT(NBTTagCompound compound) {
 		ItemStackHelper.loadAllItems(compound, itemstacks);
 		
-		extended = compound.getBoolean("extended");
+		extended = compound.getInteger("extended");
+		speed = compound.getInteger("speed");
 		
 		NBTTagCompound ourBlocksTag = compound.getCompoundTag("ourBlocks");
 		for (int i = 0; i < ourBlocks.length; i++) {
@@ -156,7 +194,8 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	public void writeNBT(NBTTagCompound compound) {
 		ItemStackHelper.saveAllItems(compound, itemstacks);
 		
-		compound.setBoolean("extended", extended);
+		compound.setInteger("extended", extended);
+		compound.setInteger("speed", speed);
 		
 		NBTTagCompound ourBlocksTag = new NBTTagCompound();
 		for (int i = 0; i < ourBlocks.length; i++) {
