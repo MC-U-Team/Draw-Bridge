@@ -15,6 +15,7 @@ public class SlotDrawBridgeChangeModel extends SlotDrawBridge {
 	public void putStack(ItemStack stack) {
 		super.putStack(stack);
 		drawbridge.forceRerendering(); // Force chunk rerendering
+		drawbridge.getWorld().checkLight(drawbridge.getPos()); // Force light update
 	}
 	
 	@SuppressWarnings("deprecation")
