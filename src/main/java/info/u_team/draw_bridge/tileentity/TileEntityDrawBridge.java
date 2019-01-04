@@ -20,7 +20,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	private NonNullList<ItemStack> itemstacks;
 	
 	private int speed;
-	private boolean needsrs;
+	private boolean needsrs = true;
 	private int extended;
 	private boolean[] ourBlocks = new boolean[10];
 	
@@ -142,11 +142,13 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	@Override
 	public void getClientSyncContainerData(NBTTagCompound compound) {
 		compound.setInteger("speed", speed);
+		compound.setBoolean("needsrs", needsrs);
 	}
 	
 	@Override
 	public void handleFromClientSyncContainerData(NBTTagCompound compound) {
 		speed = Math.min(100, compound.getInteger("speed"));
+		needsrs = compound.getBoolean("needsrs");
 	}
 	
 	// Force render update
