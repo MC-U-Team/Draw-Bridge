@@ -27,7 +27,7 @@ public class GuiDrawBridge extends UGuiContainer {
 	private GuiSlider speedSlider;
 	private GuiButtonToggle toggle;
 	
-	private int fixValueTry;
+	private int fixValueSpeedSlider, fixValueRedstone;
 	
 	public GuiDrawBridge(TileEntityDrawBridge tileentity, EntityPlayer entityplayer) {
 		super(new ContainerDrawBridge(tileentity, entityplayer), BACKGROUND);
@@ -38,7 +38,7 @@ public class GuiDrawBridge extends UGuiContainer {
 	@Override
 	public void initGui() {
 		super.initGui();
-		fixValueTry = 0;
+		fixValueSpeedSlider = fixValueRedstone = 0;
 		toggle = new GuiButtonToggle(1, guiLeft + 100, guiTop + 60, 20, 20, drawbridge.needsRedstone());
 		toggle.initTextureValues(xSize, 0, 20, 20, BACKGROUND);
 		buttonList.add(toggle);
@@ -52,13 +52,13 @@ public class GuiDrawBridge extends UGuiContainer {
 	@Override
 	protected void actionPerformed(GuiButton button) throws IOException {
 		super.actionPerformed(button);
-		if(button.id == 1) {
+		if (button.id == 1) {
 			toggle.setStateTriggered(!toggle.isStateTriggered());
 			drawbridge.setNeedsRedstone(toggle.isStateTriggered());
 			drawbridge.syncClientToServer(drawbridge.getPos());
 		}
 	}
-		
+	
 	@Override
 	public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		fontRenderer.drawString(I18n.format(DrawBridgeConstants.MODID + ":container.drawbridge"), 8, 6, 4210752);
@@ -70,13 +70,22 @@ public class GuiDrawBridge extends UGuiContainer {
 		drawDefaultBackground();
 		super.drawScreen(mouseX, mouseY, partialTicks);
 		renderHoveredToolTip(mouseX, mouseY);
-        if(toggle.isMouseOver())this.drawHoveringText(Lists.newArrayList("Needs Redstone to activate?"), mouseX, mouseY, fontRenderer);
-		if (fixValueTry < 10 && speedSlider.getValueInt() == 0) {
+		if (toggle.isMouseOver()) {
+			drawHoveringText(Lists.newArrayList("Needs Redstone to activate?"), mouseX, mouseY, fontRenderer);
+		}
+		// Dumb but how should we know exactly when it is ready? Maybe the
+		// handleServerData should call a method on the container which then can call
+		// the gui to update its states
+		if (fixValueSpeedSlider < 5 && speedSlider.getValueInt() == 0) {
 			speedSlider.setValue(drawbridge.getSpeed());
 			if (speedSlider.getValueInt() > 0) {
 				speedSlider.updateSlider();
 			}
-			fixValueTry++;
+			fixValueSpeedSlider++;
+		}
+		if (fixValueRedstone < 5 && !toggle.isStateTriggered()) {
+			toggle.setStateTriggered(drawbridge.needsRedstone());
+			fixValueRedstone++;
 		}
 	}
 }
