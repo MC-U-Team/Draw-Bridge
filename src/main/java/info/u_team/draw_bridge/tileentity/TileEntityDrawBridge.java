@@ -107,17 +107,15 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	
 	// Chunk update
 	
+	@Override
+	public void getChunkLoadServerSyncData(NBTTagCompound compound) {
+		writeRenderSlot(compound);
+	}
+	
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void handleChunkLoadClientSyncData(NBTTagCompound compound) {
 		readRenderSlot(compound);
-		System.out.println("CLIENT:" + compound);
-	}
-	
-	@Override
-	public void getChunkLoadServerSyncData(NBTTagCompound compound) {
-		writeRenderSlot(compound);
-		System.out.println("SERVER: " + compound);
 	}
 	
 	// Container synchronization

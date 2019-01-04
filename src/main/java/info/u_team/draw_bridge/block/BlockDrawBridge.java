@@ -94,9 +94,7 @@ public class BlockDrawBridge extends UBlockTileEntity {
 		if (state instanceof IExtendedBlockState) {
 			IExtendedBlockState extended = (IExtendedBlockState) state;
 			TileEntity tileentity = getTileEntitySave(world, pos);
-			System.out.println(tileentity);
 			if (tileentity instanceof TileEntityDrawBridge) {
-				System.out.println(((TileEntityDrawBridge) tileentity).getRenderSlot().getStackInSlot(0));
 				return extended.withProperty(ITEMSTACK, ((TileEntityDrawBridge) tileentity).getRenderSlot().getStackInSlot(0));
 			}
 		}
