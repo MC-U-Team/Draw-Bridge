@@ -8,14 +8,12 @@ import info.u_team.draw_bridge.DrawBridgeConstants;
 import info.u_team.draw_bridge.container.ContainerDrawBridge;
 import info.u_team.draw_bridge.tileentity.TileEntityDrawBridge;
 import info.u_team.u_team_core.gui.UGuiContainer;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiButtonToggle;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.config.GuiSlider;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.*;
 
 @SideOnly(Side.CLIENT)
 public class GuiDrawBridge extends UGuiContainer {

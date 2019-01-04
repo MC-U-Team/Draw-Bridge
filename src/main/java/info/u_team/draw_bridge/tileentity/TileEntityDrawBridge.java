@@ -40,7 +40,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		}
 		if (localSpeed <= 1) {
 			localSpeed = speed;
-			boolean powered = needsrs ? world.isBlockPowered(pos):!world.isBlockPowered(pos);
+			boolean powered = needsrs ? world.isBlockPowered(pos) : !world.isBlockPowered(pos);
 			if (powered && extended < 10) {
 				if (localSpeed == 0) {
 					for (int i = extended; i < 10; i++) {
@@ -211,7 +211,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		compound.setInteger("extended", extended);
 		compound.setInteger("speed", speed);
 		compound.setBoolean("needsrs", needsrs);
-
+		
 		NBTTagCompound ourBlocksTag = new NBTTagCompound();
 		for (int i = 0; i < ourBlocks.length; i++) {
 			ourBlocksTag.setBoolean("" + i, ourBlocks[i]);

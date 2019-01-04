@@ -28,6 +28,7 @@ public class BakedModelDrawBridge implements IBakedModel {
 		defaultModel = model;
 	}
 	
+	@Override
 	public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
 		return getModel(state).getQuads(state, side, rand);
 	}
