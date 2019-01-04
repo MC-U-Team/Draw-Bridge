@@ -20,6 +20,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	private NonNullList<ItemStack> itemstacks;
 	
 	private int speed;
+	private boolean needsrs;
 	private int extended;
 	private boolean[] ourBlocks = new boolean[10];
 	
@@ -39,7 +40,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		}
 		if (localSpeed <= 1) {
 			localSpeed = speed;
-			boolean powered = world.isBlockPowered(pos);
+			boolean powered = needsrs ? world.isBlockPowered(pos):!world.isBlockPowered(pos);
 			if (powered && extended < 10) {
 				if (localSpeed == 0) {
 					for (int i = extended; i < 10; i++) {
@@ -125,6 +126,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	public void getServerSyncContainerData(NBTTagCompound compound) {
 		compound.setInteger("extended", extended);
 		compound.setInteger("speed", speed);
+		compound.setBoolean("needsrs", needsrs);
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -132,6 +134,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	public void handleFromServerSyncContainerData(NBTTagCompound compound) {
 		extended = compound.getInteger("extended");
 		speed = compound.getInteger("speed");
+		needsrs = compound.getBoolean("needsrs");
 	}
 	
 	// Client -> server
@@ -170,6 +173,14 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		this.speed = speed;
 	}
 	
+	public boolean needsRedstone() {
+		return this.needsrs;
+	}
+	
+	public void setNeedsRedstone(boolean needsrs) {
+		this.needsrs = needsrs;
+	}
+	
 	// Nbt
 	
 	@Override
@@ -178,6 +189,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		
 		extended = compound.getInteger("extended");
 		speed = compound.getInteger("speed");
+		needsrs = compound.getBoolean("needsrs");
 		
 		NBTTagCompound ourBlocksTag = compound.getCompoundTag("ourBlocks");
 		for (int i = 0; i < ourBlocks.length; i++) {
@@ -196,7 +208,8 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		
 		compound.setInteger("extended", extended);
 		compound.setInteger("speed", speed);
-		
+		compound.setBoolean("needsrs", needsrs);
+
 		NBTTagCompound ourBlocksTag = new NBTTagCompound();
 		for (int i = 0; i < ourBlocks.length; i++) {
 			ourBlocksTag.setBoolean("" + i, ourBlocks[i]);
