@@ -11,7 +11,6 @@ import info.u_team.draw_bridge.init.DrawBridgeBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.init.Blocks;
@@ -46,10 +45,7 @@ public class BakedModelDrawBridge implements IBakedModel {
 				IBlockState newBlockState = block.getStateFromMeta(stack.getMetadata());
 				
 				if (newBlockState != Blocks.AIR.getDefaultState() && newBlockState.getBlock() != DrawBridgeBlocks.draw_bridge) {
-					Minecraft minecraft = Minecraft.getMinecraft();
-					BlockRendererDispatcher blockrender = minecraft.getBlockRendererDispatcher();
-					BlockModelShapes modelshapes = blockrender.getBlockModelShapes();
-					model = modelshapes.getModelForState(newBlockState);
+					model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(newBlockState);
 				}
 			}
 		}
