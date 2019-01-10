@@ -17,7 +17,7 @@ public class SlotDrawBridge extends Slot {
 	
 	@Override
 	public boolean canTakeStack(EntityPlayer playerIn) {
-		return !drawbridge.isExtended();
+		return !(drawbridge.isExtended() && shouldCheckExtended());
 	}
 	
 	@Override
