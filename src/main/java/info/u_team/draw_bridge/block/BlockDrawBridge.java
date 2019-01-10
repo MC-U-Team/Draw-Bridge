@@ -1,5 +1,7 @@
 package info.u_team.draw_bridge.block;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import info.u_team.draw_bridge.DrawBridgeConstants;
 import info.u_team.draw_bridge.init.DrawBridgeCreativeTabs;
 import info.u_team.draw_bridge.property.UnlistedPropertyItemStack;
@@ -29,72 +31,61 @@ public class BlockDrawBridge extends UBlockTileEntity {
 	public BlockDrawBridge(String name) {
 		super(name, Material.IRON, DrawBridgeCreativeTabs.tab, new UTileEntityProvider(new ResourceLocation(DrawBridgeConstants.MODID, "draw_bridge"), TileEntityDrawBridge.class));
 		setDefaultState(getDefaultState().withProperty(FACING, EnumFacing.NORTH));
-		setHardness(2);
+		setHardness(1.5F);
 	}
 	
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if (!player.isSneaking()) {
-			player.openGui(DrawBridgeConstants.MODID, 0, world, pos.getX(), pos.getY(), pos.getZ());
-			return true;
-		}
-		return super.onBlockActivated(world, pos, state, player, hand, facing, hitX, hitY, hitZ);
+		return openContainer(DrawBridgeConstants.MODID, 0, world, pos, player, true);
 	}
 	
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState state) {
-		TileEntity tileentity = getTileEntitySave(world, pos);
-		if (tileentity instanceof TileEntityDrawBridge) {
-			InventoryHelper.dropInventoryItems(world, pos, (TileEntityDrawBridge) tileentity);
-			world.updateComparatorOutputLevel(pos, this);
+		TileEntityDrawBridge drawbridge = getDrawBridge(world, pos);
+		if (drawbridge == null) {
+			return;
 		}
-		
+		InventoryHelper.dropInventoryItems(world, pos, drawbridge);
+		world.updateComparatorOutputLevel(pos, this);
 		super.breakBlock(world, pos, state);
 	}
 	
 	// Used for light blocks
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
-		TileEntity tileentity = getTileEntitySave(world, pos);
-		if (tileentity instanceof TileEntityDrawBridge) {
-			ItemStack stack = ((TileEntityDrawBridge) tileentity).getRenderSlot().getStackInSlot(0);
-			if (stack != null && !stack.isEmpty()) {
-				Block block = Block.getBlockFromItem(stack.getItem());
-				return block.getStateFromMeta(stack.getMetadata()).getLightOpacity(world, pos);
-			}
+		IBlockState renderState = getRenderBlockState(world, pos);
+		if (renderState == null) {
+			return 0;
 		}
-		return 0;
+		return renderState.getLightOpacity(world, pos);
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
-		TileEntity tileentity = getTileEntitySave(world, pos);
-		if (tileentity instanceof TileEntityDrawBridge) {
-			ItemStack stack = ((TileEntityDrawBridge) tileentity).getRenderSlot().getStackInSlot(0);
-			if (stack != null && !stack.isEmpty()) {
-				Block block = Block.getBlockFromItem(stack.getItem());
-				return block.getStateFromMeta(stack.getMetadata()).getLightValue(world, pos);
-			}
+		IBlockState renderState = getRenderBlockState(world, pos);
+		if (renderState == null) {
+			return 0;
 		}
-		return 0;
+		return renderState.getLightValue(world, pos);
 	}
 	
-	// Block state things
+	// Extended block state for rendering
 	
 	@Override
 	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
-		if (state instanceof IExtendedBlockState) {
-			IExtendedBlockState extended = (IExtendedBlockState) state;
-			TileEntity tileentity = getTileEntitySave(world, pos);
-			if (tileentity instanceof TileEntityDrawBridge) {
-				return extended.withProperty(ITEMSTACK, ((TileEntityDrawBridge) tileentity).getRenderSlot().getStackInSlot(0));
-			}
+		if (!(state instanceof IExtendedBlockState)) {
+			return state;
 		}
-		return state;
+		IExtendedBlockState extendedState = (IExtendedBlockState) state;
+		ItemStack stack = getRenderItemStack(world, pos);
+		if (stack == ItemStack.EMPTY) {
+			return extendedState;
+		}
+		return extendedState.withProperty(ITEMSTACK, stack);
 	}
+	
+	// Block state things
 	
 	@Override
 	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
@@ -124,6 +115,34 @@ public class BlockDrawBridge extends UBlockTileEntity {
 	@Override
 	protected BlockStateContainer createBlockState() {
 		return new BlockStateContainer.Builder(this).add(FACING).add(ITEMSTACK).build();
+	}
+	
+	// Utility methods
+	public TileEntityDrawBridge getDrawBridge(IBlockAccess world, BlockPos pos) {
+		Pair<Boolean, TileEntity> pair = isTileEntityFromProvider(world, pos);
+		return pair.getLeft() ? (TileEntityDrawBridge) pair.getRight() : null;
+	}
+	
+	public ItemStack getRenderItemStack(IBlockAccess world, BlockPos pos) {
+		TileEntityDrawBridge drawbridge = getDrawBridge(world, pos);
+		if (drawbridge == null) {
+			return ItemStack.EMPTY;
+		}
+		ItemStack stack = drawbridge.getRenderSlot().getStackInSlot(0);
+		if (stack == null || stack.isEmpty()) {
+			return ItemStack.EMPTY;
+		}
+		return stack;
+	}
+	
+	@SuppressWarnings("deprecation")
+	public IBlockState getRenderBlockState(IBlockAccess world, BlockPos pos) {
+		ItemStack stack = getRenderItemStack(world, pos);
+		if (stack == null) {
+			return null;
+		}
+		Block block = Block.getBlockFromItem(stack.getItem());
+		return block.getStateFromMeta(stack.getMetadata());
 	}
 	
 }
