@@ -18,7 +18,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.*;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 public class BlockDrawBridge extends UBlockTileEntity {
@@ -81,10 +80,6 @@ public class BlockDrawBridge extends UBlockTileEntity {
 			}
 		}
 		return 0;
-	}
-	
-	private TileEntity getTileEntitySave(IBlockAccess world, BlockPos pos) {
-		return world instanceof ChunkCache ? ((ChunkCache) world).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : world.getTileEntity(pos); // Get save tileentity
 	}
 	
 	// Block state things

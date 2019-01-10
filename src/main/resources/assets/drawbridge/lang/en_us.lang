@@ -5,3 +5,4 @@ tile.drawbridge:drawbridge.name=Drawbridge
 drawbridge:container.drawbridge=Drawbridge
 drawbridge:container.drawbridge.speed=Speed: 
 drawbridge:container.drawbridge.ticks= Ticks
+drawbridge:container.drawbridge.needsrs=Needs Redstone to activate?
