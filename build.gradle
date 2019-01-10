@@ -182,21 +182,21 @@ uploadArchives {
 				project {
 					name project.archivesBaseName
 					packaging "jar"
-					description "Useful-Railroads"
-						url "https://github.com/MC-U-Team/Useful-Railroads"
+					description "Draw-Bridge"
+						url "https://github.com/MC-U-Team/Draw-Bridge"
 					scm {
-						url "https://github.com/MC-U-Team/Useful-Railroads"
-						connection "scm:git:git://github.com/MC-U-Team/Useful-Railroads.git"
-						developerConnection "scm:git:git@github.com:MC-U-Team/Useful-Railroads.git"
+						url "https://github.com/MC-U-Team/Draw-Bridge"
+						connection "scm:git:git://github.com/MC-U-Team/Draw-Bridge.git"
+						developerConnection "scm:git:git@github.com:MC-U-Team/Draw-Bridge.git"
 					}
 					issueManagement {
 						system "github"
-						url "https://github.com/MC-U-Team/Useful-Railroads/issues"
+						url "https://github.com/MC-U-Team/Draw-Bridge/issues"
 					}
 					licenses {
 						license {
 							name "Apache License 2.0"
-							url "https://github.com/MC-U-Team/Useful-Railroads/blob/1.12.2/LICENSE"
+							url "https://github.com/MC-U-Team/Draw-Bridge/blob/1.12.2/LICENSE"
 							distribution "repo"
 						}
 					}
