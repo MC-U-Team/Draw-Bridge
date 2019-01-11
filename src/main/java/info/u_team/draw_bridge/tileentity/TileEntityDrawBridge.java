@@ -6,14 +6,19 @@ import info.u_team.u_team_core.api.ISyncedContainerTileEntity;
 import info.u_team.u_team_core.tileentity.UTileEntity;
 import info.u_team.u_team_core.util.NonNullListUtil;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.*;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.relauncher.*;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInventory, ISyncedContainerTileEntity {
 	
@@ -73,9 +78,8 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	@SuppressWarnings("deprecation")
 	private void trySetBlock(EnumFacing facing) {
 		BlockPos newPos = pos.offset(facing, extended + 1);
-		if (world.isAirBlock(newPos)) {
+		if (world.isAirBlock(newPos) || world.getBlockState(newPos).getBlock() instanceof BlockLiquid) {
 			ItemStack itemstack = getStackInSlot(extended);
-			
 			Block block = Block.getBlockFromItem(itemstack.getItem());
 			world.setBlockState(newPos, block.getStateFromMeta(itemstack.getMetadata()));
 			removeStackFromSlot(extended);
