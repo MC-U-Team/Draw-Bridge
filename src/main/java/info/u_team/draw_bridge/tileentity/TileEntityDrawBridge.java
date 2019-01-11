@@ -13,6 +13,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
@@ -45,7 +46,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		}
 		if (localSpeed <= 1) {
 			localSpeed = speed;
-			boolean powered = needsrs ? world.isBlockPowered(pos) : !world.isBlockPowered(pos);
+			boolean powered = isPowered(pos, 0);
 			if (powered && extended < 10) {
 				if (localSpeed == 0) {
 					for (int i = extended; i < 10; i++) {
@@ -67,6 +68,24 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 			}
 		}
 		localSpeed--;
+	}
+	
+	public boolean isPowered(BlockPos old, int depth) {
+		boolean powered = needsrs ? world.isBlockPowered(pos) : !world.isBlockPowered(pos);
+		if(depth > 10)return powered;
+		if(needsrs && !powered) {
+			for(EnumFacing face : EnumFacing.VALUES) {
+				BlockPos pos2 = pos.offset(face);
+				if(pos2.equals(old))continue;
+				TileEntity ent = world.getTileEntity(pos2);
+				if(ent != null && ent instanceof TileEntityDrawBridge) {
+					if(powered = ((TileEntityDrawBridge)ent).isPowered(pos, depth + 1)) {
+						return powered;
+					}
+				}
+			}
+		}
+		return powered;
 	}
 	
 	private void extend() {
