@@ -1,0 +1,8 @@
+itemGroup.drawbridge:tab=吊桥
+
+tile.drawbridge:drawbridge.name=吊桥
+
+drawbridge:container.drawbridge=吊桥
+drawbridge:container.drawbridge.speed=速度: 
+drawbridge:container.drawbridge.ticks= 刻
+drawbridge:container.drawbridge.needsrs=是否需要红石激活？
