@@ -8,7 +8,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import info.u_team.draw_bridge.block.BlockDrawBridge;
 import info.u_team.draw_bridge.init.DrawBridgeBlocks;
-import net.minecraft.block.Block;
+import info.u_team.draw_bridge.util.BlockStateUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.*;
@@ -33,7 +33,6 @@ public class BakedModelDrawBridge implements IBakedModel {
 		return getModel(state).getQuads(state, side, rand);
 	}
 	
-	@SuppressWarnings("deprecation")
 	private IBakedModel getModel(IBlockState state) {
 		IBakedModel model = defaultModel;
 		
@@ -41,13 +40,10 @@ public class BakedModelDrawBridge implements IBakedModel {
 			IExtendedBlockState extended = (IExtendedBlockState) state;
 			ItemStack stack = extended.getValue(BlockDrawBridge.ITEMSTACK);
 			
-			if (stack != null && !stack.isEmpty()) {
-				Block block = Block.getBlockFromItem(stack.getItem());
-				IBlockState newBlockState = block.getStateFromMeta(stack.getMetadata());
-				
-				if (newBlockState != Blocks.AIR.getDefaultState() && newBlockState.getBlock() != DrawBridgeBlocks.draw_bridge) {
-					model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(newBlockState);
-				}
+			IBlockState newBlockState = BlockStateUtil.getBlockState(stack);
+			
+			if (newBlockState != null && newBlockState.getBlock() != Blocks.AIR && newBlockState.getBlock() != DrawBridgeBlocks.draw_bridge) {
+				model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(newBlockState);
 			}
 		}
 		return model;

@@ -1,30 +1,28 @@
 package info.u_team.draw_bridge.tileentity;
 
+import java.util.*;
+
 import info.u_team.draw_bridge.block.BlockDrawBridge;
 import info.u_team.draw_bridge.inventory.InventoryOneSlotImplemention;
 import info.u_team.u_team_core.api.ISyncedContainerTileEntity;
 import info.u_team.u_team_core.tileentity.UTileEntity;
 import info.u_team.u_team_core.util.NonNullListUtil;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.*;
 
 public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInventory, ISyncedContainerTileEntity {
 	
 	private NonNullList<ItemStack> itemstacks;
 	
+	private boolean powered;
 	private int speed;
 	private boolean needsrs = true;
 	private int extended;
@@ -39,6 +37,53 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		renderSlot = new InventoryOneSlotImplemention(this, 1);
 	}
 	
+	// Neighbor update
+	public void neighborChanged() {
+		boolean newPowered = needsrs ? world.isBlockPowered(pos) : !world.isBlockPowered(pos);
+		if (newPowered == powered) {
+			return; // Check that we only run the following code if the state (redstone power) was
+					// really changed
+		}
+		
+		powered = newPowered;
+		
+		System.out.println("STATE OF ORIGIN: " + pos);
+		
+		ArrayList<BlockPos> oldPos = new ArrayList<>();
+		oldPos.add(pos);
+		
+		System.out.println(oldPos);
+		
+		powerNext(oldPos, 0);
+		
+	}
+	
+	// Recursive power next
+	public void powerNext(List<BlockPos> oldPos, int depth) {
+		if (depth > 10) { // Make this 10 for now
+			return;
+		}
+		for (EnumFacing facing : EnumFacing.VALUES) {
+			BlockPos newPos = pos.offset(facing);
+			if (oldPos.contains(newPos)) {
+				continue;
+			}
+			oldPos.add(newPos);
+			TileEntity tileentity = world.getTileEntity(newPos);
+			if (tileentity instanceof TileEntityDrawBridge) {
+				TileEntityDrawBridge drawbridge = (TileEntityDrawBridge) tileentity;
+				System.out.println(drawbridge + " - " + drawbridge.powered + " - " + drawbridge.pos + " - " + newPos);
+				drawbridge.togglePowerState();
+				drawbridge.powerNext(oldPos, depth + 1);
+			}
+		}
+	}
+	
+	// Toggle power state
+	public void togglePowerState() {
+		powered = !powered;
+	}
+	
 	@Override
 	public void update() {
 		if (world.isRemote) {
@@ -46,7 +91,6 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		}
 		if (localSpeed <= 1) {
 			localSpeed = speed;
-			boolean powered = isPowered(pos, 0);
 			if (powered && extended < 10) {
 				if (localSpeed == 0) {
 					for (int i = extended; i < 10; i++) {
@@ -70,16 +114,19 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		localSpeed--;
 	}
 	
+	@Deprecated
 	public boolean isPowered(BlockPos old, int depth) {
 		boolean powered = needsrs ? world.isBlockPowered(pos) : !world.isBlockPowered(pos);
-		if(depth > 10)return powered;
-		if(needsrs && !powered) {
-			for(EnumFacing face : EnumFacing.VALUES) {
+		if (depth > 10)
+			return powered;
+		if (needsrs && !powered) {
+			for (EnumFacing face : EnumFacing.VALUES) {
 				BlockPos pos2 = pos.offset(face);
-				if(pos2.equals(old))continue;
+				if (pos2.equals(old))
+					continue;
 				TileEntity ent = world.getTileEntity(pos2);
-				if(ent != null && ent instanceof TileEntityDrawBridge) {
-					if(powered = ((TileEntityDrawBridge)ent).isPowered(pos, depth + 1)) {
+				if (ent != null && ent instanceof TileEntityDrawBridge) {
+					if (powered = ((TileEntityDrawBridge) ent).isPowered(pos, depth + 1)) {
 						return powered;
 					}
 				}
@@ -172,6 +219,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	public void handleFromClientSyncContainerData(NBTTagCompound compound) {
 		speed = Math.min(100, compound.getInteger("speed"));
 		needsrs = compound.getBoolean("needsrs");
+		neighborChanged(); // Force update if need redstone has been changed
 	}
 	
 	// Force render update
@@ -212,6 +260,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	public void readNBT(NBTTagCompound compound) {
 		ItemStackHelper.loadAllItems(compound, itemstacks);
 		
+		powered = compound.getBoolean("powered");
 		extended = compound.getInteger("extended");
 		speed = compound.getInteger("speed");
 		needsrs = compound.getBoolean("needsrs");
@@ -231,6 +280,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	public void writeNBT(NBTTagCompound compound) {
 		ItemStackHelper.saveAllItems(compound, itemstacks);
 		
+		compound.setBoolean("powered", powered);
 		compound.setInteger("extended", extended);
 		compound.setInteger("speed", speed);
 		compound.setBoolean("needsrs", needsrs);

@@ -11,7 +11,7 @@ public class UnlistedPropertyItemStack implements IUnlistedProperty<ItemStack> {
 		return new UnlistedPropertyItemStack(name);
 	}
 	
-	public UnlistedPropertyItemStack(String name) {
+	protected UnlistedPropertyItemStack(String name) {
 		this.name = name;
 	}
 	
