@@ -1,8 +1,10 @@
 package info.u_team.draw_bridge.tileentity;
 
 import java.util.*;
+import java.util.stream.*;
 
 import info.u_team.draw_bridge.block.BlockDrawBridge;
+import info.u_team.draw_bridge.init.DrawBridgeBlocks;
 import info.u_team.draw_bridge.inventory.InventoryOneSlotImplemention;
 import info.u_team.u_team_core.api.ISyncedContainerTileEntity;
 import info.u_team.u_team_core.tileentity.UTileEntity;
@@ -10,6 +12,7 @@ import info.u_team.u_team_core.util.NonNullListUtil;
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,7 +23,7 @@ import net.minecraftforge.fml.relauncher.*;
 
 public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInventory, ISyncedContainerTileEntity {
 	
-	private NonNullList<ItemStack> itemstacks;
+	private final NonNullList<ItemStack> itemstacks;
 	
 	private boolean powered;
 	private int speed;
@@ -28,7 +31,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	private int extended;
 	private boolean[] ourBlocks = new boolean[10];
 	
-	private InventoryOneSlotImplemention renderSlot;
+	private final InventoryOneSlotImplemention renderSlot;
 	
 	private int localSpeed;
 	
@@ -39,49 +42,44 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	
 	// Neighbor update
 	public void neighborChanged() {
-		boolean newPowered = needsrs ? world.isBlockPowered(pos) : !world.isBlockPowered(pos);
-		if (newPowered == powered) {
-			return; // Check that we only run the following code if the state (redstone power) was
-					// really changed
-		}
+		System.out.println(pos);
+		final boolean newPowered = world.isBlockPowered(pos);
+		updatePoweredState(newPowered);
 		
-		powered = newPowered;
+		final Set<TileEntityDrawBridge> drawBridges = new HashSet<>();
+		collect(drawBridges, this, 0);
 		
-		System.out.println("STATE OF ORIGIN: " + pos);
-		
-		ArrayList<BlockPos> oldPos = new ArrayList<>();
-		oldPos.add(pos);
-		
-		System.out.println(oldPos);
-		
-		powerNext(oldPos, 0);
-		
+		final boolean newPoweredState = drawBridges.parallelStream().anyMatch(drawBridge -> world.isBlockPowered(drawBridge.pos)) | newPowered;
+		drawBridges.parallelStream().forEach(drawBridge -> drawBridge.updatePoweredState(newPoweredState));
 	}
 	
-	// Recursive power next
-	public void powerNext(List<BlockPos> oldPos, int depth) {
-		if (depth > 10) { // Make this 10 for now
+	private void updatePoweredState(boolean powered) {
+		this.powered = needsrs ? powered : !powered;
+	}
+	
+	private void collect(Set<TileEntityDrawBridge> tileEntites, TileEntityDrawBridge callerTileEntity, int depth) {
+		if (depth >= 20) {
 			return;
 		}
-		for (EnumFacing facing : EnumFacing.VALUES) {
-			BlockPos newPos = pos.offset(facing);
-			if (oldPos.contains(newPos)) {
-				continue;
+		getNeighbors(callerTileEntity.pos).parallelStream().forEach(neighbor -> {
+			final TileEntity tileEntity = world.getTileEntity(neighbor);
+			if (!(tileEntity instanceof TileEntityDrawBridge)) {
+				return;
 			}
-			oldPos.add(newPos);
-			TileEntity tileentity = world.getTileEntity(newPos);
-			if (tileentity instanceof TileEntityDrawBridge) {
-				TileEntityDrawBridge drawbridge = (TileEntityDrawBridge) tileentity;
-				System.out.println(drawbridge + " - " + drawbridge.powered + " - " + drawbridge.pos + " - " + newPos);
-				drawbridge.togglePowerState();
-				drawbridge.powerNext(oldPos, depth + 1);
+			final TileEntityDrawBridge drawBridge = (TileEntityDrawBridge) tileEntity;
+			
+			if (tileEntites.add(drawBridge)) {
+				drawBridge.collect(tileEntites, drawBridge, depth + 1);
 			}
-		}
+		});
 	}
 	
-	// Toggle power state
-	public void togglePowerState() {
-		powered = !powered;
+	private List<BlockPos> getNeighbors(BlockPos except) {
+		return getPosExcept(pos, except).filter(pos -> world.getBlockState(pos).getBlock() == DrawBridgeBlocks.draw_bridge).collect(Collectors.toList());
+	}
+	
+	private Stream<BlockPos> getPosExcept(BlockPos start, BlockPos except) {
+		return Stream.of(EnumFacing.VALUES).map(start::offset).filter(pos -> !pos.equals(except));
 	}
 	
 	@Override
@@ -114,27 +112,6 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		localSpeed--;
 	}
 	
-	@Deprecated
-	public boolean isPowered(BlockPos old, int depth) {
-		boolean powered = needsrs ? world.isBlockPowered(pos) : !world.isBlockPowered(pos);
-		if (depth > 10)
-			return powered;
-		if (needsrs && !powered) {
-			for (EnumFacing face : EnumFacing.VALUES) {
-				BlockPos pos2 = pos.offset(face);
-				if (pos2.equals(old))
-					continue;
-				TileEntity ent = world.getTileEntity(pos2);
-				if (ent != null && ent instanceof TileEntityDrawBridge) {
-					if (powered = ((TileEntityDrawBridge) ent).isPowered(pos, depth + 1)) {
-						return powered;
-					}
-				}
-			}
-		}
-		return powered;
-	}
-	
 	private void extend() {
 		EnumFacing facing = world.getBlockState(pos).getValue(BlockDrawBridge.FACING);
 		trySetBlock(facing);
@@ -147,7 +124,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		if (world.isAirBlock(newPos) || world.getBlockState(newPos).getBlock() instanceof BlockLiquid) {
 			ItemStack itemstack = getStackInSlot(extended);
 			Block block = Block.getBlockFromItem(itemstack.getItem());
-			world.setBlockState(newPos, block.getStateFromMeta(itemstack.getMetadata()));
+			world.setBlockState(newPos, block.getStateFromMeta(itemstack.getMetadata()), 2);
 			removeStackFromSlot(extended);
 			ourBlocks[extended] = true;
 		} else {
@@ -171,7 +148,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 				ItemStack stack = new ItemStack(block, 1, block.getMetaFromState(state));
 				setInventorySlotContents(extended, stack);
 				
-				world.setBlockToAir(newPos);
+				world.setBlockState(newPos, Blocks.AIR.getDefaultState(), 2);
 			}
 		}
 	}

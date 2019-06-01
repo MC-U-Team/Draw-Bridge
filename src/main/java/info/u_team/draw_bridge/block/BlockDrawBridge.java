@@ -11,7 +11,7 @@ import info.u_team.u_team_core.block.UBlockTileEntity;
 import info.u_team.u_team_core.tileentity.UTileEntityProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.*;
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.*;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,13 +27,11 @@ public class BlockDrawBridge extends UBlockTileEntity {
 	
 	public static final PropertyDirection FACING = PropertyDirection.create("facing");
 	
-	public static final PropertyBool ACTIVE = PropertyBool.create("active");
-	
 	public static final UnlistedPropertyItemStack ITEMSTACK = UnlistedPropertyItemStack.create("item");
 	
 	public BlockDrawBridge(String name) {
 		super(name, Material.IRON, DrawBridgeCreativeTabs.tab, new UTileEntityProvider(new ResourceLocation(DrawBridgeConstants.MODID, name), TileEntityDrawBridge.class));
-		setDefaultState(getDefaultState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
+		setDefaultState(getDefaultState().withProperty(FACING, EnumFacing.NORTH));
 		setHardness(1.5F);
 	}
 	
@@ -44,21 +42,11 @@ public class BlockDrawBridge extends UBlockTileEntity {
 		if (world.isRemote) {
 			return;
 		}
-		boolean active = world.isBlockPowered(pos);
-		
-		IBlockState neighborState = world.getBlockState(neighborPos);
-		
-		if (neighborState.getBlock() instanceof BlockDrawBridge) {
-			active |= neighborState.getValue(ACTIVE);
+		TileEntityDrawBridge drawbridge = getDrawBridge(world, pos);
+		if (drawbridge == null) {
+			return;
 		}
-		
-		world.setBlockState(pos, state.withProperty(ACTIVE, active), 3);
-		
-		// TileEntityDrawBridge drawbridge = getDrawBridge(world, pos);
-		// if (drawbridge == null) {
-		// return;
-		// }
-		// drawbridge.neighborChanged();
+		drawbridge.neighborChanged();
 	}
 	
 	// Open gui
@@ -125,12 +113,12 @@ public class BlockDrawBridge extends UBlockTileEntity {
 	
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		return getDefaultState().withProperty(FACING, EnumFacing.byIndex(meta)).withProperty(ACTIVE, meta >= 6);
+		return getDefaultState().withProperty(FACING, EnumFacing.byIndex(meta));
 	}
 	
 	@Override
 	public int getMetaFromState(IBlockState state) {
-		return state.getValue(FACING).getIndex() + (state.getValue(ACTIVE) ? 6 : 0);
+		return state.getValue(FACING).getIndex();
 	}
 	
 	@Override
@@ -145,7 +133,7 @@ public class BlockDrawBridge extends UBlockTileEntity {
 	
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer.Builder(this).add(FACING).add(ACTIVE).add(ITEMSTACK).build();
+		return new BlockStateContainer.Builder(this).add(FACING).add(ITEMSTACK).build();
 	}
 	
 	// Utility methods

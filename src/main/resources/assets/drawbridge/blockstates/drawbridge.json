@@ -1,48 +1,25 @@
 {
 	"variants": {
-		"active=false,facing=north": {
+		"facing=north": {
 			"model": "drawbridge:drawbridge"
 		},
-		"active=false,facing=south": {
+		"facing=south": {
 			"model": "drawbridge:drawbridge",
 			"y": 180
 		},
-		"active=false,facing=west": {
+		"facing=west": {
 			"model": "drawbridge:drawbridge",
 			"y": 270
 		},
-		"active=false,facing=east": {
+		"facing=east": {
 			"model": "drawbridge:drawbridge",
 			"y": 90
 		},
-		"active=false,facing=up": {
+		"facing=up": {
 			"model": "drawbridge:drawbridge",
 			"x": 270
 		},
-		"active=false,facing=down": {
-			"model": "drawbridge:drawbridge",
-			"x": 90
-		},
-		"active=true,facing=north": {
-			"model": "drawbridge:drawbridge"
-		},
-		"active=true,facing=south": {
-			"model": "drawbridge:drawbridge",
-			"y": 180
-		},
-		"active=true,facing=west": {
-			"model": "drawbridge:drawbridge",
-			"y": 270
-		},
-		"active=true,facing=east": {
-			"model": "drawbridge:drawbridge",
-			"y": 90
-		},
-		"active=true,facing=up": {
-			"model": "drawbridge:drawbridge",
-			"x": 270
-		},
-		"active=true,facing=down": {
+		"facing=down": {
 			"model": "drawbridge:drawbridge",
 			"x": 90
 		}
