@@ -42,7 +42,6 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	
 	// Neighbor update
 	public void neighborChanged() {
-		System.out.println(pos);
 		final boolean newPowered = world.isBlockPowered(pos);
 		updatePoweredState(newPowered);
 		
