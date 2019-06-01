@@ -1,6 +1,7 @@
 package info.u_team.draw_bridge.model;
 
 import java.util.List;
+import java.util.Random;
 
 import javax.vecmath.Matrix4f;
 
@@ -11,15 +12,19 @@ import info.u_team.draw_bridge.init.DrawBridgeBlocks;
 import info.u_team.draw_bridge.util.BlockStateUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.fml.relauncher.*;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class BakedModelDrawBridge implements IBakedModel {
 	
 	private final IBakedModel defaultModel;
@@ -28,23 +33,21 @@ public class BakedModelDrawBridge implements IBakedModel {
 		defaultModel = model;
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
-	public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
+	public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, Random rand) {
 		return getModel(state).getQuads(state, side, rand);
 	}
 	
 	private IBakedModel getModel(IBlockState state) {
 		IBakedModel model = defaultModel;
 		
-		if (state instanceof IExtendedBlockState) {
-			IExtendedBlockState extended = (IExtendedBlockState) state;
-			ItemStack stack = extended.getValue(BlockDrawBridge.ITEMSTACK);
+		ItemStack stack = extended.getValue(BlockDrawBridge.ITEMSTACK);
 			
-			IBlockState newBlockState = BlockStateUtil.getBlockState(stack);
+		IBlockState newBlockState = BlockStateUtil.getBlockState(stack);
 			
-			if (newBlockState != null && newBlockState.getBlock() != Blocks.AIR && newBlockState.getBlock() != DrawBridgeBlocks.draw_bridge) {
-				model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(newBlockState);
-			}
+		if (newBlockState != null && newBlockState.getBlock() != Blocks.AIR && newBlockState.getBlock() != DrawBridgeBlocks.draw_bridge) {
+			model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(newBlockState);
 		}
 		return model;
 	}

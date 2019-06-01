@@ -12,29 +12,45 @@ import info.u_team.u_team_core.tileentity.UTileEntityProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.*;
-import net.minecraft.block.state.*;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.EnumProperty;
+import net.minecraft.state.IntegerProperty;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.*;
-import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.IWorldReader;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.BlockStateContainer;
+import net.minecraftforge.common.IExtensibleEnum;
+import net.minecraftforge.common.extensions.IForgeBlockState;
 
 public class BlockDrawBridge extends UBlockTileEntity {
 	
-	public static final PropertyDirection FACING = PropertyDirection.create("facing");
+	public static final DirectionProperty FACING =  DirectionProperty.create("facing", EnumFacing.Plane.HORIZONTAL);
 	
-	public static final PropertyBool ACTIVE = PropertyBool.create("active");
+	public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 	
-	public static final UnlistedPropertyItemStack ITEMSTACK = UnlistedPropertyItemStack.create("item");
+	public static final IntegerProperty ITEMSTACK = IntegerProperty.create("item", 0, Integer.MAX_VALUE);
+	
+	public static final TileEntityType<TileEntityDrawBridge> TILE_TYPE_DRAWBRIDGE = new TileEntityType<TileEntityDrawBridge>();
 	
 	public BlockDrawBridge(String name) {
-		super(name, Material.IRON, DrawBridgeCreativeTabs.tab, new UTileEntityProvider(new ResourceLocation(DrawBridgeConstants.MODID, name), TileEntityDrawBridge.class));
-		setDefaultState(getDefaultState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
-		setHardness(1.5F);
+		super(name, DrawBridgeCreativeTabs.tab, Properties.create(Material.IRON).hardnessAndResistance(1.5f), TILE_TYPE_DRAWBRIDGE);
+		setDefaultState(getDefaultState().with(FACING, EnumFacing.NORTH).with(ACTIVE, false));
 	}
 	
 	// Update from redstone
@@ -47,20 +63,20 @@ public class BlockDrawBridge extends UBlockTileEntity {
 		
 		boolean newValue = world.isBlockPowered(pos);
 		
-		for (EnumFacing facing : EnumFacing.VALUES) {
+		for (EnumFacing facing : EnumFacing.values()) {
 			BlockPos newPos = pos.offset(facing);
 //			if (newPos.equals(neighborPos)) {
 //				continue;
 //			}
 			IBlockState newState = world.getBlockState(newPos);
 			if (newState.getBlock() instanceof BlockDrawBridge) {
-				newValue = newValue | newState.getValue(ACTIVE);
+				newValue = newValue | newState.get(ACTIVE);
 			}
 		}
 		
-		boolean oldValue = state.getValue(ACTIVE);
+		boolean oldValue = state.get(ACTIVE);
 		if (newValue != oldValue) {
-			world.setBlockState(pos, state.withProperty(ACTIVE, newValue));
+			world.setBlockState(pos, state.with(ACTIVE, newValue));
 		}
 		
 		// TileEntityDrawBridge drawbridge = getDrawBridge(world, pos);
@@ -73,36 +89,36 @@ public class BlockDrawBridge extends UBlockTileEntity {
 	// Open gui
 	
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		return openContainer(DrawBridgeConstants.MODID, 0, world, pos, player, true);
+	public boolean onBlockActivated(IBlockState state, World worldIn, BlockPos pos, EntityPlayer player, EnumHand hand,
+			EnumFacing side, float hitX, float hitY, float hitZ) {
+		return openContainer(worldIn, pos, player, true);
 	}
 	
-	// Drop items from drawbridge
 	
+	// Drop items from drawbridge
 	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state) {
+	public void getDrops(IBlockState state, NonNullList<ItemStack> drops, World world, BlockPos pos, int fortune) {
 		TileEntityDrawBridge drawbridge = getDrawBridge(world, pos);
-		if (drawbridge == null) {
-			return;
-		}
-		InventoryHelper.dropInventoryItems(world, pos, drawbridge);
-		world.updateComparatorOutputLevel(pos, this);
-		super.breakBlock(world, pos, state);
+	      for(int i = 0; i < drawbridge.getSizeInventory(); ++i) {
+	          ItemStack itemstack = drawbridge.getStackInSlot(i);
+	          if (!itemstack.isEmpty()) {
+	             drops.add(itemstack);
+	          }
+	       }
 	}
 	
 	// Used for light blocks
-	
 	@Override
-	public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
-		IBlockState renderState = getRenderBlockState(world, pos);
+	public int getOpacity(IBlockState state, IBlockReader worldIn, BlockPos pos) {
+		IBlockState renderState = getRenderBlockState(worldIn, pos);
 		if (renderState == null) {
 			return 0;
 		}
-		return renderState.getLightOpacity(world, pos);
+		return renderState.getOpacity(worldIn, pos);
 	}
-	
+		
 	@Override
-	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
+	public int getLightValue(IBlockState state, IWorldReader world, BlockPos pos) {
 		IBlockState renderState = getRenderBlockState(world, pos);
 		if (renderState == null) {
 			return 0;
@@ -113,58 +129,41 @@ public class BlockDrawBridge extends UBlockTileEntity {
 	// Extended block state for rendering
 	
 	@Override
-	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
-		if (!(state instanceof IExtendedBlockState)) {
-			return state;
-		}
-		IExtendedBlockState extendedState = (IExtendedBlockState) state;
+	public IBlockState getExtendedState(IBlockState state, IBlockReader world, BlockPos pos) {
 		ItemStack stack = getRenderItemStack(world, pos);
 		if (stack == ItemStack.EMPTY) {
-			return extendedState;
+			return state;
 		}
-		return extendedState.withProperty(ITEMSTACK, stack);
+		return state.with(ITEMSTACK, stack);
 	}
 	
-	// Block state things
+	// Block state things	
+	@Override
+	public IBlockState getStateForPlacement(IBlockState state, EnumFacing facing, IBlockState state2, IWorld world,
+			BlockPos pos1, BlockPos pos2, EnumHand hand) {
+		return getDefaultState().with(FACING, facing);
+	}
+			
+	@Override
+	public IBlockState rotate(IBlockState state, Rotation rotation) {
+		return state.with(FACING, rotation.rotate(state.get(FACING)));
+	}
+	
 	
 	@Override
-	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		return getDefaultState().withProperty(FACING, EnumFacing.getDirectionFromEntityLiving(pos, placer));
+	public IBlockState mirror(IBlockState state, Mirror mirrorIn) {
+		return state.rotate(mirrorIn.toRotation(state.get(FACING)));
 	}
-	
-	@Override
-	public IBlockState getStateFromMeta(int meta) {
-		return getDefaultState().withProperty(FACING, EnumFacing.byIndex(meta)).withProperty(ACTIVE, meta >= 6);
-	}
-	
-	@Override
-	public int getMetaFromState(IBlockState state) {
-		return state.getValue(FACING).getIndex() + (state.getValue(ACTIVE) ? 6 : 0);
-	}
-	
-	@Override
-	public IBlockState withRotation(IBlockState state, Rotation rotation) {
-		return state.withProperty(FACING, rotation.rotate(state.getValue(FACING)));
-	}
-	
-	@Override
-	public IBlockState withMirror(IBlockState state, Mirror mirror) {
-		return state.withRotation(mirror.toRotation(state.getValue(FACING)));
-	}
-	
-	@Override
-	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer.Builder(this).add(FACING).add(ACTIVE).add(ITEMSTACK).build();
-	}
+		
 	
 	// Utility methods
 	
-	public TileEntityDrawBridge getDrawBridge(IBlockAccess world, BlockPos pos) {
+	public TileEntityDrawBridge getDrawBridge(IBlockReader world, BlockPos pos) {
 		Pair<Boolean, TileEntity> pair = isTileEntityFromProvider(world, pos);
 		return pair.getLeft() ? (TileEntityDrawBridge) pair.getRight() : null;
 	}
 	
-	public ItemStack getRenderItemStack(IBlockAccess world, BlockPos pos) {
+	public ItemStack getRenderItemStack(IBlockReader world, BlockPos pos) {
 		TileEntityDrawBridge drawbridge = getDrawBridge(world, pos);
 		if (drawbridge == null) {
 			return ItemStack.EMPTY;
@@ -176,7 +175,7 @@ public class BlockDrawBridge extends UBlockTileEntity {
 		return stack;
 	}
 	
-	public IBlockState getRenderBlockState(IBlockAccess world, BlockPos pos) {
+	public IBlockState getRenderBlockState(IBlockReader world, BlockPos pos) {
 		return BlockStateUtil.getBlockState(getRenderItemStack(world, pos));
 	}
 	

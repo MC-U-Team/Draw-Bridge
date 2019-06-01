@@ -1,22 +1,26 @@
 package info.u_team.draw_bridge.tileentity;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import info.u_team.draw_bridge.block.BlockDrawBridge;
 import info.u_team.draw_bridge.inventory.InventoryOneSlotImplemention;
 import info.u_team.u_team_core.api.ISyncedContainerTileEntity;
 import info.u_team.u_team_core.tileentity.UTileEntity;
 import info.u_team.u_team_core.util.NonNullListUtil;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.*;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.relauncher.*;
 
 public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInventory, ISyncedContainerTileEntity {
 	
@@ -33,7 +37,8 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	private int localSpeed;
 	
 	public TileEntityDrawBridge() {
-		itemstacks = NonNullListUtil.withSize(10, ItemStack.EMPTY);
+		super(new TileEntityType<TileEntity>(factoryIn, datafixerTypeIn))
+		itemstacks = NonNullList.withSize(10, ItemStack.EMPTY);
 		renderSlot = new InventoryOneSlotImplemention(this, 1);
 	}
 	
@@ -63,7 +68,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		if (depth > 10) { // Make this 10 for now
 			return;
 		}
-		for (EnumFacing facing : EnumFacing.VALUES) {
+		for (EnumFacing facing : EnumFacing.values()) {
 			BlockPos newPos = pos.offset(facing);
 			if (oldPos.contains(newPos)) {
 				continue;
@@ -85,7 +90,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	}
 	
 	@Override
-	public void update() {
+	public void tick() {
 		if (world.isRemote) {
 			return;
 		}

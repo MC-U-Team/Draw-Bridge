@@ -1,37 +1,40 @@
 package info.u_team.draw_bridge;
 
-import static info.u_team.draw_bridge.DrawBridgeConstants.*;
+import static info.u_team.draw_bridge.DrawBridgeConstants.MODID;
 
+import info.u_team.draw_bridge.proxy.ClientProxy;
 import info.u_team.draw_bridge.proxy.CommonProxy;
-import net.minecraftforge.fml.common.*;
-import net.minecraftforge.fml.common.Mod.*;
-import net.minecraftforge.fml.common.event.*;;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;;
 
-@Mod(modid = MODID, name = NAME, version = VERSION, acceptedMinecraftVersions = MCVERSION, dependencies = DEPENDENCIES, updateJSON = UPDATEURL)
+@Mod(MODID)
 public class DrawBridgeMod {
-	
-	@Instance
+
+	private final CommonProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> CommonProxy::new);
+
 	private static DrawBridgeMod instance;
 	
 	public static DrawBridgeMod getInstance() {
 		return instance;
 	}
 	
-	@SidedProxy(serverSide = COMMONPROXY, clientSide = CLIENTPROXY)
-	private static CommonProxy proxy;
-	
-	@EventHandler
-	public void preinit(FMLPreInitializationEvent event) {
-		proxy.preinit(event);
+	public DrawBridgeMod() {
+		instance = this;
+		proxy.preinit();
 	}
 	
-	@EventHandler
-	public void init(FMLInitializationEvent event) {
-		proxy.init(event);
+	
+	@SubscribeEvent
+	public void preinit(FMLCommonSetupEvent event) {
+		proxy.init();
 	}
 	
-	@EventHandler
-	public void postinit(FMLPostInitializationEvent event) {
-		proxy.postinit(event);
+	@SubscribeEvent
+	public void init(FMLLoadCompleteEvent event) {
+		proxy.postinit();
 	}
+	
 }

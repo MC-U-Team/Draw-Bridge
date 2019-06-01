@@ -1,25 +1,24 @@
 package info.u_team.draw_bridge.proxy;
 
 import info.u_team.draw_bridge.event.EventHandlerModelBake;
-import info.u_team.u_team_core.registry.CommonRegistry;
-import net.minecraftforge.fml.common.event.*;
+import info.u_team.u_team_core.registry.util.CommonRegistry;
 
 public class ClientProxy extends CommonProxy {
 	
 	@Override
-	public void preinit(FMLPreInitializationEvent event) {
-		super.preinit(event);
+	public void preinit() {
+		super.preinit();
 		CommonRegistry.registerEventHandler(EventHandlerModelBake.class);
 	}
 	
 	@Override
-	public void init(FMLInitializationEvent event) {
-		super.init(event);
+	public void init() {
+		super.init();
 	}
 	
 	@Override
-	public void postinit(FMLPostInitializationEvent event) {
-		super.postinit(event);
+	public void postinit() {
+		super.postinit();
 	}
 	
 }

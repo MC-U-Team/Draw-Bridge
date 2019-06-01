@@ -1,22 +1,25 @@
 package info.u_team.draw_bridge.event;
 
+import java.util.Map;
+
 import info.u_team.draw_bridge.DrawBridgeConstants;
 import info.u_team.draw_bridge.model.BakedModelDrawBridge;
-import net.minecraft.client.renderer.block.model.*;
-import net.minecraft.util.registry.IRegistry;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.*;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class EventHandlerModelBake {
 	
 	@SubscribeEvent
 	public static void on(ModelBakeEvent event) {
-		IRegistry<ModelResourceLocation, IBakedModel> modelregistry = event.getModelRegistry();
-		modelregistry.getKeys().stream().filter(modelresource -> modelresource.getPath().equals(DrawBridgeConstants.MODID) && modelresource.getNamespace().equals("drawbridge")).forEach(modelresource -> {
-			IBakedModel model = modelregistry.getObject(modelresource);
-			modelregistry.putObject(modelresource, new BakedModelDrawBridge(model));
+		Map<ModelResourceLocation, IBakedModel> modelregistry = event.getModelRegistry();
+		modelregistry.keySet().stream().filter(modelresource -> modelresource.getPath().equals(DrawBridgeConstants.MODID) && modelresource.getNamespace().equals("drawbridge")).forEach(modelresource -> {
+			IBakedModel model = modelregistry.get(modelresource);
+			modelregistry.put(modelresource, new BakedModelDrawBridge(model));
 		});
 	}
 }

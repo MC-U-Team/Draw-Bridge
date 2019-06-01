@@ -3,8 +3,10 @@ package info.u_team.draw_bridge.container.slot;
 import info.u_team.draw_bridge.init.DrawBridgeBlocks;
 import info.u_team.draw_bridge.tileentity.TileEntityDrawBridge;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.*;
-import net.minecraft.item.*;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 
 public class SlotDrawBridge extends Slot {
 	
@@ -28,7 +30,7 @@ public class SlotDrawBridge extends Slot {
 		if (stack == null || !(stack.getItem() instanceof ItemBlock)) {
 			return false;
 		}
-		if (stack.getItem() == DrawBridgeBlocks.draw_bridge.getItem()) {
+		if (stack.getItem() == DrawBridgeBlocks.draw_bridge.asItem()) {
 			return false;
 		}
 		return true;

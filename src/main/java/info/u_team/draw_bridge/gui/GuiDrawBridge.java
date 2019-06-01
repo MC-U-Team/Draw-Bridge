@@ -8,15 +8,18 @@ import info.u_team.draw_bridge.DrawBridgeConstants;
 import info.u_team.draw_bridge.container.ContainerDrawBridge;
 import info.u_team.draw_bridge.tileentity.TileEntityDrawBridge;
 import info.u_team.u_team_core.gui.UGuiContainerTileEntity;
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiButtonToggle;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.SidedProvider;
 import net.minecraftforge.fml.client.config.GuiSlider;
-import net.minecraftforge.fml.relauncher.*;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiDrawBridge extends UGuiContainerTileEntity {
 	
 	public static final ResourceLocation BACKGROUND = new ResourceLocation(DrawBridgeConstants.MODID, "textures/gui/drawbridge.png");
@@ -40,8 +43,16 @@ public class GuiDrawBridge extends UGuiContainerTileEntity {
 			drawbridge.syncClientToServer(drawbridge.getPos());
 		});
 		
-		toggleRedstone = new GuiButtonToggle(1, guiLeft + 100, guiTop + 60, 20, 20, drawbridge.needsRedstone());
+		toggleRedstone = new GuiButtonToggle(1, guiLeft + 100, guiTop + 60, 20, 20, drawbridge.needsRedstone()) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				toggleRedstone.setStateTriggered(!toggleRedstone.isStateTriggered());
+				drawbridge.setNeedsRedstone(toggleRedstone.isStateTriggered());
+				drawbridge.syncClientToServer(drawbridge.getPos());
+			}
+		};
 		toggleRedstone.initTextureValues(xSize, 0, 20, 20, BACKGROUND);
+		
 		
 		addButton(toggleRedstone);
 		addButton(speedSlider);
@@ -50,22 +61,12 @@ public class GuiDrawBridge extends UGuiContainerTileEntity {
 	}
 	
 	@Override
-	public void handleServerDataOnFirstArrival(NBTTagCompound compound) {
+	public void initGui(NBTTagCompound compound) {
 		speedSlider.setValue(drawbridge.getSpeed());
 		speedSlider.updateSlider();
 		toggleRedstone.setStateTriggered(drawbridge.needsRedstone());
 	}
-	
-	@Override
-	protected void actionPerformed(GuiButton button) throws IOException {
-		super.actionPerformed(button);
-		if (button.id == 1) {
-			toggleRedstone.setStateTriggered(!toggleRedstone.isStateTriggered());
-			drawbridge.setNeedsRedstone(toggleRedstone.isStateTriggered());
-			drawbridge.syncClientToServer(drawbridge.getPos());
-		}
-	}
-	
+		
 	@Override
 	public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		fontRenderer.drawString(I18n.format(DrawBridgeConstants.MODID + ":container.drawbridge"), 8, 6, 4210752);

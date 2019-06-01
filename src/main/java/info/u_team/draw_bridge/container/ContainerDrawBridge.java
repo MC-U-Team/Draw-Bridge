@@ -1,6 +1,7 @@
 package info.u_team.draw_bridge.container;
 
-import info.u_team.draw_bridge.container.slot.*;
+import info.u_team.draw_bridge.container.slot.SlotDrawBridge;
+import info.u_team.draw_bridge.container.slot.SlotDrawBridgeChangeModel;
 import info.u_team.draw_bridge.tileentity.TileEntityDrawBridge;
 import info.u_team.u_team_core.container.UContainerTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,10 +14,10 @@ public class ContainerDrawBridge extends UContainerTileEntity {
 		super(tileentity);
 		for (int height = 0; height < 2; height++) {
 			for (int width = 0; width < 5; width++) {
-				addSlotToContainer(new SlotDrawBridge(tileentity, tileentity, width + height * 5, width * 18 + 8, height * 18 + 18));
+				addSlot(new SlotDrawBridge(tileentity, tileentity, width + height * 5, width * 18 + 8, height * 18 + 18));
 			}
 		}
-		addSlotToContainer(new SlotDrawBridgeChangeModel(tileentity, 130, 18));
+		addSlot(new SlotDrawBridgeChangeModel(tileentity, 130, 18));
 		appendPlayerInventory(player.inventory, 8, 98);
 	}
 	

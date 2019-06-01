@@ -18,13 +18,12 @@ public class SlotDrawBridgeChangeModel extends SlotDrawBridge {
 		drawbridge.getWorld().checkLight(drawbridge.getPos()); // Force light update
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean isItemValid(ItemStack stack) {
 		if (super.isItemValid(stack)) {
 			Block block = Block.getBlockFromItem(stack.getItem());
-			IBlockState state = block.getStateFromMeta(stack.getMetadata());
-			return state.isFullBlock();
+			IBlockState state = block.getDefaultState();
+			return state.isFullCube();
 		}
 		return false;
 	}
