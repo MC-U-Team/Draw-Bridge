@@ -37,31 +37,22 @@ public class BlockDrawBridge extends UBlockTileEntity {
 		setHardness(1.5F);
 	}
 	
-	// Update from redstone
+	// Update from redstone and drawbridges
 	
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block ourBlock, BlockPos neighborPos) {
 		if (world.isRemote) {
 			return;
 		}
+		boolean active = world.isBlockPowered(pos);
 		
-		boolean newValue = world.isBlockPowered(pos);
+		IBlockState neighborState = world.getBlockState(neighborPos);
 		
-		for (EnumFacing facing : EnumFacing.VALUES) {
-			BlockPos newPos = pos.offset(facing);
-//			if (newPos.equals(neighborPos)) {
-//				continue;
-//			}
-			IBlockState newState = world.getBlockState(newPos);
-			if (newState.getBlock() instanceof BlockDrawBridge) {
-				newValue = newValue | newState.getValue(ACTIVE);
-			}
+		if (neighborState.getBlock() instanceof BlockDrawBridge) {
+			active |= neighborState.getValue(ACTIVE);
 		}
 		
-		boolean oldValue = state.getValue(ACTIVE);
-		if (newValue != oldValue) {
-			world.setBlockState(pos, state.withProperty(ACTIVE, newValue));
-		}
+		world.setBlockState(pos, state.withProperty(ACTIVE, active), 3);
 		
 		// TileEntityDrawBridge drawbridge = getDrawBridge(world, pos);
 		// if (drawbridge == null) {
