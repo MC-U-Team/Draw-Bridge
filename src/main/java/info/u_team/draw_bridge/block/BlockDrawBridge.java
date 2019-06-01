@@ -2,24 +2,18 @@ package info.u_team.draw_bridge.block;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import info.u_team.draw_bridge.DrawBridgeConstants;
 import info.u_team.draw_bridge.init.DrawBridgeCreativeTabs;
-import info.u_team.draw_bridge.property.UnlistedPropertyItemStack;
 import info.u_team.draw_bridge.tileentity.TileEntityDrawBridge;
 import info.u_team.draw_bridge.util.BlockStateUtil;
 import info.u_team.u_team_core.block.UBlockTileEntity;
-import info.u_team.u_team_core.tileentity.UTileEntityProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.*;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -27,16 +21,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.BlockStateContainer;
-import net.minecraftforge.common.IExtensibleEnum;
-import net.minecraftforge.common.extensions.IForgeBlockState;
 
 public class BlockDrawBridge extends UBlockTileEntity {
 	
@@ -46,7 +36,7 @@ public class BlockDrawBridge extends UBlockTileEntity {
 	
 	public static final IntegerProperty ITEMSTACK = IntegerProperty.create("item", 0, Integer.MAX_VALUE);
 	
-	public static final TileEntityType<TileEntityDrawBridge> TILE_TYPE_DRAWBRIDGE = new TileEntityType<TileEntityDrawBridge>();
+	public static final TileEntityType<TileEntityDrawBridge> TILE_TYPE_DRAWBRIDGE = TileEntityType.register("drawbridge", TileEntityType.Builder.create(TileEntityDrawBridge::new));
 	
 	public BlockDrawBridge(String name) {
 		super(name, DrawBridgeCreativeTabs.tab, Properties.create(Material.IRON).hardnessAndResistance(1.5f), TILE_TYPE_DRAWBRIDGE);
@@ -134,7 +124,7 @@ public class BlockDrawBridge extends UBlockTileEntity {
 		if (stack == ItemStack.EMPTY) {
 			return state;
 		}
-		return state.with(ITEMSTACK, stack);
+		return state.with(ITEMSTACK, Item.getIdFromItem(stack.getItem()));
 	}
 	
 	// Block state things	

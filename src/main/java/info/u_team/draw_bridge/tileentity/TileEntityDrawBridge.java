@@ -7,20 +7,22 @@ import info.u_team.draw_bridge.block.BlockDrawBridge;
 import info.u_team.draw_bridge.inventory.InventoryOneSlotImplemention;
 import info.u_team.u_team_core.api.ISyncedContainerTileEntity;
 import info.u_team.u_team_core.tileentity.UTileEntity;
-import info.u_team.u_team_core.util.NonNullListUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.fluids.IFluidBlock;
 
 public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInventory, ISyncedContainerTileEntity {
 	
@@ -37,7 +39,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	private int localSpeed;
 	
 	public TileEntityDrawBridge() {
-		super(new TileEntityType<TileEntity>(factoryIn, datafixerTypeIn))
+		super(BlockDrawBridge.TILE_TYPE_DRAWBRIDGE);
 		itemstacks = NonNullList.withSize(10, ItemStack.EMPTY);
 		renderSlot = new InventoryOneSlotImplemention(this, 1);
 	}
@@ -125,7 +127,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		if (depth > 10)
 			return powered;
 		if (needsrs && !powered) {
-			for (EnumFacing face : EnumFacing.VALUES) {
+			for (EnumFacing face : EnumFacing.values()) {
 				BlockPos pos2 = pos.offset(face);
 				if (pos2.equals(old))
 					continue;
@@ -141,7 +143,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	}
 	
 	private void extend() {
-		EnumFacing facing = world.getBlockState(pos).getValue(BlockDrawBridge.FACING);
+		EnumFacing facing = world.getBlockState(pos).get(BlockDrawBridge.FACING);
 		trySetBlock(facing);
 		extended++;
 	}
@@ -149,10 +151,10 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	@SuppressWarnings("deprecation")
 	private void trySetBlock(EnumFacing facing) {
 		BlockPos newPos = pos.offset(facing, extended + 1);
-		if (world.isAirBlock(newPos) || world.getBlockState(newPos).getBlock() instanceof BlockLiquid) {
+		if (world.isAirBlock(newPos) || !(world.getBlockState(newPos).getBlock() instanceof IFluidBlock)) {
 			ItemStack itemstack = getStackInSlot(extended);
 			Block block = Block.getBlockFromItem(itemstack.getItem());
-			world.setBlockState(newPos, block.getStateFromMeta(itemstack.getMetadata()));
+			world.setBlockState(newPos, block.getDefaultState());
 			removeStackFromSlot(extended);
 			ourBlocks[extended] = true;
 		} else {
@@ -161,7 +163,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	}
 	
 	private void retract() {
-		EnumFacing facing = world.getBlockState(pos).getValue(BlockDrawBridge.FACING);
+		EnumFacing facing = world.getBlockState(pos).get(BlockDrawBridge.FACING);
 		extended--;
 		tryRemoveBlock(facing);
 	}
@@ -173,10 +175,10 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 				IBlockState state = world.getBlockState(newPos);
 				Block block = state.getBlock();
 				
-				ItemStack stack = new ItemStack(block, 1, block.getMetaFromState(state));
+				ItemStack stack = new ItemStack(block, 1);
 				setInventorySlotContents(extended, stack);
 				
-				world.setBlockToAir(newPos);
+				world.setBlockState(newPos, Blocks.AIR.getDefaultState());
 			}
 		}
 	}
@@ -184,47 +186,13 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	// Chunk update
 	
 	@Override
-	public void getChunkLoadServerSyncData(NBTTagCompound compound) {
-		writeRenderSlot(compound);
-	}
-	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void handleChunkLoadClientSyncData(NBTTagCompound compound) {
+	public void readOnChunkLoadClient(NBTTagCompound compound) {
 		readRenderSlot(compound);
 	}
 	
-	// Container synchronization
-	
-	// Server -> client
 	@Override
-	public void getServerSyncContainerData(NBTTagCompound compound) {
-		compound.setInteger("extended", extended);
-		compound.setInteger("speed", speed);
-		compound.setBoolean("needsrs", needsrs);
-	}
-	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void handleFromServerSyncContainerData(NBTTagCompound compound) {
-		extended = compound.getInteger("extended");
-		speed = compound.getInteger("speed");
-		needsrs = compound.getBoolean("needsrs");
-	}
-	
-	// Client -> server
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void getClientSyncContainerData(NBTTagCompound compound) {
-		compound.setInteger("speed", speed);
-		compound.setBoolean("needsrs", needsrs);
-	}
-	
-	@Override
-	public void handleFromClientSyncContainerData(NBTTagCompound compound) {
-		speed = Math.min(100, compound.getInteger("speed"));
-		needsrs = compound.getBoolean("needsrs");
-		neighborChanged(); // Force update if need redstone has been changed
+	public void writeOnChunkLoadServer(NBTTagCompound compound) {
+		writeRenderSlot(compound);
 	}
 	
 	// Force render update
@@ -266,11 +234,11 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		ItemStackHelper.loadAllItems(compound, itemstacks);
 		
 		powered = compound.getBoolean("powered");
-		extended = compound.getInteger("extended");
-		speed = compound.getInteger("speed");
+		extended = compound.getInt("extended");
+		speed = compound.getInt("speed");
 		needsrs = compound.getBoolean("needsrs");
 		
-		NBTTagCompound ourBlocksTag = compound.getCompoundTag("ourBlocks");
+		NBTTagCompound ourBlocksTag = compound.getCompound("ourBlocks");
 		for (int i = 0; i < ourBlocks.length; i++) {
 			if (ourBlocksTag.hasKey("" + i)) {
 				ourBlocks[i] = ourBlocksTag.getBoolean("" + i);
@@ -286,8 +254,8 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		ItemStackHelper.saveAllItems(compound, itemstacks);
 		
 		compound.setBoolean("powered", powered);
-		compound.setInteger("extended", extended);
-		compound.setInteger("speed", speed);
+		compound.setInt("extended", extended);
+		compound.setInt("speed", speed);
 		compound.setBoolean("needsrs", needsrs);
 		
 		NBTTagCompound ourBlocksTag = new NBTTagCompound();
@@ -302,23 +270,23 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	// Special nbt reading
 	
 	private void readRenderSlot(NBTTagCompound compound) {
-		NBTTagCompound renderSlotTag = compound.getCompoundTag("renderSlot");
+		NBTTagCompound renderSlotTag = compound.getCompound("renderSlot");
 		if (renderSlotTag != null && !renderSlotTag.isEmpty()) {
-			renderSlot.setInventorySlotContents(0, new ItemStack(renderSlotTag));
+			renderSlot.setInventorySlotContents(0, ItemStack.read(renderSlotTag));
 		}
 	}
 	
 	private void writeRenderSlot(NBTTagCompound compound) {
 		NBTTagCompound renderSlotTag = new NBTTagCompound();
-		renderSlot.getStackInSlot(0).writeToNBT(renderSlotTag);
+		renderSlot.getStackInSlot(0).write(renderSlotTag);
 		compound.setTag("renderSlot", renderSlotTag);
 	}
 	
 	// Inventory handling
 	
 	@Override
-	public String getName() {
-		return "drawbridge";
+	public ITextComponent getName() {
+		return new TextComponentString("drawbridge");
 	}
 	
 	@Override
@@ -404,6 +372,39 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	@Override
 	public void clear() {
 		itemstacks.clear();
+	}
+
+	@Override
+	public ITextComponent getCustomName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void writeOnContainerSyncServer(NBTTagCompound compound) {
+		compound.setInt("speed", speed);
+		compound.setBoolean("needsrs", needsrs);
+	}
+
+	@Override
+	public void readOnContainerSyncClient(NBTTagCompound compound) {
+		speed = Math.min(100, compound.getInt("speed"));
+		needsrs = compound.getBoolean("needsrs");
+		//neighborChanged(); // Force update if need redstone has been changed
+	}
+
+	@Override
+	public void writeOnContainerSyncClient(NBTTagCompound compound) {
+		compound.setInt("extended", extended);
+		compound.setInt("speed", speed);
+		compound.setBoolean("needsrs", needsrs);
+	}
+
+	@Override
+	public void readOnContainerSyncServer(NBTTagCompound compound) {
+		extended = compound.getInt("extended");
+		speed = compound.getInt("speed");
+		needsrs = compound.getBoolean("needsrs");
 	}
 	
 }

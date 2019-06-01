@@ -1,14 +1,11 @@
 package info.u_team.draw_bridge.gui;
 
-import java.io.IOException;
-
 import com.google.common.collect.Lists;
 
 import info.u_team.draw_bridge.DrawBridgeConstants;
 import info.u_team.draw_bridge.container.ContainerDrawBridge;
 import info.u_team.draw_bridge.tileentity.TileEntityDrawBridge;
 import info.u_team.u_team_core.gui.UGuiContainerTileEntity;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiButtonToggle;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +13,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.SidedProvider;
 import net.minecraftforge.fml.client.config.GuiSlider;
 
 @OnlyIn(Dist.CLIENT)
@@ -72,11 +68,11 @@ public class GuiDrawBridge extends UGuiContainerTileEntity {
 		fontRenderer.drawString(I18n.format(DrawBridgeConstants.MODID + ":container.drawbridge"), 8, 6, 4210752);
 		fontRenderer.drawString(I18n.format("container.inventory"), 8, ySize - 96 + 2, 4210752);
 	}
-	
+		
 	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 		drawDefaultBackground();
-		super.drawScreen(mouseX, mouseY, partialTicks);
+		super.render(mouseX, mouseY, partialTicks);
 		renderHoveredToolTip(mouseX, mouseY);
 		if (toggleRedstone.isMouseOver()) {
 			drawHoveringText(Lists.newArrayList(I18n.format(DrawBridgeConstants.MODID + ":container.drawbridge.needsrs")), mouseX, mouseY, fontRenderer);

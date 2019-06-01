@@ -5,6 +5,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 
 public class InventoryOneSlotImplemention implements IInventory {
 	
@@ -20,8 +21,8 @@ public class InventoryOneSlotImplemention implements IInventory {
 	}
 	
 	@Override
-	public String getName() {
-		return "oneslotinventory";
+	public ITextComponent getName() {
+		return new TextComponentString("oneslotinventory");
 	}
 	
 	@Override
@@ -31,7 +32,7 @@ public class InventoryOneSlotImplemention implements IInventory {
 	
 	@Override
 	public ITextComponent getDisplayName() {
-		return null;
+		return this.getName();
 	}
 	
 	@Override
@@ -51,7 +52,7 @@ public class InventoryOneSlotImplemention implements IInventory {
 	
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
-		return !stack.isEmpty() && count > 0 ? stack.splitStack(count) : ItemStack.EMPTY;
+		return !stack.isEmpty() && count > 0 ? stack.split(count) : ItemStack.EMPTY;
 	}
 	
 	@Override
@@ -112,6 +113,11 @@ public class InventoryOneSlotImplemention implements IInventory {
 	@Override
 	public void clear() {
 		stack = ItemStack.EMPTY;
+	}
+
+	@Override
+	public ITextComponent getCustomName() {
+		return this.getDisplayName();
 	}
 	
 }

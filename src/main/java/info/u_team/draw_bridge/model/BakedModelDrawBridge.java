@@ -18,11 +18,11 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.property.IExtendedBlockState;
 
 @OnlyIn(Dist.CLIENT)
 public class BakedModelDrawBridge implements IBakedModel {
@@ -42,8 +42,7 @@ public class BakedModelDrawBridge implements IBakedModel {
 	private IBakedModel getModel(IBlockState state) {
 		IBakedModel model = defaultModel;
 		
-		ItemStack stack = extended.getValue(BlockDrawBridge.ITEMSTACK);
-			
+		ItemStack stack = new ItemStack(Item.getItemById(state.get(BlockDrawBridge.ITEMSTACK)));
 		IBlockState newBlockState = BlockStateUtil.getBlockState(stack);
 			
 		if (newBlockState != null && newBlockState.getBlock() != Blocks.AIR && newBlockState.getBlock() != DrawBridgeBlocks.draw_bridge) {
