@@ -1,7 +1,5 @@
 package info.u_team.draw_bridge;
 
-import static info.u_team.draw_bridge.DrawBridgeConstants.MODID;
-
 import info.u_team.draw_bridge.proxy.ClientProxy;
 import info.u_team.draw_bridge.proxy.CommonProxy;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -11,7 +9,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;;
 
-@Mod(MODID)
+@Mod(DrawBridgeConstants.MODID)
 public class DrawBridgeMod {
 	
 	private final CommonProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> CommonProxy::new);

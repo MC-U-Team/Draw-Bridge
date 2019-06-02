@@ -2,7 +2,9 @@ package info.u_team.draw_bridge.block;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import info.u_team.draw_bridge.DrawBridgeConstants;
 import info.u_team.draw_bridge.init.DrawBridgeCreativeTabs;
+import info.u_team.draw_bridge.model.ItemStackProperty;
 import info.u_team.draw_bridge.tileentity.TileEntityDrawBridge;
 import info.u_team.draw_bridge.util.BlockStateUtil;
 import info.u_team.u_team_core.block.UBlockTileEntity;
@@ -14,7 +16,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.IntegerProperty;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
@@ -31,23 +33,32 @@ import net.minecraft.world.World;
 public class BlockDrawBridge extends UBlockTileEntity {
 	
 	public static final DirectionProperty FACING =  DirectionProperty.create("facing", EnumFacing.Plane.HORIZONTAL);
-	
+	public static ItemStackProperty ITEMSTACK;
 	public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
-	
-	public static final IntegerProperty ITEMSTACK = IntegerProperty.create("item", 0, Integer.MAX_VALUE);
-	
+		
 	public static final TileEntityType<TileEntityDrawBridge> TILE_TYPE_DRAWBRIDGE = TileEntityType.register("drawbridge", TileEntityType.Builder.create(TileEntityDrawBridge::new));
 	
+	
+	
 	public BlockDrawBridge(String name) {
-		super(name, DrawBridgeCreativeTabs.tab, Properties.create(Material.IRON).hardnessAndResistance(1.5f), TILE_TYPE_DRAWBRIDGE);
+		super(name, Properties.create(Material.IRON).hardnessAndResistance(1.5f), new Item.Properties().group(DrawBridgeCreativeTabs.tab), TILE_TYPE_DRAWBRIDGE);
 		setDefaultState(getDefaultState().with(FACING, EnumFacing.NORTH).with(ACTIVE, false));
+		this.setRegistryName(DrawBridgeConstants.MODID, name);
+	}
+	
+	@Override
+	protected void fillStateContainer(Builder<Block, IBlockState> builder) {
+		ITEMSTACK = ItemStackProperty.create("stack");
+		builder.add(FACING);
+		builder.add(ACTIVE);
+		builder.add(ITEMSTACK);
 	}
 	
 	// Update from redstone
 	
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
-		if (world.isRemote) {
+	/*	if (world.isRemote) {
 			return;
 		}
 		
@@ -73,7 +84,7 @@ public class BlockDrawBridge extends UBlockTileEntity {
 		// if (drawbridge == null) {
 		// return;
 		// }
-		// drawbridge.neighborChanged();
+		// drawbridge.neighborChanged();*/
 	}
 	
 	// Open gui
@@ -124,7 +135,7 @@ public class BlockDrawBridge extends UBlockTileEntity {
 		if (stack == ItemStack.EMPTY) {
 			return state;
 		}
-		return state.with(ITEMSTACK, Item.getIdFromItem(stack.getItem()));
+		return state.with(ITEMSTACK, stack.getItem().getRegistryName());
 	}
 	
 	// Block state things	

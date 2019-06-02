@@ -18,9 +18,9 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.registry.IRegistry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -42,7 +42,8 @@ public class BakedModelDrawBridge implements IBakedModel {
 	private IBakedModel getModel(IBlockState state) {
 		IBakedModel model = defaultModel;
 		
-		ItemStack stack = new ItemStack(Item.getItemById(state.get(BlockDrawBridge.ITEMSTACK)));
+		//Get item out of the resource location
+		ItemStack stack = new ItemStack(IRegistry.field_212630_s.func_212608_b(state.get(BlockDrawBridge.ITEMSTACK)));
 		IBlockState newBlockState = BlockStateUtil.getBlockState(stack);
 			
 		if (newBlockState != null && newBlockState.getBlock() != Blocks.AIR && newBlockState.getBlock() != DrawBridgeBlocks.draw_bridge) {

@@ -10,16 +10,22 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
 @OnlyIn(Dist.CLIENT)
+@EventBusSubscriber(bus = Bus.MOD, modid = DrawBridgeConstants.MODID, value = Dist.CLIENT)
 public class EventHandlerModelBake {
 	
 	@SubscribeEvent
 	public static void on(ModelBakeEvent event) {
 		Map<ModelResourceLocation, IBakedModel> modelregistry = event.getModelRegistry();
 		modelregistry.keySet().stream().filter(modelresource -> modelresource.getPath().equals(DrawBridgeConstants.MODID) && modelresource.getNamespace().equals("drawbridge")).forEach(modelresource -> {
-			IBakedModel model = modelregistry.get(modelresource);
+			String[] stacks = modelresource.getVariant().split("stack:");
+			if(stacks.length <= 1) return;
+			IBakedModel model = modelregistry.get(new ModelResourceLocation(stacks[1].split(",")[0].replaceFirst("_", ":")));
 			modelregistry.put(modelresource, new BakedModelDrawBridge(model));
 		});
 	}
+	
 }
