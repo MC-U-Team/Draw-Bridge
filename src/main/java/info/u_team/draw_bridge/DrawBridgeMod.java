@@ -8,21 +8,16 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;;
 
 @Mod(MODID)
 public class DrawBridgeMod {
-
-	private final CommonProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> CommonProxy::new);
-
-	private static DrawBridgeMod instance;
 	
-	public static DrawBridgeMod getInstance() {
-		return instance;
-	}
+	private final CommonProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> CommonProxy::new);
 	
 	public DrawBridgeMod() {
-		instance = this;
+		FMLJavaModLoadingContext.get().getModEventBus().register(this);
 		proxy.preinit();
 	}
 	

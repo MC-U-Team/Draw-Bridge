@@ -1,0 +1,34 @@
+modLoader="javafml"
+loaderVersion="[25,)"
+issueTrackerURL="http://hycrafthd.net"
+displayURL="http://hycrafthd.net"
+authors="MrTroble, HyCraftHD"
+
+[[mods]]
+	modId="drawbridge"
+	version="${file.jarVersion}"
+	displayName="Drawbridge Mod"
+	description='''
+		Drawbridge Mod
+	'''
+	
+	[[dependencies.drawbridge]]
+	    modId="forge"
+	    mandatory=true
+	    versionRange="[25.0.108,)"
+	    ordering="NONE"
+	    side="BOTH"
+	    
+	[[dependencies.drawbridge]]
+	    modId="uteamcore"
+	    mandatory=true
+	    versionRange="[2.3.4.106,)"
+	    ordering="NONE"
+	    side="BOTH"
+	    
+	[[dependencies.drawbridge]]
+	    modId="minecraft"
+	    mandatory=true
+	    versionRange="[1.13.2]"
+	    ordering="NONE"
+	    side="BOTH"

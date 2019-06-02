@@ -24,6 +24,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+@SuppressWarnings("deprecation")
 @OnlyIn(Dist.CLIENT)
 public class BakedModelDrawBridge implements IBakedModel {
 	
@@ -33,7 +34,6 @@ public class BakedModelDrawBridge implements IBakedModel {
 		defaultModel = model;
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, Random rand) {
 		return getModel(state).getQuads(state, side, rand);

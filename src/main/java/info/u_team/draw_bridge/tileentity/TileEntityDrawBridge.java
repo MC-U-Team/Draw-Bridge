@@ -148,7 +148,6 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		extended++;
 	}
 	
-	@SuppressWarnings("deprecation")
 	private void trySetBlock(EnumFacing facing) {
 		BlockPos newPos = pos.offset(facing, extended + 1);
 		if (world.isAirBlock(newPos) || !(world.getBlockState(newPos).getBlock() instanceof IFluidBlock)) {

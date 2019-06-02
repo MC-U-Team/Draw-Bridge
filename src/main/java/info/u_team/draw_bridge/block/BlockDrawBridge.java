@@ -140,11 +140,11 @@ public class BlockDrawBridge extends UBlockTileEntity {
 	}
 	
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public IBlockState mirror(IBlockState state, Mirror mirrorIn) {
 		return state.rotate(mirrorIn.toRotation(state.get(FACING)));
 	}
-		
 	
 	// Utility methods
 	
