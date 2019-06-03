@@ -3,14 +3,18 @@ package info.u_team.draw_bridge.tileentity;
 import java.util.ArrayList;
 import java.util.List;
 
+import info.u_team.draw_bridge.DrawBridgeConstants;
 import info.u_team.draw_bridge.block.BlockDrawBridge;
+import info.u_team.draw_bridge.container.ContainerDrawBridge;
 import info.u_team.draw_bridge.inventory.InventoryOneSlotImplemention;
 import info.u_team.u_team_core.api.ISyncedContainerTileEntity;
 import info.u_team.u_team_core.tileentity.UTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
@@ -22,9 +26,10 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.IInteractionObject;
 import net.minecraftforge.fluids.IFluidBlock;
 
-public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInventory, ISyncedContainerTileEntity {
+public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInventory, ISyncedContainerTileEntity, IInteractionObject {
 	
 	private NonNullList<ItemStack> itemstacks;
 	
@@ -98,6 +103,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		}
 		if (localSpeed <= 1) {
 			localSpeed = speed;
+			powered = world.isBlockPowered(pos);
 			if (powered && extended < 10) {
 				if (localSpeed == 0) {
 					for (int i = extended; i < 10; i++) {
@@ -271,14 +277,17 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	private void readRenderSlot(NBTTagCompound compound) {
 		NBTTagCompound renderSlotTag = compound.getCompound("renderSlot");
 		if (renderSlotTag != null && !renderSlotTag.isEmpty()) {
+			ItemStack stack = ItemStack.read(renderSlotTag);
 			renderSlot.setInventorySlotContents(0, ItemStack.read(renderSlotTag));
 		}
 	}
 	
 	private void writeRenderSlot(NBTTagCompound compound) {
 		NBTTagCompound renderSlotTag = new NBTTagCompound();
-		renderSlot.getStackInSlot(0).write(renderSlotTag);
+		ItemStack stack = renderSlot.getStackInSlot(0);
+		stack.write(renderSlotTag);
 		compound.setTag("renderSlot", renderSlotTag);
+		renderSlot.setInventorySlotContents(0, ItemStack.read(renderSlotTag));
 	}
 	
 	// Inventory handling
@@ -325,6 +334,9 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 	
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack) {
+		if (!world.isRemote && index == 0) {
+			this.world.setBlockState(pos, getBlockState().with(BlockDrawBridge.ITEMSTACK, stack.getItem().getRegistryName()));
+		}
 		itemstacks.set(index, stack);
 		if (stack.getCount() > this.getInventoryStackLimit()) {
 			stack.setCount(this.getInventoryStackLimit());
@@ -404,6 +416,16 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		extended = compound.getInt("extended");
 		speed = compound.getInt("speed");
 		needsrs = compound.getBoolean("needsrs");
+	}
+
+	@Override
+	public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
+		return new ContainerDrawBridge(this, playerIn);
+	}
+
+	@Override
+	public String getGuiID() {
+		return DrawBridgeConstants.MODID + ":drawbridge";
 	}
 	
 }

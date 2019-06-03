@@ -1,6 +1,6 @@
 {
 	"itemGroup.drawbridge:tab": "Drawbridge Tab",
-	"block.drawbridge:drawbridge": "Drawbridge",
+	"block.drawbridge.drawbridge": "Drawbridge",
 	"drawbridge:container.drawbridge": "Drawbridge",
 	"drawbridge:container.drawbridge.speed": "Speed: ",
 	"drawbridge:container.drawbridge.ticks": " Ticks",

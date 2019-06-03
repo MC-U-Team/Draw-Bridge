@@ -59,22 +59,32 @@ public class BlockDrawBridge extends UBlockTileEntity {
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock,
 			BlockPos neighborPos) {
-		/*
-		 * if (world.isRemote) { return; }
-		 * 
-		 * boolean newValue = world.isBlockPowered(pos);
-		 * 
-		 * for (EnumFacing facing : EnumFacing.values()) { BlockPos newPos =
-		 * pos.offset(facing); // if (newPos.equals(neighborPos)) { // continue; // }
-		 * IBlockState newState = world.getBlockState(newPos); if (newState.getBlock()
-		 * instanceof BlockDrawBridge) { newValue = newValue | newState.get(ACTIVE); } }
-		 * 
-		 * boolean oldValue = state.get(ACTIVE); if (newValue != oldValue) {
-		 * world.setBlockState(pos, state.with(ACTIVE, newValue)); }
-		 * 
-		 * // TileEntityDrawBridge drawbridge = getDrawBridge(world, pos); // if
-		 * (drawbridge == null) { // return; // } // drawbridge.neighborChanged();
-		 */
+
+		if (world.isRemote) {
+			return;
+		}
+
+		boolean newValue = world.isBlockPowered(pos);
+
+		for (EnumFacing facing : EnumFacing.values()) {
+			BlockPos newPos = pos.offset(facing); // if (newPos.equals(neighborPos)) { // continue; // }
+			IBlockState newState = world.getBlockState(newPos);
+			if (newState.getBlock() instanceof BlockDrawBridge) {
+				newValue = newValue | newState.get(ACTIVE);
+			}
+		}
+
+		boolean oldValue = state.get(ACTIVE);
+		if (newValue != oldValue) {
+			world.setBlockState(pos, state.with(ACTIVE, newValue));
+		}
+
+		TileEntityDrawBridge drawbridge = getDrawBridge(world, pos);
+		if (drawbridge == null) {
+			return;
+		}
+		drawbridge.neighborChanged();
+
 	}
 
 	// Open gui

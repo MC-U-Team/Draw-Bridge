@@ -1,12 +1,9 @@
 package info.u_team.draw_bridge.gui;
 
-import com.google.common.collect.Lists;
-
 import info.u_team.draw_bridge.DrawBridgeConstants;
 import info.u_team.draw_bridge.container.ContainerDrawBridge;
 import info.u_team.draw_bridge.tileentity.TileEntityDrawBridge;
 import info.u_team.u_team_core.gui.UGuiContainerTileEntity;
-import net.minecraft.client.gui.GuiButtonToggle;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,7 +20,6 @@ public class GuiDrawBridge extends UGuiContainerTileEntity {
 	private final TileEntityDrawBridge drawbridge;
 	
 	private GuiSlider speedSlider;
-	private GuiButtonToggle toggleRedstone;
 	
 	public GuiDrawBridge(TileEntityDrawBridge tileentity, EntityPlayer entityplayer) {
 		super(new ContainerDrawBridge(tileentity, entityplayer), BACKGROUND);
@@ -37,20 +33,8 @@ public class GuiDrawBridge extends UGuiContainerTileEntity {
 		speedSlider = new GuiSlider(0, guiLeft + 7, guiTop + 60, 90, 20, I18n.format(DrawBridgeConstants.MODID + ":container.drawbridge.speed"), I18n.format(DrawBridgeConstants.MODID + ":container.drawbridge.ticks"), 0, 100, drawbridge.getSpeed(), false, true, (slider) -> {
 			drawbridge.setSpeed(slider.getValueInt());
 			drawbridge.syncClientToServer(drawbridge.getPos());
-		});
+		});		
 		
-		toggleRedstone = new GuiButtonToggle(1, guiLeft + 100, guiTop + 60, 20, 20, drawbridge.needsRedstone()) {
-			@Override
-			public void onClick(double mouseX, double mouseY) {
-				toggleRedstone.setStateTriggered(!toggleRedstone.isStateTriggered());
-				drawbridge.setNeedsRedstone(toggleRedstone.isStateTriggered());
-				drawbridge.syncClientToServer(drawbridge.getPos());
-			}
-		};
-		toggleRedstone.initTextureValues(xSize, 0, 20, 20, BACKGROUND);
-		
-		
-		addButton(toggleRedstone);
 		addButton(speedSlider);
 		// Slider must be added after, cause it has a bug to not reset the colors
 		// (or toggle button is wrong with not clearing the color
@@ -60,7 +44,6 @@ public class GuiDrawBridge extends UGuiContainerTileEntity {
 	public void initGui(NBTTagCompound compound) {
 		speedSlider.setValue(drawbridge.getSpeed());
 		speedSlider.updateSlider();
-		toggleRedstone.setStateTriggered(drawbridge.needsRedstone());
 	}
 		
 	@Override
@@ -73,9 +56,5 @@ public class GuiDrawBridge extends UGuiContainerTileEntity {
 	public void render(int mouseX, int mouseY, float partialTicks) {
 		drawDefaultBackground();
 		super.render(mouseX, mouseY, partialTicks);
-		renderHoveredToolTip(mouseX, mouseY);
-		if (toggleRedstone.isMouseOver()) {
-			drawHoveringText(Lists.newArrayList(I18n.format(DrawBridgeConstants.MODID + ":container.drawbridge.needsrs")), mouseX, mouseY, fontRenderer);
-		}
-	}
+		renderHoveredToolTip(mouseX, mouseY);	}
 }

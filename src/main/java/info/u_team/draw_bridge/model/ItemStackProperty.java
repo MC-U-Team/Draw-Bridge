@@ -23,6 +23,7 @@ public class ItemStackProperty implements IProperty<ResourceLocation> {
 	private ItemStackProperty(String name) {
 		this.name = name;
 		IRegistry.field_212618_g.forEach(st -> list.add(st.getBlock().getRegistryName()));
+		list.forEach(System.out::println);
 	}
 
 	@Override
@@ -47,7 +48,7 @@ public class ItemStackProperty implements IProperty<ResourceLocation> {
 
 	@Override
 	public String getName(ResourceLocation value) {
-		return value.toString().replaceFirst(":", "_");
+		return value.toString().replace(":", "_");
 	}
 
 }
