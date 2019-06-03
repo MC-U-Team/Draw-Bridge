@@ -1,49 +1,49 @@
 {
 	"variants": {
-		"active=false,facing=north": {
-			"model": "drawbridge:drawbridge"
+		"active=false,facing=north,stack=minecraft_air": {
+			"model": "drawbridge:block/drawbridge"
 		},
-		"active=false,facing=south": {
-			"model": "drawbridge:drawbridge",
+		"active=false,facing=south,stack=minecraft_air": {
+			"model": "drawbridge:block/drawbridge",
 			"y": 180
 		},
-		"active=false,facing=west": {
-			"model": "drawbridge:drawbridge",
+		"active=false,facing=west,stack=minecraft_air": {
+			"model": "drawbridge:block/drawbridge",
 			"y": 270
 		},
-		"active=false,facing=east": {
-			"model": "drawbridge:drawbridge",
+		"active=false,facing=east,stack=minecraft_air": {
+			"model": "drawbridge:block/drawbridge",
 			"y": 90
 		},
-		"active=false,facing=up": {
-			"model": "drawbridge:drawbridge",
+		"active=false,facing=up,stack=minecraft_air": {
+			"model": "drawbridge:block/drawbridge",
 			"x": 270
 		},
-		"active=false,facing=down": {
-			"model": "drawbridge:drawbridge",
+		"active=false,facing=down,stack=minecraft_air": {
+			"model": "drawbridge:block/drawbridge",
 			"x": 90
 		},
-		"active=true,facing=north": {
-			"model": "drawbridge:drawbridge"
+		"active=true,facing=north,stack=minecraft_air": {
+			"model": "drawbridge:block/drawbridge"
 		},
-		"active=true,facing=south": {
-			"model": "drawbridge:drawbridge",
+		"active=true,facing=south,stack=minecraft_air": {
+			"model": "drawbridge:block/drawbridge",
 			"y": 180
 		},
-		"active=true,facing=west": {
-			"model": "drawbridge:drawbridge",
+		"active=true,facing=west,stack=minecraft_air": {
+			"model": "drawbridge:block/drawbridge",
 			"y": 270
 		},
-		"active=true,facing=east": {
-			"model": "drawbridge:drawbridge",
+		"active=true,facing=east,stack=minecraft_air": {
+			"model": "drawbridge:block/drawbridge",
 			"y": 90
 		},
-		"active=true,facing=up": {
-			"model": "drawbridge:drawbridge",
+		"active=true,facing=up,stack=minecraft_air": {
+			"model": "drawbridge:block/drawbridge",
 			"x": 270
 		},
-		"active=true,facing=down": {
-			"model": "drawbridge:drawbridge",
+		"active=true,facing=down,stack=minecraft_air": {
+			"model": "drawbridge:block/drawbridge",
 			"x": 90
 		}
 	}
