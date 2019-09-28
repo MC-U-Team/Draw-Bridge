@@ -1,30 +1,30 @@
 buildscript {
-    
-	apply from: "https://raw.githubusercontent.com/HyCraftHD/Blank-Forge-Project/master/build.methods"
-	setup()
-		
-	repositories {
+    repositories {
+        maven { url = "https://files.minecraftforge.net/maven" }
+		maven { url = "https://plugins.gradle.org/m2/" }
         jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
-        maven { url = "https://plugins.gradle.org/m2/" }
+        mavenCentral()
     }
     dependencies {
-        classpath "net.minecraftforge.gradle:ForgeGradle:${config.forge.gradle}"
-        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.1.0"
+        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true
+		classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.3.0"
     }
 }
 
-apply from: "https://raw.githubusercontent.com/HyCraftHD/Blank-Forge-Project/master/build.methods"
+apply from: "https://raw.githubusercontent.com/HyCraftHD/Blank-Forge-Project/master/configuration.methods"
 apply from: "https://raw.githubusercontent.com/HyCraftHD/Blank-Forge-Project/master/git.methods"
+
 setup()
 info()
 
-apply plugin: "net.minecraftforge.gradle.forge"
+apply plugin: "net.minecraftforge.gradle"
+apply plugin: "eclipse"
 apply plugin: "com.matthewprenger.cursegradle"
 apply plugin: "maven"
 
 repositories {
     maven { url = "https://repo.u-team.info" }
+    maven { url = "https://dvs1.progwml6.com/files/maven" }
 }
 
 getBuildNumber()
@@ -43,27 +43,48 @@ def getAppendix() {
 
 sourceCompatibility = targetCompatibility = "1.8"
 
-compileJava {
-    sourceCompatibility = targetCompatibility = "1.8"
-}
-
-
 minecraft {
-    version = config.forge.version
-    runDir = "run"
-    mappings = config.forge.mapping
-    makeObfSourceJar = false
-	
-	replace '${version}', project.version
-	replace '${mcversion}', project.minecraft.version
-	replaceIn "info/u_team/draw_bridge/DrawBridgeConstants.java"
+    mappings channel: config.forge.mapping_channel, version: config.forge.mapping
+    //accessTransformer = file("$rootDir/src/main/resources/META-INF/accesstransformer.cfg")
+    runs {
+        client = {
+            workingDirectory project.file("run/client").canonicalPath
+            mods {
+                drawbridge {
+                    source sourceSets.main
+				}
+			}
+        }
+        server = {
+            workingDirectory project.file("run/server").canonicalPath
+            mods {
+                drawbridge {
+                    source sourceSets.main
+				}
+			}
+        }
+        data = {
+            workingDirectory project.file("run/data").canonicalPath
+            args "--mod", "drawbridge", "--all", "--output", "\"" + file("src/generated/resources").toString() + "\""
+            mods {
+                drawbridge {
+                    source sourceSets.main
+				}
+			}
+        }
+    }
 }
 
 def normalManifest = {
 	attributes(
+		"Specification-Title": config.mod.name,
+        "Specification-Vendor": "Team UTeam",
+        "Specification-Version": config.forge.major_version,
+		"Built-On": config.forge.mcversion,
 		"Implementation-Title": config.mod.name,
     	"Implementation-Version": project.version,
-		"Built-On": minecraft.version,
+		"Implementation-Vendor": "Team UTeam",
+        "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
 	)
 }
 
@@ -71,8 +92,10 @@ jar {
 	classifier = ""
 
     from "LICENSE"
+    
+    exclude(".cache")    
        
-    manifest normalManifest
+   	manifest normalManifest
 }
 
 task deobfJar(type: Jar) {
@@ -80,6 +103,8 @@ task deobfJar(type: Jar) {
 
     from sourceSets.main.output
     from "LICENSE"
+    
+    exclude(".cache")    
         
     manifest normalManifest
 }
@@ -112,36 +137,43 @@ artifacts {
 }
 
 sourceSets {
-   	main {
+	main {
 		java
-		resources
-   	}
+		resources {
+      		srcDirs += "src/generated/resources"
+    	}
+	}
 }
 
 dependencies {
-	compile "info.u-team:u_team_core-${minecraft.version}:${config.uteamcore.version}:dev"
-}
-
-processResources {
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    from(sourceSets.main.resources.srcDirs) {
-        include "mcmod.info"               
-        expand "version":project.version, "mcversion":project.minecraft.version
-    }
-    from(sourceSets.main.resources.srcDirs) {
-        exclude "mcmod.info"
-    }
+    minecraft "net.minecraftforge:forge:$config.forge.version"
+	compile "info.u-team:u_team_core-${config.forge.mcversion}:${config.uteamcore.version}:dev"
+  	compileOnly fg.deobf("mezz.jei:jei-${config.forge.mcversion}:${config.jei.version}:api")
+  	runtimeOnly fg.deobf("mezz.jei:jei-${config.forge.mcversion}:${config.jei.version}")
 }
 
 compileJava {
     options.encoding = "UTF-8"
-    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
+def generateChangelogUrl() {
+	String url = "https://github.com/MC-U-Team/${config.github.name}/blob/${config.github.branch}/CHANGELOG.md"
+	String mcversion = "${config.forge.mcversion}".replace(".", "")
+	String version = "${project.version}".replace(".", "")
+	String date =new Date().format("yyyy-MM-dd");
+	return url + "#" + mcversion + "-" + version + "---" + date
 }
 
 curseforge {
-	apiKey = project.getProperty("token")
+	if(System.getenv("token") != null) {
+		apiKey = System.getenv("token")
+	} else {
+		if (project.hasProperty("token")) {
+			apiKey = project.getProperty("token")
+		} else {
+			apiKey = "mrTroble" //We dont have one lol ¯\_(ツ)_/¯
+		}
+	}
 	
 	tasks.curseforge.dependsOn build
 	
@@ -149,21 +181,27 @@ curseforge {
     	id = config.curse.id
     	releaseType = config.curse.type
 
+		addGameVersion config.forge.mcversion
+		
+		options {
+		    forgeGradleIntegration = false
+		}
+		
 		relations {
       		requiredDependency "u-team-core"
     	}
-		
+
     	mainArtifact(jar) {
-      		displayName = "${config.curse.display}-${minecraft.version}-${version}"
+      		displayName = "${config.curse.display}-${config.forge.mcversion}-${project.version}"
       		changelogType = "html"
-			changelog = "<a href=\"${config.curse.changelog}\">Changelog of ${project.version}</a>"
+      		changelog = "<a href=\"" + generateChangelogUrl() + "\">Changelog of ${project.version}</a>"
     	}
     	
     	addArtifact(deobfJar) {
-    		displayName = "${config.curse.display}-${minecraft.version}-${version}-dev"
+    		displayName = "${config.curse.display}-${config.forge.mcversion}-${project.version}-dev"
     		changelogType = "text"
-    		changelog = "Mappings: " + config.forge.mapping
-		}
+    		changelog = "Mappings: ${config.forge.mapping_channel}_${config.forge.mapping}"
+    	}
   	}
 }
 
@@ -173,9 +211,13 @@ uploadArchives {
 
 	repositories {
 		mavenDeployer {
-			if (project.hasProperty("mavenpass")) {
+			String mavenPass = System.getenv("mavenpass")
+			if(mavenPass == null) {
+				mavenPass = project.getProperty("mavenpass")
+			}
+			if (mavenPass != null) {
 				repository(url: "https://repo.u-team.info") {
-					authentication(userName: "maven", password: project.getProperty("mavenpass"))
+					authentication(userName: "maven", password: mavenPass)
 				}
 			}
 			pom {
@@ -185,21 +227,21 @@ uploadArchives {
 				project {
 					name project.archivesBaseName
 					packaging "jar"
-					description "Draw-Bridge"
-						url "https://github.com/MC-U-Team/Draw-Bridge"
+					description "${config.github.name}"
+						url "https://github.com/MC-U-Team/${config.github.name}"
 					scm {
-						url "https://github.com/MC-U-Team/Draw-Bridge"
-						connection "scm:git:git://github.com/MC-U-Team/Draw-Bridge.git"
-						developerConnection "scm:git:git@github.com:MC-U-Team/Draw-Bridge.git"
+						url "https://github.com/MC-U-Team/${config.github.name}"
+						connection "scm:git:git://github.com/MC-U-Team/${config.github.name}.git"
+						developerConnection "scm:git:git@github.com:MC-U-Team/${config.github.name}.git"
 					}
 					issueManagement {
 						system "github"
-						url "https://github.com/MC-U-Team/Draw-Bridge/issues"
+						url "https://github.com/MC-U-Team/${config.github.name}/issues"
 					}
 					licenses {
 						license {
 							name "Apache License 2.0"
-							url "https://github.com/MC-U-Team/Draw-Bridge/blob/1.12.2/LICENSE"
+							url "https://github.com/MC-U-Team/${config.github.name}/blob/${config.github.branch}/LICENSE"
 							distribution "repo"
 						}
 					}
