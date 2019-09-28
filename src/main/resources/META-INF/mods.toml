@@ -1,0 +1,35 @@
+modLoader="javafml"
+loaderVersion="[28,)"
+issueTrackerURL="https://github.com/MC-U-Team/Draw-Bridge/issues"
+displayURL="https://u-team.info/mods/drawbridge"
+logoFile="logo.png"
+credits="Team U-Team"
+authors="HyCraftHD, MrTroble"
+
+[[mods]]
+	modId="drawbridge"
+	version="${file.jarVersion}"
+	displayName="Draw Bridge"
+	updateJSONURL="https://api.u-team.info/update/drawbridge.json"
+	description="A standalone simple drawbridge mod"
+	
+	[[dependencies.drawbridge]]
+	    modId="forge"
+	    mandatory=true
+	    versionRange="[28.1.20,)"
+	    ordering="NONE"
+	    side="BOTH"
+	
+	[[dependencies.drawbridge]]
+	    modId="minecraft"
+	    mandatory=true
+	    versionRange="[1.14.4]"
+	    ordering="NONE"
+	    side="BOTH"
+	    
+	[[dependencies.drawbridge]]
+	    modId="uteamcore"
+	    mandatory=true
+	    versionRange="[2.7.3.132,)"
+	    ordering="NONE"
+	    side="BOTH"
