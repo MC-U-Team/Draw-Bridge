@@ -318,6 +318,14 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 		this.needRedstone = needRedstone;
 	}
 	
+	public boolean hasRenderBlockState() {
+		return renderBlockState != null;
+	}
+	
+	public BlockState getRenderBlockState() {
+		return renderBlockState;
+	}
+	
 	// Util methods for render block
 	
 	private void writeRenderState(CompoundNBT compound) {
