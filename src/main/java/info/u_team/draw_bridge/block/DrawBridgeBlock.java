@@ -5,7 +5,8 @@ import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
 import info.u_team.u_team_core.block.UTileEntityBlock;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.*;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer.Builder;
@@ -23,6 +24,8 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 		setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
 	}
 	
+	// Trigger drawbridge
+	
 	@Override
 	public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
 		if (world.isRemote) {
@@ -31,10 +34,27 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 		isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).ifPresent(DrawBridgeTileEntity::neighborChanged);
 	}
 	
+	// Open gui
+	
 	@Override
 	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
 		return openContainer(world, pos, player, true);
 	}
+	
+	// Drop items
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+		isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).ifPresent(drawBridge -> {
+			drawBridge.getSlots().ifPresent(inventory -> InventoryHelper.dropInventoryItems(world, pos, inventory));
+			drawBridge.getRenderSlot().ifPresent(inventory -> InventoryHelper.dropInventoryItems(world, pos, inventory));
+			world.updateComparatorOutputLevel(pos, this);
+		});
+		super.onReplaced(state, world, pos, newState, isMoving);
+	}
+	
+	// Facing stuff
 	
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
