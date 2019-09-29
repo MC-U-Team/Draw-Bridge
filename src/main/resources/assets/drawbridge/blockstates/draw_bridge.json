@@ -1,0 +1,27 @@
+{
+	"variants": {
+		"facing=north": {
+			"model": "drawbridge:block/draw_bridge"
+		},
+		"facing=south": {
+			"model": "drawbridge:block/draw_bridge",
+			"y": 180
+		},
+		"facing=west": {
+			"model": "drawbridge:block/draw_bridge",
+			"y": 270
+		},
+		"facing=east": {
+			"model": "drawbridge:block/draw_bridge",
+			"y": 90
+		},
+		"facing=up": {
+			"model": "drawbridge:block/draw_bridge",
+			"x": 270
+		},
+		"facing=down": {
+			"model": "drawbridge:block/draw_bridge",
+			"x": 90
+		}
+	}
+}
