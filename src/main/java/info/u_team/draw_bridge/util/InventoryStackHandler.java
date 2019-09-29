@@ -172,9 +172,13 @@ public class InventoryStackHandler implements IInventory, IItemHandlerModifiable
 	@Override
 	public void deserializeNBT(CompoundNBT compound) {
 		ItemStackHelper.loadAllItems(compound, stacks);
+		onLoaded();
 	}
 	
 	protected void slotChanged(int index) {
+	}
+	
+	protected void onLoaded() {
 	}
 	
 }
