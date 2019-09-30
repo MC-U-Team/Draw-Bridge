@@ -8,7 +8,7 @@
 ![Discord](https://img.shields.io/discord/297104769649213441?label=Discord)
 ](https://discordapp.com/invite/QXbWS36)
 
-### This mod adds a draw bridge block
+### This mod adds a draw bridge block.
 
 - Download on [curseforge](https://www.curseforge.com/minecraft/mc-mods/draw-bridge).  
 - Find more information on our [website](https://u-team.info/mods/drawbridge).
