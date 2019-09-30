@@ -75,4 +75,27 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 	protected void fillStateContainer(Builder<Block, BlockState> builder) {
 		builder.add(FACING);
 	}
+	
+	// Simulate light for render blocks that emit light
+	
+	// @Override
+	// public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
+	// final BlockState renderBlockState = isTileEntityFromType(world,
+	// pos).map(DrawBridgeTileEntity.class::cast).map(drawBridge -> drawBridge.getRenderBlockState()).orElse(null);
+	// if (renderBlockState != null && renderBlockState.getBlock() != DrawBridgeBlocks.DRAW_BRIDGE) {
+	// return renderBlockState.getLightValue(world, pos);
+	// }
+	// return super.getLightValue(state, world, pos);
+	// }
+	//
+	// @SuppressWarnings("deprecation")
+	// @Override
+	// public int getOpacity(BlockState state, IBlockReader world, BlockPos pos) {
+	// final BlockState renderBlockState = isTileEntityFromType(world,
+	// pos).map(DrawBridgeTileEntity.class::cast).map(drawBridge -> drawBridge.getRenderBlockState()).orElse(null);
+	// if (renderBlockState != null && renderBlockState.getBlock() != DrawBridgeBlocks.DRAW_BRIDGE) {
+	// return renderBlockState.getOpacity(world, pos);
+	// }
+	// return super.getOpacity(state, world, pos);
+	// }
 }
