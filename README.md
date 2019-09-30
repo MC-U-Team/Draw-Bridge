@@ -1,4 +1,4 @@
-# Draw-bridge
+# Draw-Bridge
 
 [
 ![Curseforge Downloads](http://cf.way2muchnoise.eu/draw-bridge.svg)
