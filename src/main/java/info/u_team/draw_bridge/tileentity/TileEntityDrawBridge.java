@@ -48,8 +48,8 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		final Set<TileEntityDrawBridge> drawBridges = new HashSet<>();
 		collect(drawBridges, this, 0);
 		
-		final boolean newPoweredState = drawBridges.parallelStream().anyMatch(drawBridge -> world.isBlockPowered(drawBridge.pos)) | newPowered;
-		drawBridges.parallelStream().forEach(drawBridge -> drawBridge.updatePoweredState(newPoweredState));
+		final boolean newPoweredState = drawBridges.stream().anyMatch(drawBridge -> world.isBlockPowered(drawBridge.pos)) | newPowered;
+		drawBridges.stream().forEach(drawBridge -> drawBridge.updatePoweredState(newPoweredState));
 	}
 	
 	private void updatePoweredState(boolean powered) {
@@ -60,7 +60,7 @@ public class TileEntityDrawBridge extends UTileEntity implements ITickable, IInv
 		if (depth >= 20) {
 			return;
 		}
-		getNeighbors(callerTileEntity.pos).parallelStream().forEach(neighbor -> {
+		getNeighbors(callerTileEntity.pos).stream().forEach(neighbor -> {
 			final TileEntity tileEntity = world.getTileEntity(neighbor);
 			if (!(tileEntity instanceof TileEntityDrawBridge)) {
 				return;
