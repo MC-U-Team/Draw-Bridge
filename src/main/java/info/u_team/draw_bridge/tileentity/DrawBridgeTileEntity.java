@@ -172,7 +172,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 				ItemStack itemstack = inventory.getStackInSlot(extendState);
 				Block block = Block.getBlockFromItem(itemstack.getItem());
 				world.setBlockState(newPos, block.getDefaultState(), 2);
-				inventory.removeStackFromSlot(extendState);
+				inventory.getInventory().removeStackFromSlot(extendState);
 				ourBlocks[extendState] = true;
 			});
 		} else {
@@ -195,7 +195,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 					Block block = state.getBlock();
 					
 					ItemStack stack = new ItemStack(block);
-					inventory.setInventorySlotContents(extendState, stack);
+					inventory.getInventory().setInventorySlotContents(extendState, stack);
 					
 					world.setBlockState(newPos, Blocks.AIR.getDefaultState(), 2);
 				});

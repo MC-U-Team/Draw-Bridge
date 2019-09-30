@@ -3,13 +3,12 @@ package info.u_team.draw_bridge.container;
 import info.u_team.draw_bridge.container.slot.DrawBridgeSlot;
 import info.u_team.draw_bridge.init.DrawBridgeContainerTypes;
 import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
+import info.u_team.draw_bridge.util.InventoryStackHandler;
 import info.u_team.u_team_core.container.USyncedTileEntityContainer;
 import net.minecraft.entity.player.*;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.IItemHandler;
 
 public class DrawBridgeContainer extends USyncedTileEntityContainer<DrawBridgeTileEntity> {
 	
@@ -25,8 +24,8 @@ public class DrawBridgeContainer extends USyncedTileEntityContainer<DrawBridgeTi
 	
 	@Override
 	protected void init(boolean server) {
-		tileEntity.getSlots().ifPresent(slots -> appendInventory((IInventory) slots, (inv, index, xPosition, yPosition) -> new DrawBridgeSlot(tileEntity, inv, index, xPosition, yPosition), 2, 5, 8, 18));
-		tileEntity.getRenderSlot().ifPresent(slot -> appendInventory((IItemHandler) slot, 1, 1, 134, 18));
+		tileEntity.getSlots().map(InventoryStackHandler::getInventory).ifPresent(slots -> appendInventory(slots, (inv, index, xPosition, yPosition) -> new DrawBridgeSlot(tileEntity, inv, index, xPosition, yPosition), 2, 5, 8, 18));
+		tileEntity.getRenderSlot().ifPresent(slot -> appendInventory(slot, 1, 1, 134, 18));
 		appendPlayerInventory(playerInventory, 8, 102);
 	}
 	

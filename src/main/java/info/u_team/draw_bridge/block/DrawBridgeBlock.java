@@ -47,8 +47,8 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 	@Override
 	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
 		isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).ifPresent(drawBridge -> {
-			drawBridge.getSlots().ifPresent(inventory -> InventoryHelper.dropInventoryItems(world, pos, inventory));
-			drawBridge.getRenderSlot().ifPresent(inventory -> InventoryHelper.dropInventoryItems(world, pos, inventory));
+			drawBridge.getSlots().ifPresent(inventory -> InventoryHelper.dropInventoryItems(world, pos, inventory.getInventory()));
+			drawBridge.getRenderSlot().ifPresent(inventory -> InventoryHelper.dropInventoryItems(world, pos, inventory.getInventory()));
 			world.updateComparatorOutputLevel(pos, this);
 		});
 		super.onReplaced(state, world, pos, newState, isMoving);

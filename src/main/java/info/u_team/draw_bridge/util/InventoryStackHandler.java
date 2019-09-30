@@ -10,66 +10,28 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.*;
 
-public class InventoryStackHandler implements IInventory, IItemHandlerModifiable, INBTSerializable<CompoundNBT> {
+public class InventoryStackHandler implements IItemHandlerModifiable, INBTSerializable<CompoundNBT> {
 	
 	private final NonNullList<ItemStack> stacks;
 	
+	private final IInventory inventory;
+	
 	public InventoryStackHandler(int size) {
 		stacks = NonNullList.withSize(size, ItemStack.EMPTY);
+		inventory = createInventory(stacks);
 	}
 	
-	@Override
-	public void clear() {
-		stacks.clear();
-		IntStream.range(0, stacks.size()).forEach(this::slotChanged);
+	protected IInventory createInventory(NonNullList<ItemStack> stacks) {
+		return new Inventory(stacks, this);
 	}
 	
-	@Override
-	public int getSizeInventory() {
-		return stacks.size();
-	}
-	
-	@Override
-	public boolean isEmpty() {
-		return stacks.stream().allMatch(ItemStack::isEmpty);
+	public IInventory getInventory() {
+		return inventory;
 	}
 	
 	@Override
 	public ItemStack getStackInSlot(int index) {
 		return stacks.get(index);
-	}
-	
-	@Override
-	public ItemStack decrStackSize(int index, int count) {
-		final ItemStack stack = ItemStackHelper.getAndSplit(stacks, index, count);
-		slotChanged(index);
-		return stack;
-	}
-	
-	@Override
-	public ItemStack removeStackFromSlot(int index) {
-		final ItemStack stack = ItemStackHelper.getAndRemove(stacks, index);
-		slotChanged(index);
-		return stack;
-	}
-	
-	@Override
-	public void setInventorySlotContents(int index, ItemStack stack) {
-		stacks.set(index, stack);
-		final int limit = getStackLimit(index, stack);
-		if (stack.getCount() > limit) {
-			stack.setCount(limit);
-		}
-		slotChanged(index);
-	}
-	
-	@Override
-	public void markDirty() {
-	}
-	
-	@Override
-	public boolean isUsableByPlayer(PlayerEntity player) {
-		return true;
 	}
 	
 	@Override
@@ -79,7 +41,7 @@ public class InventoryStackHandler implements IInventory, IItemHandlerModifiable
 	
 	@Override
 	public void setStackInSlot(int index, ItemStack stack) {
-		setInventorySlotContents(index, stack);
+		inventory.setInventorySlotContents(index, stack);
 	}
 	
 	@Override
@@ -152,7 +114,7 @@ public class InventoryStackHandler implements IInventory, IItemHandlerModifiable
 	
 	@Override
 	public int getSlotLimit(int index) {
-		return getInventoryStackLimit();
+		return inventory.getInventoryStackLimit();
 	}
 	
 	@Override
@@ -180,6 +142,71 @@ public class InventoryStackHandler implements IInventory, IItemHandlerModifiable
 	
 	// If used in tileentites, then the world might be null
 	protected void onLoaded() {
+	}
+	
+	protected static class Inventory implements IInventory {
+		
+		private final NonNullList<ItemStack> stacks;
+		private final InventoryStackHandler handler;
+		
+		protected Inventory(NonNullList<ItemStack> stacks, InventoryStackHandler handler) {
+			this.stacks = stacks;
+			this.handler = handler;
+		}
+		
+		@Override
+		public void clear() {
+			stacks.clear();
+			IntStream.range(0, stacks.size()).forEach(handler::slotChanged);
+		}
+		
+		@Override
+		public void setInventorySlotContents(int index, ItemStack stack) {
+			stacks.set(index, stack);
+			final int limit = handler.getStackLimit(index, stack);
+			if (stack.getCount() > limit) {
+				stack.setCount(limit);
+			}
+			handler.slotChanged(index);
+		}
+		
+		@Override
+		public ItemStack removeStackFromSlot(int index) {
+			final ItemStack stack = ItemStackHelper.getAndRemove(stacks, index);
+			handler.slotChanged(index);
+			return stack;
+		}
+		
+		@Override
+		public void markDirty() {
+		}
+		
+		@Override
+		public boolean isUsableByPlayer(PlayerEntity player) {
+			return true;
+		}
+		
+		@Override
+		public boolean isEmpty() {
+			return stacks.stream().allMatch(ItemStack::isEmpty);
+		}
+		
+		@Override
+		public ItemStack getStackInSlot(int index) {
+			return stacks.get(index);
+		}
+		
+		@Override
+		public int getSizeInventory() {
+			return stacks.size();
+		}
+		
+		@Override
+		public ItemStack decrStackSize(int index, int count) {
+			final ItemStack stack = ItemStackHelper.getAndSplit(stacks, index, count);
+			handler.slotChanged(index);
+			return stack;
+		}
 	}
 	
 }
