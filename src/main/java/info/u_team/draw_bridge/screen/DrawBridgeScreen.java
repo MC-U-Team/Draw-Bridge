@@ -6,6 +6,7 @@ import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
 import info.u_team.u_team_core.gui.UContainerScreen;
 import info.u_team.u_team_core.gui.elements.BetterFontSlider;
 import net.minecraft.client.gui.widget.ToggleWidget;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -41,13 +42,13 @@ public class DrawBridgeScreen extends UContainerScreen<DrawBridgeContainer> {
 			@Override
 			public void renderToolTip(int mouseX, int mouseY) {
 				if (isHovered()) {
-					renderTooltip("Need redstone power?", mouseX, mouseY);
+					renderTooltip(I18n.format("container.drawbridge.draw_bridge.need_redstone"), mouseX, mouseY);
 				}
 			}
 		});
 		button.initTextureValues(xSize, 0, 20, 20, BACKGROUND);
 		
-		addButton(slider = new BetterFontSlider(guiLeft + 7, guiTop + 62, 90, 20, "Speed: ", " Ticks", 0, 100, drawBridge.getSpeed(), false, true, 1, null) {
+		addButton(slider = new BetterFontSlider(guiLeft + 7, guiTop + 62, 90, 20, I18n.format("container.drawbridge.draw_bridge.speed") + " ", " " + I18n.format("container.drawbridge.draw_bridge.ticks"), 0, 100, drawBridge.getSpeed(), false, true, 1, null) {
 			
 			@Override
 			public void onRelease(double mouseX, double mouseY) {

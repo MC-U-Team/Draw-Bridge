@@ -178,6 +178,7 @@ public class InventoryStackHandler implements IInventory, IItemHandlerModifiable
 	protected void slotChanged(int index) {
 	}
 	
+	// If used in tileentites, then the world might be null
 	protected void onLoaded() {
 	}
 	

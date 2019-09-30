@@ -1,0 +1,8 @@
+{
+	"itemGroup.drawbridge.group": "Drawbridge",
+	"block.drawbridge.draw_bridge": "Drawbridge",
+	"container.drawbridge.draw_bridge": "Drawbridge",
+	"container.drawbridge.draw_bridge.speed": "Speed:",
+	"container.drawbridge.draw_bridge.ticks": "Ticks",
+	"container.drawbridge.draw_bridge.need_redstone": "Need redstone power?"
+}

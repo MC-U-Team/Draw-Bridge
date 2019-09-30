@@ -1,0 +1,8 @@
+{
+	"itemGroup.drawbridge.group": "吊桥",
+	"block.drawbridge.draw_bridge": "吊桥",
+	"container.drawbridge.draw_bridge": "吊桥",
+	"container.drawbridge.draw_bridge.speed": "速度:",
+	"container.drawbridge.draw_bridge.ticks": "刻",
+	"container.drawbridge.draw_bridge.need_redstone": "是否需要红石激活？"
+}

@@ -252,7 +252,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	
 	@Override
 	public ITextComponent getDisplayName() {
-		return new StringTextComponent("Draw Bridge"); // TODO language file
+		return new TranslationTextComponent("container.drawbridge.draw_bridge");
 	}
 	
 	// Slot getter

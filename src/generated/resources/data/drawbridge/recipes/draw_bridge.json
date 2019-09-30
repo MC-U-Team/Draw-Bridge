@@ -6,17 +6,17 @@
 		"RPR"
 	],
 	"key": {
-		"P": {
-			"item": "minecraft:piston"
-		},
 		"I": {
-			"item": "minecraft:iron_ingot"
-		},
-		"R": {
-			"item": "minecraft:redstone"
+			"tag": "forge:ingots/iron"
 		},
 		"C": {
-			"item": "minecraft:chest"
+			"tag": "forge:chests/wooden"
+		},
+		"R": {
+			"tag": "forge:dusts/redstone"
+		},
+		"P": {
+			"item": "minecraft:piston"
 		}
 	},
 	"result": {
