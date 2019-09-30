@@ -44,16 +44,18 @@ public class DrawBridgeContainer extends USyncedTileEntityContainer<DrawBridgeTi
 			} else {
 				if (index >= 38) {
 					if (!mergeItemStack(itemstack1, 0, 10, false)) {
-						if (!mergeItemStack(itemstack1, 11, 38, false)) {
-							return ItemStack.EMPTY;
-						}
+						return ItemStack.EMPTY;
 					}
+					// if (!mergeItemStack(itemstack1, 11, 38, false)) {
+					// return ItemStack.EMPTY;
+					// }
 				} else {
 					if (!mergeItemStack(itemstack1, 0, 10, false)) {
-						if (!mergeItemStack(itemstack1, 38, 47, false)) {
-							return ItemStack.EMPTY;
-						}
+						return ItemStack.EMPTY;
 					}
+					// if (!mergeItemStack(itemstack1, 38, 47, false)) {
+					// return ItemStack.EMPTY;
+					// }
 				}
 			}
 			if (itemstack1.isEmpty()) {
