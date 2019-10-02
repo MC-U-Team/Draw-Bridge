@@ -4,8 +4,7 @@ import info.u_team.draw_bridge.DrawBridgeMod;
 import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
 import info.u_team.draw_bridge.tileentity.render.DrawBridgeTileEntityRender;
 import info.u_team.u_team_core.tileentitytype.UTileEntityType.UBuilder;
-import info.u_team.u_team_core.util.registry.BaseRegistryUtil;
-import info.u_team.u_team_core.util.registry.ClientRegistry;
+import info.u_team.u_team_core.util.registry.*;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -20,7 +19,7 @@ public class DrawBridgeTileEntityTypes {
 	@SubscribeEvent
 	public static void register(Register<TileEntityType<?>> event) {
 		BaseRegistryUtil.getAllGenericRegistryEntriesAndApplyNames(DrawBridgeMod.MODID, TileEntityType.class).forEach(event.getRegistry()::register);
-	    ClientRegistry.registerSpecialTileEntityRenderer(DrawBridgeTileEntity.class, new DrawBridgeTileEntityRender());
+		ClientRegistry.registerSpecialTileEntityRenderer(DrawBridgeTileEntity.class, new DrawBridgeTileEntityRender());
 	}
 	
 }
