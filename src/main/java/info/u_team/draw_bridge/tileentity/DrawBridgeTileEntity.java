@@ -76,6 +76,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	private int extendState;
 	private boolean extended;
 	private boolean[] ourBlocks = new boolean[10];
+	private boolean retracting = false;
 	
 	private int localSpeed;
 	
@@ -104,14 +105,9 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 		powered = needRedstone ? newPowered : !newPowered;
 	}
 	
+	@OnlyIn(Dist.CLIENT)
 	public BlockState[] getBlocksToRender() {
-		BlockState[] states = new BlockState[extendState];
-		slots.ifPresent(statehand -> {
-			for (int i = 0; i < states.length; i++) {
-				states[i] = Block.getBlockFromItem(statehand.getStackInSlot(9 - i).getItem()).getDefaultState();
-			}
-		});
-		return states;
+		return renderBlockStates == null ? new BlockState[] {} : renderBlockStates;
 	}
 	
 	private void collect(Set<DrawBridgeTileEntity> tileEntites, DrawBridgeTileEntity callerTileEntity, int depth) {
@@ -171,11 +167,34 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 			sendChangesToClient();
 	}
 	
+	private BlockState[] renderBlockStates = null;
+	
 	private void extend() {
+		if(extendState == 0) {
+			slots.ifPresent(consumer -> {
+				renderBlockStates = new BlockState[consumer.getSlots()];
+				for (int i = 0; i < renderBlockStates.length; i++) {
+					ItemStack stack = consumer.getStackInSlot(i);
+					Block block = Block.getBlockFromItem(stack.getItem());
+					renderBlockStates[i] = block.getDefaultState();
+				}
+				sendChangesToClient();
+			});
+		} else {
+			renderBlockStates = null;
+		}
+		retracting = false;
 		Direction facing = world.getBlockState(pos).get(DrawBridgeBlock.FACING);
 		trySetBlock(facing);
 		extended = ++extendState > 0;
-		sendChangesToClient();
+		if (extendState == 10) {
+			for (int i = 1; i < 11; i++) {
+				BlockPos tpos = pos.offset(facing, i);
+				BlockState state = world.getBlockState(tpos);
+				world.notifyBlockUpdate(tpos, state, state, 2);
+			}
+			sendChangesToClient();
+		}
 	}
 	
 	private void trySetBlock(Direction facing) {
@@ -193,24 +212,35 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 		}
 	}
 	
+	private BlockState[] intermedate = new BlockState[10];
+	
 	private void retract() {
 		Direction facing = world.getBlockState(pos).get(DrawBridgeBlock.FACING);
+		if(!retracting) {
+			for (int i = 1; i < 11; i++) {
+				BlockPos tpos = pos.offset(facing, i);
+				intermedate[i - 1] = world.getBlockState(tpos);
+				world.setBlockState(tpos, Blocks.AIR.getDefaultState());
+			}
+		}
+		retracting = true;
 		extended = --extendState > 0;
 		tryRemoveBlock(facing);
+		if (!extended) {
+			sendChangesToClient();
+		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void tryRemoveBlock(Direction facing) {
 		if (ourBlocks[extendState] && slots.isPresent()) {
-			BlockPos newPos = pos.offset(facing, extendState + 1);
-			if (!world.isAirBlock(newPos)) {
+			if (!intermedate[extendState].isAir()) {
 				slots.ifPresent(inventory -> {
-					BlockState state = world.getBlockState(newPos);
+					BlockState state = intermedate[extendState];
 					Block block = state.getBlock();
 					
 					ItemStack stack = new ItemStack(block);
 					inventory.getInventory().setInventorySlotContents(extendState, stack);
-					
-					world.setBlockState(newPos, Blocks.AIR.getDefaultState(), 68);
 				});
 			}
 		}
@@ -319,6 +349,10 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 		return extended;
 	}
 	
+	public boolean isRetracting() {
+		return retracting;
+	}
+	
 	public int getSpeed() {
 		return speed;
 	}
@@ -349,8 +383,18 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 		if (renderBlockState != null) {
 			compound.put("render", NBTUtil.writeBlockState(renderBlockState));
 		}
-		compound.putInt("exstate", extendState);
-		compound.putInt("lspeed", localSpeed);
+		if (extendState < 10 && extendState > 0) {
+			compound.putInt("exstate", extendState);
+			compound.putInt("lspeed", localSpeed);
+			compound.putBoolean("retracting", retracting);
+		}
+		if(renderBlockStates != null) {
+			ListNBT nbt = new ListNBT();
+			for (int i = 0; i < renderBlockStates.length; i++) {
+				nbt.add(NBTUtil.writeBlockState(renderBlockStates[i]));
+			}
+			compound.put("renderstacks", nbt);
+		}
 	}
 	
 	private void readRenderState(CompoundNBT compound) {
@@ -359,8 +403,21 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 		} else {
 			renderBlockState = null;
 		}
-		extendState = compound.getInt("exstate");
-		localSpeed = compound.getInt("lspeed");
+		if(compound.contains("renderstacks")) {
+			ListNBT nbt = compound.getList("renderstacks", 10);
+			renderBlockStates = new BlockState[nbt.size()];
+			for (int i = 0; i < renderBlockStates.length; i++) {
+				CompoundNBT cmp = (CompoundNBT) nbt.get(i);
+				renderBlockStates[renderBlockStates.length - i - 1] = NBTUtil.readBlockState(cmp);
+			}
+		}
+		if (compound.contains("exstate")) {
+			extendState = compound.getInt("exstate");
+			localSpeed = compound.getInt("lspeed");
+			retracting = compound.getBoolean("retracting");
+		} else {
+			extendState = 0;
+		}
 	}
 	
 	// Sync methods chunk
@@ -388,31 +445,10 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	}
 	
 	@OnlyIn(Dist.CLIENT)
-	public float getOffsetX(float ticks) {
-		Direction facing = world.getBlockState(pos).get(DrawBridgeBlock.FACING);
-		return facing.getXOffset() * (localSpeed / (float) speed);
+	public float getOffset() {
+		return retracting ? (1 - (localSpeed / (float) speed)):(localSpeed / (float) speed);
 	}
 	
-	@OnlyIn(Dist.CLIENT)
-	public float getOffsetY(float ticks) {
-		// TODO Cache facing
-		Direction facing = world.getBlockState(pos).get(DrawBridgeBlock.FACING);
-		return facing.getYOffset() * (localSpeed / (float) speed);
-	}
-	
-	@OnlyIn(Dist.CLIENT)
-	public float getOffsetZ(float ticks) {
-		Direction facing = world.getBlockState(pos).get(DrawBridgeBlock.FACING);
-		return facing.getZOffset() * (localSpeed / (float) speed);
-	}
-	
-	public float getProgress(float ticks) {
-		if (ticks > 1.0F) {
-			ticks = 1.0F;
-		}
-		return 1;
-	}
-		
 	// Model data
 	
 	@Override

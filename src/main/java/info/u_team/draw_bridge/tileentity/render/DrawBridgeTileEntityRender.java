@@ -25,6 +25,8 @@ public class DrawBridgeTileEntityRender extends TileEntityRenderer<DrawBridgeTil
 		BlockPos pos = tileEntityIn.getPos();
 		World world = this.getWorld();
 		Direction facing = world.getBlockState(pos).get(DrawBridgeBlock.FACING);
+		BlockState[] states = tileEntityIn.getBlocksToRender();
+		if (states.length <= 0) return;
 		if (tileEntityIn.getExtentState() < 10 && tileEntityIn.getExtentState() > 0) {
 			Tessellator tessellator = Tessellator.getInstance();
 			BufferBuilder bufferbuilder = tessellator.getBuffer();
@@ -42,12 +44,12 @@ public class DrawBridgeTileEntityRender extends TileEntityRenderer<DrawBridgeTil
 			BlockModelRenderer.enableCache();
 			bufferbuilder.begin(7, DefaultVertexFormats.BLOCK);
 			
-			BlockState[] states = tileEntityIn.getBlocksToRender();
-			for (int i = 0; i < states.length; i++) {
-				int off = i + 1;
-				BlockPos tmppos = pos.offset(facing, off);
-				bufferbuilder.setTranslation(x - tmppos.getX() + (facing.getXOffset() * off) - tileEntityIn.getOffsetX(partialTicks), y - tmppos.getY() + (facing.getYOffset() * off) - tileEntityIn.getOffsetY(partialTicks), z - tmppos.getZ() + (facing.getZOffset() * off) - tileEntityIn.getOffsetZ(partialTicks));
-				this.renderStateModel(tmppos, states[i], bufferbuilder, world, false);
+			float off = tileEntityIn.getOffset();
+			for (int i = 1; i <= tileEntityIn.getExtentState() + 1; i++) {
+				int of = tileEntityIn.getExtentState() - i + 1;
+				BlockPos tmppos = pos.offset(facing, i);
+				bufferbuilder.setTranslation(x - tmppos.getX() + (facing.getXOffset() * (i - off)), y - tmppos.getY() + (facing.getYOffset() * (i - off)), z - tmppos.getZ() + (facing.getZOffset() * (i - off)));
+				this.renderStateModel(tmppos, states[of], bufferbuilder, world, false);
 			}
 			
 			bufferbuilder.setTranslation(0.0D, 0.0D, 0.0D);
@@ -61,7 +63,7 @@ public class DrawBridgeTileEntityRender extends TileEntityRenderer<DrawBridgeTil
 	public boolean isGlobalRenderer(DrawBridgeTileEntity te) {
 		return true;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	private boolean renderStateModel(BlockPos pos, BlockState state, BufferBuilder buffer, World world, boolean checkSides) {
 		if (blockRenderer == null)
