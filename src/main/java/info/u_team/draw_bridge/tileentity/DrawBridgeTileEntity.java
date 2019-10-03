@@ -81,6 +81,9 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	private int localSpeed;
 	
 	private BlockState renderBlockState;
+	private BlockState[] renderBlockStates = null;
+	
+	private Direction facing = null;
 	
 	public DrawBridgeTileEntity() {
 		super(DrawBridgeTileEntityTypes.DRAW_BRIDGE);
@@ -167,10 +170,9 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 			sendChangesToClient();
 	}
 	
-	private BlockState[] renderBlockStates = null;
-	
 	private void extend() {
-		if(extendState == 0) {
+		Direction facing = getFacing();
+		if (extendState == 0) {
 			slots.ifPresent(consumer -> {
 				renderBlockStates = new BlockState[consumer.getSlots()];
 				for (int i = 0; i < renderBlockStates.length; i++) {
@@ -184,8 +186,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 			renderBlockStates = null;
 		}
 		retracting = false;
-		Direction facing = world.getBlockState(pos).get(DrawBridgeBlock.FACING);
-		trySetBlock(facing);
+		trySetBlock();
 		extended = ++extendState > 0;
 		if (extendState == 10) {
 			for (int i = 1; i < 11; i++) {
@@ -197,7 +198,8 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 		}
 	}
 	
-	private void trySetBlock(Direction facing) {
+	private void trySetBlock() {
+		Direction facing = getFacing();
 		BlockPos newPos = pos.offset(facing, extendState + 1);
 		if (slots.isPresent() && (world.isAirBlock(newPos) /* || world.getFluidState(newPos).getFluid() == Fluids.EMPTY */)) {
 			slots.ifPresent(inventory -> {
@@ -215,8 +217,8 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	private BlockState[] intermedate = new BlockState[10];
 	
 	private void retract() {
-		Direction facing = world.getBlockState(pos).get(DrawBridgeBlock.FACING);
-		if(!retracting) {
+		Direction facing = getFacing();
+		if (!retracting) {
 			for (int i = 1; i < 11; i++) {
 				BlockPos tpos = pos.offset(facing, i);
 				intermedate[i - 1] = world.getBlockState(tpos);
@@ -225,14 +227,14 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 		}
 		retracting = true;
 		extended = --extendState > 0;
-		tryRemoveBlock(facing);
+		tryRemoveBlock();
 		if (!extended) {
 			sendChangesToClient();
 		}
 	}
 	
 	@SuppressWarnings("deprecation")
-	private void tryRemoveBlock(Direction facing) {
+	private void tryRemoveBlock() {
 		if (ourBlocks[extendState] && slots.isPresent()) {
 			if (!intermedate[extendState].isAir()) {
 				slots.ifPresent(inventory -> {
@@ -341,6 +343,12 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	
 	// Getter and setter
 	
+	public Direction getFacing() {
+		if (this.facing == null)
+			this.facing = world.getBlockState(getPos()).get(DrawBridgeBlock.FACING);
+		return this.facing;
+	}
+	
 	public int getExtentState() {
 		return extendState;
 	}
@@ -388,7 +396,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 			compound.putInt("lspeed", localSpeed);
 			compound.putBoolean("retracting", retracting);
 		}
-		if(renderBlockStates != null) {
+		if (renderBlockStates != null) {
 			ListNBT nbt = new ListNBT();
 			for (int i = 0; i < renderBlockStates.length; i++) {
 				nbt.add(NBTUtil.writeBlockState(renderBlockStates[i]));
@@ -403,7 +411,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 		} else {
 			renderBlockState = null;
 		}
-		if(compound.contains("renderstacks")) {
+		if (compound.contains("renderstacks")) {
 			ListNBT nbt = compound.getList("renderstacks", 10);
 			renderBlockStates = new BlockState[nbt.size()];
 			for (int i = 0; i < renderBlockStates.length; i++) {
@@ -446,7 +454,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	
 	@OnlyIn(Dist.CLIENT)
 	public float getOffset() {
-		return retracting ? (1 - (localSpeed / (float) speed)):(localSpeed / (float) speed);
+		return retracting ? (1 - (localSpeed / (float) speed)) : (localSpeed / (float) speed);
 	}
 	
 	// Model data
