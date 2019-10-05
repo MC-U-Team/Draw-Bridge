@@ -188,7 +188,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 		if (retracting && extendState > 0) {
 			for (int i = 1; i < 11; i++) {
 				BlockPos tpos = pos.offset(facing, i);
-				world.setBlockState(tpos, intermedate[i - 1], 68);
+				world.setBlockState(tpos, renderBlockStates[i - 1], 68);
 			}
 		}
 		retracting = false;
@@ -219,18 +219,17 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 			ourBlocks[extendState] = false;
 		}
 	}
-	
-	private BlockState[] intermedate = new BlockState[10];
-	
+		
 	private void retract() {
 		Direction facing = getFacing();
 		if (!retracting) {
-			intermedate = new BlockState[10];
+			renderBlockStates = new BlockState[10];
 			for (int i = 1; i < 11; i++) {
 				BlockPos tpos = pos.offset(facing, i);
-				intermedate[i - 1] = world.getBlockState(tpos);
+				renderBlockStates[i - 1] = world.getBlockState(tpos);
 				world.setBlockState(tpos, Blocks.AIR.getDefaultState());
 			}
+			sendChangesToClient();
 		}
 		retracting = true;
 		extended = --extendState > 0;
@@ -243,9 +242,9 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	@SuppressWarnings("deprecation")
 	private void tryRemoveBlock() {
 		if (ourBlocks[extendState] && slots.isPresent()) {
-			if (!intermedate[extendState].isAir()) {
+			if (!renderBlockStates[extendState].isAir()) {
 				slots.ifPresent(inventory -> {
-					BlockState state = intermedate[extendState];
+					BlockState state = renderBlockStates[extendState];
 					Block block = state.getBlock();
 					
 					ItemStack stack = new ItemStack(block);

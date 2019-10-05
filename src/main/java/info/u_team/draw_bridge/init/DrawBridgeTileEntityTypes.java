@@ -2,9 +2,8 @@ package info.u_team.draw_bridge.init;
 
 import info.u_team.draw_bridge.DrawBridgeMod;
 import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
-import info.u_team.draw_bridge.tileentity.render.DrawBridgeTileEntityRender;
 import info.u_team.u_team_core.tileentitytype.UTileEntityType.UBuilder;
-import info.u_team.u_team_core.util.registry.*;
+import info.u_team.u_team_core.util.registry.BaseRegistryUtil;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
