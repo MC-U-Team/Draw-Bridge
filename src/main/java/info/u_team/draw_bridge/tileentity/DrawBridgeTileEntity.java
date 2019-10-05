@@ -172,6 +172,12 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	
 	private void extend() {
 		Direction facing = getFacing();
+		if (retracting && extendState > 0) {
+			for (int i = 1; i < 11; i++) {
+				BlockPos tpos = pos.offset(facing, i);
+				world.setBlockState(tpos, renderBlockStates[i - 1], 68);
+			}
+		}
 		if (extendState == 0) {
 			slots.ifPresent(consumer -> {
 				renderBlockStates = new BlockState[consumer.getSlots()];
@@ -184,12 +190,6 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 			});
 		} else {
 			renderBlockStates = null;
-		}
-		if (retracting && extendState > 0) {
-			for (int i = 1; i < 11; i++) {
-				BlockPos tpos = pos.offset(facing, i);
-				world.setBlockState(tpos, renderBlockStates[i - 1], 68);
-			}
 		}
 		retracting = false;
 		trySetBlock();
