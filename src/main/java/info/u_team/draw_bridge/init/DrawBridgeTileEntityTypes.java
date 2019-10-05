@@ -19,7 +19,6 @@ public class DrawBridgeTileEntityTypes {
 	@SubscribeEvent
 	public static void register(Register<TileEntityType<?>> event) {
 		BaseRegistryUtil.getAllGenericRegistryEntriesAndApplyNames(DrawBridgeMod.MODID, TileEntityType.class).forEach(event.getRegistry()::register);
-		ClientRegistry.registerSpecialTileEntityRenderer(DrawBridgeTileEntity.class, new DrawBridgeTileEntityRender());
 	}
 	
 }
