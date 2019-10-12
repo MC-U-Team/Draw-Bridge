@@ -77,6 +77,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	private boolean extended;
 	private boolean[] ourBlocks = new boolean[10];
 	private boolean retracting = false;
+	private boolean last = false;
 	
 	private int localSpeed;
 	
@@ -166,7 +167,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 			}
 		}
 		localSpeed--;
-		if (extendState > 0 && extendState < 10)
+		if ((extendState > 0 && extendState < 10) | last)
 			sendChangesToClient();
 	}
 	
@@ -348,6 +349,20 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	}
 	
 	// Getter and setter
+	@OnlyIn(Dist.CLIENT)
+	public boolean isLast() {
+		return last;
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	public boolean isRetracting() {
+		return retracting;
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public float getOffset() {
+		return retracting ? (1 - (localSpeed / (float) speed)) : (localSpeed / (float) speed);
+	}
 	
 	public Direction getFacing() {
 		if (this.facing == null)
@@ -362,11 +377,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	public boolean isExtended() {
 		return extended;
 	}
-	
-	public boolean isRetracting() {
-		return retracting;
-	}
-	
+		
 	public int getSpeed() {
 		return speed;
 	}
@@ -409,6 +420,9 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 			}
 			compound.put("renderstacks", nbt);
 		}
+		if(last) {
+			compound.putBoolean("last", last);
+		}
 	}
 	
 	private void readRenderState(CompoundNBT compound) {
@@ -431,6 +445,11 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 			retracting = compound.getBoolean("retracting");
 		} else {
 			extendState = 0;
+		}
+		if (compound.contains("last")) {
+			last = true;
+		} else {
+			last = false;
 		}
 	}
 	
@@ -457,12 +476,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 		requestModelDataUpdate();
 		world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 0);
 	}
-	
-	@OnlyIn(Dist.CLIENT)
-	public float getOffset() {
-		return retracting ? (1 - (localSpeed / (float) speed)) : (localSpeed / (float) speed);
-	}
-	
+
 	// Model data
 	
 	@Override
@@ -474,7 +488,6 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	}
 	
 	// Send update tag even if tag is empty
-	
 	@Override
 	public SUpdateTileEntityPacket getUpdatePacket() {
 		final CompoundNBT compound = new CompoundNBT();

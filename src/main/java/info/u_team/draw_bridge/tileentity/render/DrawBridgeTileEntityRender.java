@@ -27,7 +27,7 @@ public class DrawBridgeTileEntityRender extends TileEntityRenderer<DrawBridgeTil
 		BlockState[] states = tileEntityIn.getBlocksToRender();
 		if (states.length <= 0)
 			return;
-		if (tileEntityIn.getExtentState() < 10 && tileEntityIn.getExtentState() > 0) {
+		if ((tileEntityIn.getExtentState() < 10 && tileEntityIn.getExtentState() > 0) || tileEntityIn.isLast()) {
 			Tessellator tessellator = Tessellator.getInstance();
 			BufferBuilder bufferbuilder = tessellator.getBuffer();
 			this.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
