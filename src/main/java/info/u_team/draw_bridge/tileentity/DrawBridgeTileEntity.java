@@ -82,10 +82,11 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	private int localSpeed;
 	
 	private BlockState renderBlockState;
-	private BlockState[] renderBlockStates = null;
 	private BlockState[] tmpDrawbridge = new BlockState[10];
 
-	private Direction facing = null;
+	private BlockState[] renderBlockStates;
+	
+	private Direction facing;
 	
 	public DrawBridgeTileEntity() {
 		super(DrawBridgeTileEntityTypes.DRAW_BRIDGE);
@@ -209,7 +210,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 			ourBlocks[extendState] = false;
 		}
 	}
-		
+	
 	private void retract() {
 		sendRenderChanges();
 		retracting = true;
@@ -353,17 +354,14 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	}
 	
 	// Getter and setter
-	@OnlyIn(Dist.CLIENT)
 	public boolean isLast() {
 		return last;
 	}
 	
-	@OnlyIn(Dist.CLIENT)
 	public boolean isRetracting() {
 		return retracting;
 	}
-
-	@OnlyIn(Dist.CLIENT)
+	
 	public float getOffset() {
 		return retracting ? (1 - (localSpeed / (float) speed)) : (localSpeed / (float) speed);
 	}
@@ -381,7 +379,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	public boolean isExtended() {
 		return extended;
 	}
-		
+	
 	public int getSpeed() {
 		return speed;
 	}
@@ -425,7 +423,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 			compound.put("renderstacks", nbt);
 			renderBlockStates = null;
 		}
-		if(last) {
+		if (last) {
 			compound.putBoolean("last", last);
 		}
 	}
@@ -481,7 +479,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 		requestModelDataUpdate();
 		world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 0);
 	}
-
+	
 	// Model data
 	
 	@Override
@@ -493,6 +491,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	}
 	
 	// Send update tag even if tag is empty
+	
 	@Override
 	public SUpdateTileEntityPacket getUpdatePacket() {
 		final CompoundNBT compound = new CompoundNBT();
