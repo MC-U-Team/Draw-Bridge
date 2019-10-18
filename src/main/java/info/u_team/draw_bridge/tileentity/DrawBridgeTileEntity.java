@@ -213,6 +213,12 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	
 	private void retract() {
 		sendRenderChanges();
+		if(!retracting) {
+			for (int i = 1; i < 11; i++) {
+				BlockPos tpos = pos.offset(facing, i);
+				world.setBlockState(tpos, Blocks.AIR.getDefaultState());
+			}
+		}
 		retracting = true;
 		extended = --extendState > 0;
 		tryRemoveBlock();
