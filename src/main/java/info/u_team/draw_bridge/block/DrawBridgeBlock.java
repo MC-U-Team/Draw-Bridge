@@ -9,7 +9,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.EnumProperty;
+import net.minecraft.state.*;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.*;
@@ -20,10 +20,11 @@ import net.minecraft.world.*;
 public class DrawBridgeBlock extends UTileEntityBlock {
 	
 	public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
+	public static final BooleanProperty EXTENDED = BooleanProperty.create("extending");
 	
 	public DrawBridgeBlock(String name) {
 		super(name, DrawBridgeItemGroups.GROUP, Properties.create(Material.IRON).hardnessAndResistance(1.5F), () -> DrawBridgeTileEntityTypes.DRAW_BRIDGE);
-		setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
+		setDefaultState(getDefaultState().with(FACING, Direction.NORTH).with(EXTENDED, false));
 	}
 	
 	// Trigger drawbridge
@@ -48,6 +49,8 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+		if (state.getBlock() == newState.getBlock())
+			return;
 		isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).ifPresent(drawBridge -> {
 			drawBridge.getSlots().map(InventoryStackHandler::getInventory).ifPresent(inventory -> InventoryHelper.dropInventoryItems(world, pos, inventory));
 			drawBridge.getRenderSlot().map(InventoryStackHandler::getInventory).ifPresent(inventory -> InventoryHelper.dropInventoryItems(world, pos, inventory));
@@ -60,7 +63,7 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 	
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		return getDefaultState().with(FACING, context.getNearestLookingDirection().getOpposite());
+		return getDefaultState().with(FACING, context.getNearestLookingDirection().getOpposite()).with(EXTENDED, false);
 	}
 	
 	@Override
@@ -75,7 +78,7 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 	
 	@Override
 	protected void fillStateContainer(Builder<Block, BlockState> builder) {
-		builder.add(FACING);
+		builder.add(FACING).add(EXTENDED);
 	}
 	
 	@Override
@@ -101,7 +104,7 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 	
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-		return getShape(state, worldIn, pos, context);
+		return state.get(EXTENDED) ? getShape(state, worldIn, pos, context) : VoxelShapes.fullCube();
 	}
 	
 	@Override
