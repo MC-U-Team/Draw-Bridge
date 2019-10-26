@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.14.4-1.2.2.10] - 2019-09-30
+## [1.14.4-1.2.2.11] - 2019-10-26
 ### Changed
 - Added animation to drawbridge see [#8](https://github.com/MC-U-Team/Draw-Bridge/issues/8)
 - Fixed an issue regarding none normal cube blocks see [#10](https://github.com/MC-U-Team/Draw-Bridge/issues/10)
