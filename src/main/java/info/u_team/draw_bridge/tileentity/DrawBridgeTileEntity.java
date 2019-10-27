@@ -196,6 +196,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 				world.notifyBlockUpdate(tpos, state, state, 2);
 			}
 			sendChangesToClient();
+			world.setBlockState(pos, getBlockState().with(DrawBridgeBlock.EXTENDED, false), 3);
 		}
 	}
 	
@@ -218,6 +219,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	private void retract() {
 		sendRenderChanges();
 		if (!retracting) {
+			world.setBlockState(pos, getBlockState().with(DrawBridgeBlock.EXTENDED, true), 3);
 			for (int i = 1; i < 11; i++) {
 				BlockPos tpos = pos.offset(facing, i);
 				world.setBlockState(tpos, Blocks.AIR.getDefaultState());
@@ -446,7 +448,6 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 		if (renderBlockStates != null) {
 			ListNBT nbt = new ListNBT();
 			for (int i = 0; i < renderBlockStates.length; i++) {
-				System.out.println(renderBlockStates[i].getBlock().getRegistryName());
 				nbt.add(NBTUtil.writeBlockState(renderBlockStates[i]));
 			}
 			compound.put("renderstacks", nbt);
@@ -469,7 +470,6 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 			for (int i = 0; i < renderBlockStates.length; i++) {
 				CompoundNBT cmp = (CompoundNBT) nbt.get(i);
 				renderBlockStates[renderBlockStates.length - i - 1] = NBTUtil.readBlockState(cmp);
-				System.out.println(renderBlockStates[renderBlockStates.length - i - 1].getBlock().getRegistryName());
 			}
 		}
 		if (compound.contains("exstate")) {
