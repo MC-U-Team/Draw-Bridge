@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.14.4-1.2.3.12] - 2019-10-27
+### Changed
+- Fixed an issue with synchonisation see [#8](https://github.com/MC-U-Team/Draw-Bridge/issues/8)
+- Fixed an issue with the collision shape see [#8](https://github.com/MC-U-Team/Draw-Bridge/issues/8)
+
 ## [1.14.4-1.2.3.11] - 2019-10-26
 ### Changed
 - Added animation to drawbridge see [#8](https://github.com/MC-U-Team/Draw-Bridge/issues/8)
