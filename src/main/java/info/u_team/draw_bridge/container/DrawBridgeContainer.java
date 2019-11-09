@@ -37,7 +37,10 @@ public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEnti
 		addServerToClientTracker(tileEntity.getSpeedHolder());
 		addServerToClientTracker(tileEntity.getNeedRedstoneHolder());
 		speedMessage = addClientToServerTracker(new MessageHolder(buffer -> tileEntity.setSpeed(buffer.readByte())));
-		needRedstoneMessage = addClientToServerTracker(new EmptyMessageHolder(() -> tileEntity.setNeedRedstone(!tileEntity.isNeedRedstone())));
+		needRedstoneMessage = addClientToServerTracker(new EmptyMessageHolder(() -> {
+			tileEntity.setNeedRedstone(!tileEntity.isNeedRedstone());
+			tileEntity.neighborChanged();
+		}));
 	}
 	
 	@Override

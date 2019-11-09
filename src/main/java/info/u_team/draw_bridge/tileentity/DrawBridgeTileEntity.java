@@ -385,20 +385,6 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 		return needRedstoneHolder;
 	}
 	
-	// @OnlyIn(Dist.CLIENT)
-	// @Override
-	// public void sendToServer(PacketBuffer buffer) {
-	// buffer.writeVarInt(speed);
-	// buffer.writeBoolean(needRedstone);
-	// }
-	//
-	// @Override
-	// public void handleFromClient(PacketBuffer buffer) {
-	// speed = buffer.readVarInt();
-	// needRedstone = buffer.readBoolean();
-	// neighborChanged();
-	// }
-	
 	// Getter and setter
 	public boolean isLast() {
 		return last;
