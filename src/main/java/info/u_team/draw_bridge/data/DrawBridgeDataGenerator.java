@@ -2,7 +2,7 @@ package info.u_team.draw_bridge.data;
 
 import info.u_team.draw_bridge.DrawBridgeMod;
 import info.u_team.draw_bridge.data.provider.*;
-import net.minecraft.data.DataGenerator;
+import info.u_team.u_team_core.data.GenerationData;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -13,10 +13,10 @@ public class DrawBridgeDataGenerator {
 	
 	@SubscribeEvent
 	public static void data(GatherDataEvent event) {
-		final DataGenerator generator = event.getGenerator();
+		final GenerationData data = new GenerationData(DrawBridgeMod.MODID, event);
 		if (event.includeServer()) {
-			generator.addProvider(new DrawBridgeLootTableProvider(generator)); // Generate loot tables
-			generator.addProvider(new DrawBridgeRecipesProvider(generator)); // Generate recipes
+			data.addProvider(DrawBridgeLootTableProvider::new);
+			data.addProvider(DrawBridgeRecipesProvider::new);
 		}
 	}
 	

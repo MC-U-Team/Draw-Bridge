@@ -4,18 +4,19 @@ import static info.u_team.draw_bridge.init.DrawBridgeBlocks.DRAW_BRIDGE;
 
 import java.util.function.Consumer;
 
+import info.u_team.u_team_core.data.*;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.*;
 import net.minecraftforge.common.Tags;
 
 public class DrawBridgeRecipesProvider extends CommonRecipesProvider {
 	
-	public DrawBridgeRecipesProvider(DataGenerator generator) {
-		super(generator);
+	public DrawBridgeRecipesProvider(GenerationData data) {
+		super(data);
 	}
 	
 	@Override
-	protected void addRecipes(Consumer<IFinishedRecipe> consumer) {
+	protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
 		ShapedRecipeBuilder.shapedRecipe(DRAW_BRIDGE) //
 				.patternLine("ICI") //
 				.patternLine("RPR") //
