@@ -7,11 +7,11 @@ import info.u_team.draw_bridge.block.DrawBridgeBlock;
 import info.u_team.draw_bridge.container.DrawBridgeContainer;
 import info.u_team.draw_bridge.init.*;
 import info.u_team.draw_bridge.util.*;
-import info.u_team.u_team_core.api.sync.IAutoSyncedTileEntity;
-import info.u_team.u_team_core.container.USyncedTileEntityContainer;
+import info.u_team.u_team_core.api.sync.*;
 import info.u_team.u_team_core.tileentity.UTileEntity;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.*;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.*;
 import net.minecraft.nbt.*;
 import net.minecraft.network.PacketBuffer;
@@ -24,7 +24,7 @@ import net.minecraftforge.api.distmarker.*;
 import net.minecraftforge.client.model.data.*;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEntity, IAutoSyncedTileEntity {
+public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEntity, IInitSyncedTileEntity {
 	
 	public static final ModelProperty<BlockState> BLOCKSTATE_PROPERTY = new ModelProperty<BlockState>();
 	
@@ -88,6 +88,11 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	private BlockState[] renderBlockStates;
 	
 	private Direction facing;
+	
+	// Used for syncing the data in containers
+	private final BufferReferenceHolder extendedHolder = BufferReferenceHolder.createBooleanHolder(() -> extended, value -> extended = value);
+	private final BufferReferenceHolder speedHolder = BufferReferenceHolder.createByteHolder(() -> (byte) speed, value -> speed = value); // The speed is only in the range of 0 to 100 so we can cast to a byte here
+	private final BufferReferenceHolder needRedstoneHolder = BufferReferenceHolder.createBooleanHolder(() -> needRedstone, value -> needRedstone = value);
 	
 	public DrawBridgeTileEntity() {
 		super(DrawBridgeTileEntityTypes.DRAW_BRIDGE);
@@ -185,7 +190,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 		}
 		retracting = false;
 		trySetBlock();
-		if(extendState == 0) {
+		if (extendState == 0) {
 			world.setBlockState(pos, getBlockState().with(DrawBridgeBlock.EXTENDED, true), 3);
 		}
 		extended = ++extendState > 0;
@@ -227,7 +232,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 		}
 		retracting = true;
 		extended = --extendState > 0;
-		if(!extended) {
+		if (!extended) {
 			world.setBlockState(pos, getBlockState().with(DrawBridgeBlock.EXTENDED, false), 3);
 		}
 		tryRemoveBlock();
@@ -333,7 +338,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	// Container
 	
 	@Override
-	public USyncedTileEntityContainer<?> createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
+	public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
 		return new DrawBridgeContainer(id, playerInventory, this);
 	}
 	
@@ -352,36 +357,47 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 		return renderSlot;
 	}
 	
-	// Sync methods container
+	// Sync methods for container
 	
 	@Override
-	public void sendToClient(PacketBuffer buffer) {
+	public void sendInitialDataBuffer(PacketBuffer buffer) {
 		buffer.writeBoolean(extended);
 		buffer.writeVarInt(speed);
 		buffer.writeBoolean(needRedstone);
 	}
 	
-	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void handleFromServer(PacketBuffer buffer) {
+	public void handleInitialDataBuffer(PacketBuffer buffer) {
 		extended = buffer.readBoolean();
 		speed = buffer.readVarInt();
 		needRedstone = buffer.readBoolean();
 	}
 	
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public void sendToServer(PacketBuffer buffer) {
-		buffer.writeVarInt(speed);
-		buffer.writeBoolean(needRedstone);
+	public BufferReferenceHolder getExtendedHolder() {
+		return extendedHolder;
 	}
 	
-	@Override
-	public void handleFromClient(PacketBuffer buffer) {
-		speed = buffer.readVarInt();
-		needRedstone = buffer.readBoolean();
-		neighborChanged();
+	public BufferReferenceHolder getSpeedHolder() {
+		return speedHolder;
 	}
+	
+	public BufferReferenceHolder getNeedRedstoneHolder() {
+		return needRedstoneHolder;
+	}
+	
+	// @OnlyIn(Dist.CLIENT)
+	// @Override
+	// public void sendToServer(PacketBuffer buffer) {
+	// buffer.writeVarInt(speed);
+	// buffer.writeBoolean(needRedstone);
+	// }
+	//
+	// @Override
+	// public void handleFromClient(PacketBuffer buffer) {
+	// speed = buffer.readVarInt();
+	// needRedstone = buffer.readBoolean();
+	// neighborChanged();
+	// }
 	
 	// Getter and setter
 	public boolean isLast() {
@@ -528,5 +544,4 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 		sendUpdateStateData(compound);
 		return new SUpdateTileEntityPacket(pos, -1, compound);
 	}
-	
 }

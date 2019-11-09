@@ -5,9 +5,11 @@ import info.u_team.draw_bridge.container.DrawBridgeContainer;
 import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
 import info.u_team.u_team_core.gui.UContainerScreen;
 import info.u_team.u_team_core.gui.elements.BetterFontSlider;
+import io.netty.buffer.Unpooled;
 import net.minecraft.client.gui.widget.ToggleWidget;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.*;
@@ -17,6 +19,7 @@ public class DrawBridgeScreen extends UContainerScreen<DrawBridgeContainer> {
 	
 	private static final ResourceLocation BACKGROUND = new ResourceLocation(DrawBridgeMod.MODID, "textures/gui/draw_bridge.png");
 	
+	private ToggleWidget button;
 	private BetterFontSlider slider;
 	
 	public DrawBridgeScreen(DrawBridgeContainer container, PlayerInventory playerInventory, ITextComponent title) {
@@ -29,14 +32,13 @@ public class DrawBridgeScreen extends UContainerScreen<DrawBridgeContainer> {
 		super.init();
 		final DrawBridgeTileEntity drawBridge = container.getTileEntity();
 		
-		final ToggleWidget button = addButton(new ToggleWidget(guiLeft + 132, guiTop + 62, 20, 20, drawBridge.isNeedRedstone()) {
+		button = addButton(new ToggleWidget(guiLeft + 132, guiTop + 62, 20, 20, drawBridge.isNeedRedstone()) {
 			
 			@Override
 			public void onClick(double mouseX, double mouseY) {
 				final boolean newState = !drawBridge.isNeedRedstone();
-				drawBridge.setNeedRedstone(newState);
 				setStateTriggered(newState);
-				drawBridge.sendDataToServer();
+				container.getNeedRedstoneMessage().triggerMessage();
 			}
 			
 			@Override
@@ -48,13 +50,12 @@ public class DrawBridgeScreen extends UContainerScreen<DrawBridgeContainer> {
 		});
 		button.initTextureValues(xSize, 0, 20, 20, BACKGROUND);
 		
-		addButton(slider = new BetterFontSlider(guiLeft + 7, guiTop + 62, 90, 20, I18n.format("container.drawbridge.draw_bridge.speed") + " ", " " + I18n.format("container.drawbridge.draw_bridge.ticks"), 0, 100, drawBridge.getSpeed(), false, true, 1, null) {
+		slider = addButton(new BetterFontSlider(guiLeft + 7, guiTop + 62, 90, 20, I18n.format("container.drawbridge.draw_bridge.speed") + " ", " " + I18n.format("container.drawbridge.draw_bridge.ticks"), 0, 100, drawBridge.getSpeed(), false, true, 1, null) {
 			
 			@Override
 			public void onRelease(double mouseX, double mouseY) {
 				super.onRelease(mouseX, mouseY);
-				drawBridge.setSpeed(slider.getValueInt());
-				drawBridge.sendDataToServer();
+				container.getSpeedMessage().triggerMessage(() -> new PacketBuffer(Unpooled.buffer(1).writeByte(slider.getValueInt())));
 			}
 		});
 	}
@@ -79,6 +80,11 @@ public class DrawBridgeScreen extends UContainerScreen<DrawBridgeContainer> {
 			slider.mouseReleased(mouseX, mouseY, mouseButton);
 		}
 		return super.mouseReleased(mouseX, mouseY, mouseButton);
+	}
+	
+	@Override
+	public void tick() {
+		super.tick();
 	}
 	
 }

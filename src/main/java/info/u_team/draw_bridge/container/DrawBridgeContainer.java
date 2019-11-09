@@ -4,13 +4,19 @@ import info.u_team.draw_bridge.container.slot.DrawBridgeSlot;
 import info.u_team.draw_bridge.init.DrawBridgeContainerTypes;
 import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
 import info.u_team.draw_bridge.util.InventoryStackHandler;
-import info.u_team.u_team_core.container.USyncedTileEntityContainer;
+import info.u_team.u_team_core.api.sync.MessageHolder;
+import info.u_team.u_team_core.api.sync.MessageHolder.EmptyMessageHolder;
+import info.u_team.u_team_core.container.UTileEntityContainer;
 import net.minecraft.entity.player.*;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
-public class DrawBridgeContainer extends USyncedTileEntityContainer<DrawBridgeTileEntity> {
+public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEntity> {
+	
+	// Messages from the client to the server
+	private MessageHolder speedMessage;
+	private EmptyMessageHolder needRedstoneMessage;
 	
 	// Client
 	public DrawBridgeContainer(int id, PlayerInventory playerInventory, PacketBuffer buffer) {
@@ -27,6 +33,11 @@ public class DrawBridgeContainer extends USyncedTileEntityContainer<DrawBridgeTi
 		tileEntity.getSlots().map(InventoryStackHandler::getInventory).ifPresent(slots -> appendInventory(slots, (inv, index, xPosition, yPosition) -> new DrawBridgeSlot(tileEntity, inv, index, xPosition, yPosition), 2, 5, 8, 18));
 		tileEntity.getRenderSlot().ifPresent(slot -> appendInventory(slot, 1, 1, 134, 18));
 		appendPlayerInventory(playerInventory, 8, 102);
+		addServerToClientTracker(tileEntity.getExtendedHolder());
+		addServerToClientTracker(tileEntity.getSpeedHolder());
+		addServerToClientTracker(tileEntity.getNeedRedstoneHolder());
+		speedMessage = addClientToServerTracker(new MessageHolder(buffer -> tileEntity.setSpeed(buffer.readByte())));
+		needRedstoneMessage = addClientToServerTracker(new EmptyMessageHolder(() -> tileEntity.setNeedRedstone(!tileEntity.isNeedRedstone())));
 	}
 	
 	@Override
@@ -70,5 +81,13 @@ public class DrawBridgeContainer extends USyncedTileEntityContainer<DrawBridgeTi
 		}
 		
 		return itemstack;
+	}
+	
+	public MessageHolder getSpeedMessage() {
+		return speedMessage;
+	}
+	
+	public EmptyMessageHolder getNeedRedstoneMessage() {
+		return needRedstoneMessage;
 	}
 }
