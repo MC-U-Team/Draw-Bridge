@@ -1,0 +1,8 @@
+{
+	"block.drawbridge.draw_bridge": "Zugbrücke",
+	"container.drawbridge.draw_bridge": "Zugbrücke",
+	"container.drawbridge.draw_bridge.need_redstone": "Wird ein Redstonesignal benötigt?",
+	"container.drawbridge.draw_bridge.speed": "Geschwindigkeit:",
+	"container.drawbridge.draw_bridge.ticks": "Ticks",
+	"itemGroup.drawbridge.group": "Zugbrücke"
+}

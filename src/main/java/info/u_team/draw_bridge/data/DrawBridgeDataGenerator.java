@@ -21,6 +21,7 @@ public class DrawBridgeDataGenerator {
 		if (event.includeClient()) {
 			data.addProvider(DrawBridgeBlockStatesProvider::new);
 			data.addProvider(DrawBridgeItemModelsProvider::new);
+			data.addProvider(DrawBridgeLanguagesProvider::new);
 		}
 	}
 	
