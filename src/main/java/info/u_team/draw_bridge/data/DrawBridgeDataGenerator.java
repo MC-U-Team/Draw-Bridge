@@ -18,6 +18,10 @@ public class DrawBridgeDataGenerator {
 			data.addProvider(DrawBridgeLootTableProvider::new);
 			data.addProvider(DrawBridgeRecipesProvider::new);
 		}
+		if (event.includeClient()) {
+			data.addProvider(DrawBridgeBlockStatesProvider::new);
+			data.addProvider(DrawBridgeItemModelsProvider::new);
+		}
 	}
 	
 }
