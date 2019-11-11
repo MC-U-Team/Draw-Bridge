@@ -112,6 +112,11 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 		return getShape(state, worldIn, pos, null);
 	}
 	
+	@Override
+	public boolean isSolid(BlockState state) {
+		return false;
+	}
+	
 	// Simulate light for render blocks that emit light
 	
 	// @Override
