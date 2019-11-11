@@ -307,7 +307,6 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 			for (int i = 0; i < tmpDrawbridge.length; i++) {
 				CompoundNBT cmp = (CompoundNBT) nbt.get(i);
 				tmpDrawbridge[i] = NBTUtil.readBlockState(cmp);
-				System.out.println(tmpDrawbridge[i].getBlock().getRegistryName());
 			}
 		}
 	}

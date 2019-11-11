@@ -81,6 +81,8 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 		builder.add(FACING).add(EXTENDED);
 	}
 	
+	// Shapes
+	
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
 		Direction facing = state.get(FACING);
