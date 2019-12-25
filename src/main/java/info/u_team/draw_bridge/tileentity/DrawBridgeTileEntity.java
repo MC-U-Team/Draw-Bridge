@@ -180,12 +180,12 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 				ItemStack itemstack = inventory.getStackInSlot(extendState);
 				if (itemstack.isEmpty()) {
 					ourBlocks[extendState] = false;
-					return;
+				} else {
+					Block block = Block.getBlockFromItem(itemstack.getItem());
+					world.setBlockState(newPos, block.getDefaultState(), 2);
+					inventory.getInventory().removeStackFromSlot(extendState);
+					ourBlocks[extendState] = true;
 				}
-				Block block = Block.getBlockFromItem(itemstack.getItem());
-				world.setBlockState(newPos, block.getDefaultState(), 2);
-				inventory.getInventory().removeStackFromSlot(extendState);
-				ourBlocks[extendState] = true;
 			});
 		} else {
 			ourBlocks[extendState] = false;
