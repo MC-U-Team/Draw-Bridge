@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.14.4-1.3.0.14] - 2019-12-26
+### Removed
+ - Remove animation because that caused too many bugs
+ 
+### Changed
+ - Fix all bugs introduced with the animation
+ - Fixed a bug that will cause the drawbridge to loose it's blocks [#15](https://github.com/MC-U-Team/Draw-Bridge/issues/15)
+
 ## [1.14.4-1.2.3.13] - 2019-11-09
 ### Changed
  - Update to new uteamcore thus using the new packet holder sync system for containers
