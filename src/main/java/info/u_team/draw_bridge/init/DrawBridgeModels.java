@@ -21,7 +21,9 @@ public class DrawBridgeModels {
 		final ResourceLocation registyName = DrawBridgeBlocks.DRAW_BRIDGE.getRegistryName();
 		modelRegistry.entrySet().stream().filter(entry -> {
 			final ResourceLocation location = entry.getKey();
-			if(location == null) return false;
+			if (location == null) {
+				return false;
+			}
 			return location.getNamespace().equals(registyName.getNamespace()) && location.getPath().startsWith(registyName.getPath());
 		}).forEach(entry -> entry.setValue(new DrawBridgeModel(entry.getValue())));
 	}
