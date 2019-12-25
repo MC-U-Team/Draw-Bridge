@@ -38,7 +38,7 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 	// Open gui
 	
 	@Override
-	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+	public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
 		return openContainer(world, pos, player, true);
 	}
 	
