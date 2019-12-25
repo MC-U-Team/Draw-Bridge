@@ -168,20 +168,20 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	}
 	
 	private void extend() {
-		Direction facing = world.getBlockState(pos).get(DrawBridgeBlock.FACING);
+		final Direction facing = world.getBlockState(pos).get(DrawBridgeBlock.FACING);
 		trySetBlock(facing);
 		extended = ++extendState > 0;
 	}
 	
 	private void trySetBlock(Direction facing) {
-		BlockPos newPos = pos.offset(facing, extendState + 1);
+		final BlockPos newPos = pos.offset(facing, extendState + 1);
 		if ((world.isAirBlock(newPos) /* || world.getFluidState(newPos).getFluid() == Fluids.EMPTY */)) {
 			slots.ifPresent(inventory -> {
-				ItemStack itemstack = inventory.getStackInSlot(extendState);
+				final ItemStack itemstack = inventory.getStackInSlot(extendState);
 				if (itemstack.isEmpty()) {
 					ourBlocks[extendState] = false;
 				} else {
-					Block block = Block.getBlockFromItem(itemstack.getItem());
+					final Block block = Block.getBlockFromItem(itemstack.getItem());
 					world.setBlockState(newPos, block.getDefaultState(), 2);
 					inventory.getInventory().removeStackFromSlot(extendState);
 					ourBlocks[extendState] = true;
@@ -193,20 +193,20 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	}
 	
 	private void retract() {
-		Direction facing = world.getBlockState(pos).get(DrawBridgeBlock.FACING);
+		final Direction facing = world.getBlockState(pos).get(DrawBridgeBlock.FACING);
 		extended = --extendState > 0;
 		tryRemoveBlock(facing);
 	}
 	
 	private void tryRemoveBlock(Direction facing) {
 		if (ourBlocks[extendState]) {
-			BlockPos newPos = pos.offset(facing, extendState + 1);
+			final BlockPos newPos = pos.offset(facing, extendState + 1);
 			if (!world.isAirBlock(newPos)) {
 				slots.ifPresent(inventory -> {
-					BlockState state = world.getBlockState(newPos);
-					Block block = state.getBlock();
+					final BlockState state = world.getBlockState(newPos);
+					final Block block = state.getBlock();
 					
-					ItemStack stack = new ItemStack(block);
+					final ItemStack stack = new ItemStack(block);
 					inventory.getInventory().setInventorySlotContents(extendState, stack);
 					
 					world.setBlockState(newPos, Blocks.AIR.getDefaultState(), 2);
