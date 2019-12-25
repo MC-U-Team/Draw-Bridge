@@ -139,6 +139,9 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 		if (world.isRemote()) {
 			return;
 		}
+		if (!slots.isPresent()) {
+			return;
+		}
 		if (localSpeed <= 1) {
 			localSpeed = speed;
 			if (powered && extendState < 10) {
@@ -172,9 +175,13 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	
 	private void trySetBlock(Direction facing) {
 		BlockPos newPos = pos.offset(facing, extendState + 1);
-		if (slots.isPresent() && (world.isAirBlock(newPos) /* || world.getFluidState(newPos).getFluid() == Fluids.EMPTY */)) {
+		if ((world.isAirBlock(newPos) /* || world.getFluidState(newPos).getFluid() == Fluids.EMPTY */)) {
 			slots.ifPresent(inventory -> {
 				ItemStack itemstack = inventory.getStackInSlot(extendState);
+				if (itemstack.isEmpty()) {
+					ourBlocks[extendState] = false;
+					return;
+				}
 				Block block = Block.getBlockFromItem(itemstack.getItem());
 				world.setBlockState(newPos, block.getDefaultState(), 2);
 				inventory.getInventory().removeStackFromSlot(extendState);
@@ -192,7 +199,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	}
 	
 	private void tryRemoveBlock(Direction facing) {
-		if (ourBlocks[extendState] && slots.isPresent()) {
+		if (ourBlocks[extendState]) {
 			BlockPos newPos = pos.offset(facing, extendState + 1);
 			if (!world.isAirBlock(newPos)) {
 				slots.ifPresent(inventory -> {
@@ -205,6 +212,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 					world.setBlockState(newPos, Blocks.AIR.getDefaultState(), 2);
 				});
 			}
+			ourBlocks[extendState] = false;
 		}
 	}
 	
