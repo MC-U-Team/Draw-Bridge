@@ -22,7 +22,7 @@ public class DrawBridgeBlockStatesProvider extends CommonBlockStatesProvider {
 		getVariantBuilder(DRAW_BRIDGE).forAllStates(state -> {
 			final Direction direction = state.get(BlockStateProperties.FACING);
 			return ConfiguredModel.builder() //
-					.modelFile(cube("draw_bridge", side, side, front, back, side, side).texture("particle", side)) //
+					.modelFile(models().cube("draw_bridge", side, side, front, back, side, side).texture("particle", side)) //
 					.rotationX(direction == Direction.DOWN ? 90 : direction == Direction.UP ? 270 : 0) //
 					.rotationY(direction.getAxis().isVertical() ? 0 : (((int) direction.getHorizontalAngle()) + 180) % 360) //
 					.build(); //
