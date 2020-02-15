@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
  - Update to forge 31.1.0
  - Update to uteamcore 2.10.4.153
+ - Sign jar from now on
 
 ## [1.15.2-1.4.1.16] - 2020-01-23
 ### Changed
