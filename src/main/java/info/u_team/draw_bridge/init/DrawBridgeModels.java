@@ -18,7 +18,7 @@ public class DrawBridgeModels {
 	@SubscribeEvent
 	public static void register(ModelBakeEvent event) {
 		final Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
-		final ResourceLocation registyName = DrawBridgeBlocks.DRAW_BRIDGE.getRegistryName();
+		final ResourceLocation registyName = DrawBridgeBlocks.DRAW_BRIDGE.get().getRegistryName();
 		modelRegistry.entrySet().stream().filter(entry -> {
 			final ResourceLocation location = entry.getKey();
 			if (location == null) {
