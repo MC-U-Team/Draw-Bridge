@@ -16,7 +16,7 @@ public class DrawBridgeLootTableProvider extends CommonLootTablesProvider {
 	
 	@Override
 	protected void registerLootTables(BiConsumer<ResourceLocation, LootTable> consumer) {
-		registerBlock(DRAW_BRIDGE, addBasicBlockLootTable(DRAW_BRIDGE), consumer);
+		registerBlock(DRAW_BRIDGE, addBasicBlockLootTable(DRAW_BRIDGE.get()), consumer);
 	}
 	
 }

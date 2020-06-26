@@ -18,7 +18,7 @@ public class DrawBridgeLanguagesProvider extends CommonLanguagesProvider {
 		
 		// English
 		add(GROUP, "Drawbridge");
-		add(DRAW_BRIDGE, "Drawbridge");
+		addBlock(DRAW_BRIDGE, "Drawbridge");
 		add(container, "Drawbridge");
 		add(container + ".speed", "Speed:");
 		add(container + ".ticks", "Ticks");
@@ -26,7 +26,7 @@ public class DrawBridgeLanguagesProvider extends CommonLanguagesProvider {
 		
 		// German
 		add("de_de", GROUP, "Zugbrücke");
-		add("de_de", DRAW_BRIDGE, "Zugbrücke");
+		addBlock("de_de", DRAW_BRIDGE, "Zugbrücke");
 		add("de_de", container, "Zugbrücke");
 		add("de_de", container + ".speed", "Geschwindigkeit:");
 		add("de_de", container + ".ticks", "Ticks");

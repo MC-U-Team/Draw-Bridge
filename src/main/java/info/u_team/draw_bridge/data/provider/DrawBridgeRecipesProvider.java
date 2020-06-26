@@ -17,7 +17,7 @@ public class DrawBridgeRecipesProvider extends CommonRecipesProvider {
 	
 	@Override
 	protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
-		ShapedRecipeBuilder.shapedRecipe(DRAW_BRIDGE) //
+		ShapedRecipeBuilder.shapedRecipe(DRAW_BRIDGE.get()) //
 				.patternLine("ICI") //
 				.patternLine("RPR") //
 				.patternLine("RPR") //

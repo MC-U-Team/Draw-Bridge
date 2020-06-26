@@ -12,7 +12,7 @@ public class DrawBridgeItemModelsProvider extends CommonItemModelsProvider {
 	
 	@Override
 	protected void registerModels() {
-		simpleBlock(DRAW_BRIDGE);
+		simpleBlock(DRAW_BRIDGE.get());
 	}
 	
 }
