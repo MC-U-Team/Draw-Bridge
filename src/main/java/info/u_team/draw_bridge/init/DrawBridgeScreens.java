@@ -2,7 +2,7 @@ package info.u_team.draw_bridge.init;
 
 import info.u_team.draw_bridge.DrawBridgeMod;
 import info.u_team.draw_bridge.screen.DrawBridgeScreen;
-import net.minecraft.client.gui.ScreenManager;
+import info.u_team.u_team_core.util.registry.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -14,7 +14,9 @@ public class DrawBridgeScreens {
 	
 	@SubscribeEvent
 	public static void register(FMLClientSetupEvent event) {
-		ScreenManager.registerFactory(DrawBridgeContainerTypes.DRAW_BRIDGE, DrawBridgeScreen::new);
+		MainThreadWorker.run(() -> {
+			ClientRegistry.registryScreen(DrawBridgeContainerTypes.DRAW_BRIDGE, DrawBridgeScreen::new);
+		});
 	}
 	
 }
