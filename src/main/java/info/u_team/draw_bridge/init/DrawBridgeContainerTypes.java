@@ -3,21 +3,19 @@ package info.u_team.draw_bridge.init;
 import info.u_team.draw_bridge.DrawBridgeMod;
 import info.u_team.draw_bridge.container.DrawBridgeContainer;
 import info.u_team.u_team_core.containertype.UContainerType;
-import info.u_team.u_team_core.util.registry.BaseRegistryUtil;
+import info.u_team.u_team_core.util.registry.CommonDeferredRegister;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraftforge.event.RegistryEvent.Register;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.ForgeRegistries;
 
-@EventBusSubscriber(modid = DrawBridgeMod.MODID, bus = Bus.MOD)
 public class DrawBridgeContainerTypes {
+	
+	public static final CommonDeferredRegister<ContainerType<?>> CONTAINER_TYPES = CommonDeferredRegister.create(ForgeRegistries.CONTAINERS, DrawBridgeMod.MODID);
 	
 	public static final ContainerType<DrawBridgeContainer> DRAW_BRIDGE = new UContainerType<DrawBridgeContainer>("draw_bridge", DrawBridgeContainer::new);
 	
-	@SubscribeEvent
-	public static void register(Register<ContainerType<?>> event) {
-		BaseRegistryUtil.getAllGenericRegistryEntriesAndApplyNames(DrawBridgeMod.MODID, ContainerType.class).forEach(event.getRegistry()::register);
+	public static void register(IEventBus bus) {
+		CONTAINER_TYPES.register(bus);
 	}
 	
 }
