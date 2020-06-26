@@ -18,6 +18,7 @@ public class DrawBridgeMod {
 	private void register() {
 		BusRegister.registerMod(DrawBridgeBlocks::register);
 		BusRegister.registerMod(DrawBridgeContainerTypes::register);
+		BusRegister.registerMod(DrawBridgeTileEntityTypes::register);
 	}
 	
 }
