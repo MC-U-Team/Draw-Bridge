@@ -20,12 +20,12 @@ public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEnti
 	
 	// Client
 	public DrawBridgeContainer(int id, PlayerInventory playerInventory, PacketBuffer buffer) {
-		super(DrawBridgeContainerTypes.DRAW_BRIDGE, id, playerInventory, buffer);
+		super(DrawBridgeContainerTypes.DRAW_BRIDGE.get(), id, playerInventory, buffer);
 	}
 	
 	// Server
 	public DrawBridgeContainer(int id, PlayerInventory playerInventory, DrawBridgeTileEntity tileEntity) {
-		super(DrawBridgeContainerTypes.DRAW_BRIDGE, id, playerInventory, tileEntity);
+		super(DrawBridgeContainerTypes.DRAW_BRIDGE.get(), id, playerInventory, tileEntity);
 	}
 	
 	@Override

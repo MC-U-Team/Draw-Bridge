@@ -29,7 +29,7 @@ public class DrawBridgeSlot extends Slot {
 		if (stack == null || !(stack.getItem() instanceof BlockItem)) {
 			return false;
 		}
-		if (stack.getItem() == DrawBridgeBlocks.DRAW_BRIDGE.asItem()) {
+		if (stack.getItem() == DrawBridgeBlocks.DRAW_BRIDGE.get().asItem()) {
 			return false;
 		}
 		return true;

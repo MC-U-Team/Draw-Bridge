@@ -34,7 +34,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 		@Override
 		public boolean isItemValid(int index, ItemStack stack) {
 			final Item item = stack.getItem();
-			if (!(item instanceof BlockItem) || item == DrawBridgeBlocks.DRAW_BRIDGE.asItem()) {
+			if (!(item instanceof BlockItem) || item == DrawBridgeBlocks.DRAW_BRIDGE.get().asItem()) {
 				return false;
 			}
 			final Block block = ((BlockItem) item).getBlock();
@@ -63,7 +63,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 				return;
 			}
 			final Item item = stack.getItem();
-			if (!(item instanceof BlockItem) || item == DrawBridgeBlocks.DRAW_BRIDGE.asItem()) {
+			if (!(item instanceof BlockItem) || item == DrawBridgeBlocks.DRAW_BRIDGE.get().asItem()) {
 				return;
 			}
 			renderBlockState = ((BlockItem) item).getBlock().getDefaultState();
@@ -87,7 +87,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	private final BufferReferenceHolder needRedstoneHolder = BufferReferenceHolder.createBooleanHolder(() -> needRedstone, value -> needRedstone = value);
 	
 	public DrawBridgeTileEntity() {
-		super(DrawBridgeTileEntityTypes.DRAW_BRIDGE);
+		super(DrawBridgeTileEntityTypes.DRAW_BRIDGE.get());
 	}
 	
 	// Neighbor update
@@ -127,7 +127,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	}
 	
 	private List<BlockPos> getNeighbors(BlockPos except) {
-		return getPosExcept(pos, except).filter(pos -> world.getBlockState(pos).getBlock() == DrawBridgeBlocks.DRAW_BRIDGE).collect(Collectors.toList());
+		return getPosExcept(pos, except).filter(pos -> world.getBlockState(pos).getBlock() == DrawBridgeBlocks.DRAW_BRIDGE.get()).collect(Collectors.toList());
 	}
 	
 	private Stream<BlockPos> getPosExcept(BlockPos start, BlockPos except) {

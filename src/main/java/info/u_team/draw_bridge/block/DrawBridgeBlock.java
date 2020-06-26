@@ -21,7 +21,7 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 	public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
 	
 	public DrawBridgeBlock() {
-		super(DrawBridgeItemGroups.GROUP, Properties.create(Material.IRON).hardnessAndResistance(1.5F), () -> DrawBridgeTileEntityTypes.DRAW_BRIDGE);
+		super(DrawBridgeItemGroups.GROUP, Properties.create(Material.IRON).hardnessAndResistance(1.5F), DrawBridgeTileEntityTypes.DRAW_BRIDGE);
 		setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
 	}
 	
