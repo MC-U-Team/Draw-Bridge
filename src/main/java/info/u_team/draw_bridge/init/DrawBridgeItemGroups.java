@@ -5,6 +5,6 @@ import info.u_team.u_team_core.itemgroup.UItemGroup;
 
 public class DrawBridgeItemGroups {
 	
-	public static final UItemGroup GROUP = new UItemGroup(DrawBridgeMod.MODID, "group", () -> DrawBridgeBlocks.DRAW_BRIDGE);
+	public static final UItemGroup GROUP = new UItemGroup(DrawBridgeMod.MODID, "group", DrawBridgeBlocks.DRAW_BRIDGE);
 	
 }
