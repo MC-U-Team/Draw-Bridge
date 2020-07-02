@@ -15,7 +15,7 @@ public class DrawBridgeScreens {
 	@SubscribeEvent
 	public static void register(FMLClientSetupEvent event) {
 		MainThreadWorker.run(() -> {
-			ClientRegistry.registryScreen(DrawBridgeContainerTypes.DRAW_BRIDGE, DrawBridgeScreen::new);
+			ClientRegistry.registerScreen(DrawBridgeContainerTypes.DRAW_BRIDGE, DrawBridgeScreen::new);
 		});
 	}
 	
