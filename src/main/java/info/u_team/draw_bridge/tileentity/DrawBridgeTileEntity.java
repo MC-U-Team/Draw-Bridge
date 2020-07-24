@@ -362,6 +362,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	@Override
 	public void handleChunkLoadData(CompoundNBT compound) {
 		readRenderState(compound);
+		world.getChunkProvider().getLightManager().checkBlock(pos);
 	}
 	
 	@Override
@@ -374,6 +375,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 		readRenderState(compound);
 		requestModelDataUpdate();
 		world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 0);
+		world.getChunkProvider().getLightManager().checkBlock(pos);
 	}
 	
 	// Model data
