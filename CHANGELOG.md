@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [1.15.2-1.5.1.21] - 2020-07-24
 ### Changed
+ - Fixed crash [#18](https://github.com/MC-U-Team/Draw-Bridge/issues/18) and [#19](https://github.com/MC-U-Team/Draw-Bridge/issues/19)
+ - Allow non solid blocks now
+ - Use the right shape of the camouflage block
+ - Use the light value of the camouflage block
 
 ## [1.15.2-1.5.0.20] - 2020-07-02
 ### Changed
