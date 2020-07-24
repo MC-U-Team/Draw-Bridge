@@ -14,14 +14,15 @@ import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
-import net.minecraft.world.World;
+import net.minecraft.util.math.shapes.*;
+import net.minecraft.world.*;
 
 public class DrawBridgeBlock extends UTileEntityBlock {
 	
 	public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
 	
 	public DrawBridgeBlock() {
-		super(DrawBridgeItemGroups.GROUP, Properties.create(Material.IRON).hardnessAndResistance(1.5F), DrawBridgeTileEntityTypes.DRAW_BRIDGE);
+		super(DrawBridgeItemGroups.GROUP, Properties.create(Material.IRON).hardnessAndResistance(1.5F).notSolid().variableOpacity(), DrawBridgeTileEntityTypes.DRAW_BRIDGE);
 		setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
 	}
 	
@@ -75,6 +76,13 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 	@Override
 	protected void fillStateContainer(Builder<Block, BlockState> builder) {
 		builder.add(FACING);
+	}
+	
+	@Override
+	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+		return isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).filter(DrawBridgeTileEntity::hasRenderBlockState).map(drawBridge -> {
+			return drawBridge.getRenderBlockState().getShape(world, pos, context);
+		}).orElse(VoxelShapes.fullCube());
 	}
 	
 	// Simulate light for render blocks that emit light
