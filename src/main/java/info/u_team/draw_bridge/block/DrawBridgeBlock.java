@@ -78,6 +78,8 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 		builder.add(FACING);
 	}
 	
+	// Simulate camoflage block
+	
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
 		return isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).filter(DrawBridgeTileEntity::hasRenderBlockState).map(drawBridge -> {
