@@ -23,7 +23,7 @@ public class DrawBridgeModel extends BakedModelWrapper<IBakedModel> {
 	public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData data) {
 		final IBakedModel model = getModel(data);
 		if (model != null) {
-			return model.getQuads(state, side, rand, data);
+			return model.getQuads(data.getData(DrawBridgeTileEntity.BLOCKSTATE_PROPERTY), side, rand, data);
 		}
 		return super.getQuads(state, side, rand, data);
 	}
