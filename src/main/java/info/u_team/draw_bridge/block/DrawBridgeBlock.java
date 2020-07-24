@@ -6,7 +6,7 @@ import info.u_team.draw_bridge.util.InventoryStackHandler;
 import info.u_team.u_team_core.block.UTileEntityBlock;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.BlockItemUseContext;
@@ -17,7 +17,6 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.*;
 import net.minecraft.world.*;
-import net.minecraft.world.server.ServerWorld;
 
 public class DrawBridgeBlock extends UTileEntityBlock {
 	
@@ -94,6 +93,13 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 		return isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).filter(DrawBridgeTileEntity::hasRenderBlockState).map(drawBridge -> {
 			return drawBridge.getRenderBlockState().getSoundType(world, pos, entity);
 		}).orElse(super.getSoundType(state, world, pos, entity));
+	}
+	
+	@Override
+	public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
+		return isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).filter(DrawBridgeTileEntity::hasRenderBlockState).map(drawBridge -> {
+			return drawBridge.getRenderBlockState().getLightValue(world, pos);
+		}).orElse(super.getLightValue(state, world, pos));
 	}
 	
 	// Simulate light for render blocks that emit light
