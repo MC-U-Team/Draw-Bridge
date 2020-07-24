@@ -37,8 +37,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 			if (!(item instanceof BlockItem) || item == DrawBridgeBlocks.DRAW_BRIDGE.get().asItem()) {
 				return false;
 			}
-			final Block block = ((BlockItem) item).getBlock();
-			return block.getDefaultState().isSolid();
+			return true;
 		}
 		
 		@Override
