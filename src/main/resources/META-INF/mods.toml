@@ -23,7 +23,7 @@ authors="HyCraftHD, MrTroble"
 	[[dependencies.drawbridge]]
 	    modId="minecraft"
 	    mandatory=true
-	    versionRange="[1.15.2]"
+	    versionRange="[1.16.4]"
 	    ordering="NONE"
 	    side="BOTH"
 	    
