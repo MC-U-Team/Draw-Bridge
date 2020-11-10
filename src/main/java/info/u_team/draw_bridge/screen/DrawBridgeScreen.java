@@ -1,20 +1,19 @@
 package info.u_team.draw_bridge.screen;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import info.u_team.draw_bridge.DrawBridgeMod;
 import info.u_team.draw_bridge.container.DrawBridgeContainer;
 import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
-import info.u_team.u_team_core.gui.UContainerScreen;
 import info.u_team.u_team_core.gui.elements.BetterFontSlider;
+import info.u_team.u_team_core.screen.UContainerScreen;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.gui.widget.ToggleWidget;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.*;
+import net.minecraft.util.text.*;
 
-@OnlyIn(Dist.CLIENT)
 public class DrawBridgeScreen extends UContainerScreen<DrawBridgeContainer> {
 	
 	private static final ResourceLocation BACKGROUND = new ResourceLocation(DrawBridgeMod.MODID, "textures/gui/draw_bridge.png");
@@ -42,15 +41,15 @@ public class DrawBridgeScreen extends UContainerScreen<DrawBridgeContainer> {
 			}
 			
 			@Override
-			public void renderToolTip(int mouseX, int mouseY) {
+			public void renderToolTip(MatrixStack matrixStack, int mouseX, int mouseY) {
 				if (isHovered()) {
-					renderTooltip(I18n.format("container.drawbridge.draw_bridge.need_redstone"), mouseX, mouseY);
+					renderTooltip(matrixStack, new TranslationTextComponent("container.drawbridge.draw_bridge.need_redstone"), mouseX, mouseY);
 				}
 			}
 		});
 		button.initTextureValues(xSize, 0, 20, 20, BACKGROUND);
 		
-		slider = addButton(new BetterFontSlider(guiLeft + 7, guiTop + 62, 90, 20, I18n.format("container.drawbridge.draw_bridge.speed") + " ", " " + I18n.format("container.drawbridge.draw_bridge.ticks"), 0, 100, drawBridge.getSpeed(), false, true, 1, null) {
+		slider = addButton(new BetterFontSlider(guiLeft + 7, guiTop + 62, 90, 20, new TranslationTextComponent("container.drawbridge.draw_bridge.speed").appendString(" "), new StringTextComponent(" ").append(new TranslationTextComponent("container.drawbridge.draw_bridge.ticks")), 0, 100, drawBridge.getSpeed(), false, true, 1, null) {
 			
 			@Override
 			public void onRelease(double mouseX, double mouseY) {
@@ -61,17 +60,17 @@ public class DrawBridgeScreen extends UContainerScreen<DrawBridgeContainer> {
 	}
 	
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks) {
-		renderBackground();
-		super.render(mouseX, mouseY, partialTicks);
-		buttons.forEach(button -> button.renderToolTip(mouseX, mouseY));
-		renderHoveredToolTip(mouseX, mouseY);
+	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+		renderBackground(matrixStack);
+		super.render(matrixStack, mouseX, mouseY, partialTicks);
+		buttons.forEach(button -> button.renderToolTip(matrixStack, mouseX, mouseY));
+		renderHoveredTooltip(matrixStack, mouseX, mouseY);
 	}
 	
 	@Override
-	public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		font.drawString(title.getFormattedText(), 8, 6, 4210752);
-		font.drawString(playerInventory.getDisplayName().getFormattedText(), 8.0F, ySize - 94, 4210752);
+	public void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
+		font.func_243246_a(matrixStack, title, 8, 6, 4210752);
+		font.func_243246_a(matrixStack, playerInventory.getDisplayName(), 8.0F, ySize - 94, 4210752);
 	}
 	
 	@Override
