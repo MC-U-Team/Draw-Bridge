@@ -10,6 +10,7 @@ public class DrawBridgeClientConstruct implements IModConstruct {
 	@Override
 	public void construct() {
 		BusRegister.registerMod(DrawBridgeModels::registerMod);
+		BusRegister.registerMod(DrawBridgeRenderTypes::registerMod);
 	}
 	
 }
