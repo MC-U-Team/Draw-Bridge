@@ -8,7 +8,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class DrawBridgeScreens {
 	
 	private static void setup(FMLClientSetupEvent event) {
-		MainThreadWorker.run(() -> {
+		event.enqueueWork(() -> {
 			ClientRegistry.registerScreen(DrawBridgeContainerTypes.DRAW_BRIDGE, DrawBridgeScreen::new);
 		});
 	}
