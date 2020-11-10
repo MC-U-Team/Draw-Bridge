@@ -11,6 +11,7 @@ public class DrawBridgeClientConstruct implements IModConstruct {
 	public void construct() {
 		BusRegister.registerMod(DrawBridgeModels::registerMod);
 		BusRegister.registerMod(DrawBridgeRenderTypes::registerMod);
+		BusRegister.registerMod(DrawBridgeScreens::registerMod);
 	}
 	
 }
