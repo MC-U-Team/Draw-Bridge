@@ -15,7 +15,7 @@ public class DrawBridgeContainerTypes {
 	
 	public static final RegistryObject<ContainerType<DrawBridgeContainer>> DRAW_BRIDGE = CONTAINER_TYPES.register("draw_bridge", () -> new UContainerType<DrawBridgeContainer>(DrawBridgeContainer::new));
 	
-	public static void register(IEventBus bus) {
+	public static void registerMod(IEventBus bus) {
 		CONTAINER_TYPES.register(bus);
 	}
 	

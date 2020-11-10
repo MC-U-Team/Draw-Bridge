@@ -13,7 +13,7 @@ public class DrawBridgeTileEntityTypes {
 	
 	public static final RegistryObject<TileEntityType<DrawBridgeTileEntity>> DRAW_BRIDGE = TILE_ENTITY_TYPES.register("draw_bridge", () -> TileEntityType.Builder.create(DrawBridgeTileEntity::new, DrawBridgeBlocks.DRAW_BRIDGE.get()));
 	
-	public static void register(IEventBus bus) {
+	public static void registerMod(IEventBus bus) {
 		TILE_ENTITY_TYPES.register(bus);
 	}
 	

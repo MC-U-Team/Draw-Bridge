@@ -12,7 +12,7 @@ public class DrawBridgeBlocks {
 	
 	public static final BlockRegistryObject<DrawBridgeBlock, BlockItem> DRAW_BRIDGE = BLOCKS.register("draw_bridge", DrawBridgeBlock::new);
 	
-	public static void register(IEventBus bus) {
+	public static void registerMod(IEventBus bus) {
 		BLOCKS.register(bus);
 	}
 	

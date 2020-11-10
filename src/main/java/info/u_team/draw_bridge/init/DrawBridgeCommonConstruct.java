@@ -9,9 +9,9 @@ public class DrawBridgeCommonConstruct implements IModConstruct {
 	
 	@Override
 	public void construct() {
-		BusRegister.registerMod(DrawBridgeBlocks::register);
-		BusRegister.registerMod(DrawBridgeContainerTypes::register);
-		BusRegister.registerMod(DrawBridgeTileEntityTypes::register);
+		BusRegister.registerMod(DrawBridgeBlocks::registerMod);
+		BusRegister.registerMod(DrawBridgeContainerTypes::registerMod);
+		BusRegister.registerMod(DrawBridgeTileEntityTypes::registerMod);
 	}
 	
 }
