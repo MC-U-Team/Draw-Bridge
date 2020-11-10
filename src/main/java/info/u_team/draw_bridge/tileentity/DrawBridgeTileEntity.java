@@ -218,7 +218,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	// NBT
 	
 	@Override
-	public void readNBT(CompoundNBT compound) {
+	public void readNBT(BlockState state, CompoundNBT compound) {
 		slots.ifPresent(inventory -> inventory.deserializeNBT(compound.getCompound("slots")));
 		renderSlot.ifPresent(inventory -> inventory.deserializeNBT(compound.getCompound("render_slot")));
 		
