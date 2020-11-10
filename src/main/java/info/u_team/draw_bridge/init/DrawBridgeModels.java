@@ -2,21 +2,15 @@ package info.u_team.draw_bridge.init;
 
 import java.util.Map;
 
-import info.u_team.draw_bridge.DrawBridgeMod;
 import info.u_team.draw_bridge.model.DrawBridgeModel;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.eventbus.api.IEventBus;
 
-@EventBusSubscriber(modid = DrawBridgeMod.MODID, bus = Bus.MOD, value = Dist.CLIENT)
 public class DrawBridgeModels {
 	
-	@SubscribeEvent
-	public static void register(ModelBakeEvent event) {
+	private static void onModelBake(ModelBakeEvent event) {
 		final Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
 		final ResourceLocation registyName = DrawBridgeBlocks.DRAW_BRIDGE.get().getRegistryName();
 		modelRegistry.entrySet().stream().filter(entry -> {
@@ -26,6 +20,10 @@ public class DrawBridgeModels {
 			}
 			return location.getNamespace().equals(registyName.getNamespace()) && location.getPath().startsWith(registyName.getPath());
 		}).forEach(entry -> entry.setValue(new DrawBridgeModel(entry.getValue())));
+	}
+	
+	public static void registerMod(IEventBus bus) {
+		bus.addListener(DrawBridgeModels::onModelBake);
 	}
 	
 }
