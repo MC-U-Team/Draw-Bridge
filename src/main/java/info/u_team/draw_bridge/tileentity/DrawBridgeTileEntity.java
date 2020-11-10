@@ -74,7 +74,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	private boolean needRedstone = true;
 	private int extendState;
 	private boolean extended;
-	private boolean[] ourBlocks = new boolean[10];
+	private final boolean[] ourBlocks = new boolean[10];
 	
 	private int localSpeed;
 	
