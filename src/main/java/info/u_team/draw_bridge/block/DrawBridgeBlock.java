@@ -89,6 +89,13 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 	}
 	
 	@Override
+	public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+		return isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).filter(DrawBridgeTileEntity::hasRenderBlockState).map(drawBridge -> {
+			return drawBridge.getRenderBlockState().getCollisionShape(world, pos, context);
+		}).orElse(VoxelShapes.fullCube());
+	}
+	
+	@Override
 	public SoundType getSoundType(BlockState state, IWorldReader world, BlockPos pos, Entity entity) {
 		return isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).filter(DrawBridgeTileEntity::hasRenderBlockState).map(drawBridge -> {
 			return drawBridge.getRenderBlockState().getSoundType(world, pos, entity);
