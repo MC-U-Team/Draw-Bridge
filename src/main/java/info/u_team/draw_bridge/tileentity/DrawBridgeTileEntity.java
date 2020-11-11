@@ -69,9 +69,6 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 		}
 	};
 	
-	// private final LazyOptional<InventoryStackHandler> slotsOptional = LazyOptional.of(() -> slots);
-	// private final LazyOptional<InventoryStackHandler> renderSlotOptional = LazyOptional.of(() -> renderSlot);
-	
 	private boolean powered;
 	private int speed;
 	private boolean needRedstone = true;
