@@ -6,7 +6,7 @@ import info.u_team.draw_bridge.DrawBridgeMod;
 import info.u_team.draw_bridge.container.DrawBridgeContainer;
 import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
 import info.u_team.u_team_core.gui.elements.BetterFontSlider;
-import info.u_team.u_team_core.screen.UContainerScreen;
+import info.u_team.u_team_core.screen.*;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.gui.widget.ToggleWidget;
 import net.minecraft.entity.player.PlayerInventory;
@@ -14,7 +14,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.*;
 
-public class DrawBridgeScreen extends UContainerScreen<DrawBridgeContainer> {
+public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer> {
 	
 	private static final ResourceLocation BACKGROUND = new ResourceLocation(DrawBridgeMod.MODID, "textures/gui/draw_bridge.png");
 	
@@ -22,7 +22,7 @@ public class DrawBridgeScreen extends UContainerScreen<DrawBridgeContainer> {
 	private BetterFontSlider slider;
 	
 	public DrawBridgeScreen(DrawBridgeContainer container, PlayerInventory playerInventory, ITextComponent title) {
-		super(container, playerInventory, title, BACKGROUND);
+		super(container, playerInventory, title, BACKGROUND, 176, 184);
 		ySize = 184;
 	}
 	
