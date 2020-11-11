@@ -8,7 +8,7 @@ import info.u_team.draw_bridge.container.DrawBridgeContainer;
 import info.u_team.draw_bridge.init.*;
 import info.u_team.draw_bridge.util.*;
 import info.u_team.u_team_core.api.sync.*;
-import info.u_team.u_team_core.tileentity.UTileEntity;
+import info.u_team.u_team_core.tileentity.*;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.*;
 import net.minecraft.inventory.container.Container;
@@ -24,7 +24,7 @@ import net.minecraftforge.api.distmarker.*;
 import net.minecraftforge.client.model.data.*;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEntity, IInitSyncedTileEntity {
+public class DrawBridgeTileEntity extends UTickableTileEntity implements ITickableTileEntity, IInitSyncedTileEntity {
 	
 	public static final ModelProperty<BlockState> BLOCKSTATE_PROPERTY = new ModelProperty<BlockState>();
 	
@@ -134,10 +134,7 @@ public class DrawBridgeTileEntity extends UTileEntity implements ITickableTileEn
 	}
 	
 	@Override
-	public void tick() {
-		if (world.isRemote()) {
-			return;
-		}
+	public void tickServer() {
 		if (!slots.isPresent()) {
 			return;
 		}
