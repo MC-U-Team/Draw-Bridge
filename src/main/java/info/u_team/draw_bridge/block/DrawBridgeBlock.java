@@ -4,7 +4,7 @@ import info.u_team.draw_bridge.init.*;
 import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
 import info.u_team.u_team_core.block.UTileEntityBlock;
 import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
+import net.minecraft.block.material.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
@@ -19,10 +19,12 @@ import net.minecraft.world.*;
 
 public class DrawBridgeBlock extends UTileEntityBlock {
 	
+	private static final Material DRAW_BRIDGE = new Material.Builder(MaterialColor.IRON).notOpaque().build();
+	
 	public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
 	
 	public DrawBridgeBlock() {
-		super(DrawBridgeItemGroups.GROUP, Properties.create(Material.IRON).hardnessAndResistance(1.5F).notSolid().variableOpacity(), DrawBridgeTileEntityTypes.DRAW_BRIDGE);
+		super(DrawBridgeItemGroups.GROUP, Properties.create(DRAW_BRIDGE).hardnessAndResistance(1.5F).notSolid().variableOpacity(), DrawBridgeTileEntityTypes.DRAW_BRIDGE);
 		setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
 	}
 	
