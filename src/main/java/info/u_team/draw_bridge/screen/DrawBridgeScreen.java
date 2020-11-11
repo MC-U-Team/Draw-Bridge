@@ -6,7 +6,7 @@ import info.u_team.draw_bridge.DrawBridgeMod;
 import info.u_team.draw_bridge.container.DrawBridgeContainer;
 import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
 import info.u_team.u_team_core.gui.elements.BetterFontSlider;
-import info.u_team.u_team_core.screen.*;
+import info.u_team.u_team_core.screen.UBasicContainerScreen;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.gui.widget.ToggleWidget;
 import net.minecraft.entity.player.PlayerInventory;
@@ -60,30 +60,11 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 	}
 	
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(matrixStack);
-		super.render(matrixStack, mouseX, mouseY, partialTicks);
-		buttons.forEach(button -> button.renderToolTip(matrixStack, mouseX, mouseY));
-		renderHoveredTooltip(matrixStack, mouseX, mouseY);
-	}
-	
-	@Override
-	public void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
-		font.func_243246_a(matrixStack, title, 8, 6, 4210752);
-		font.func_243246_a(matrixStack, playerInventory.getDisplayName(), 8.0F, ySize - 94, 4210752);
-	}
-	
-	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
 		if (slider != null) {
 			slider.mouseReleased(mouseX, mouseY, mouseButton);
 		}
 		return super.mouseReleased(mouseX, mouseY, mouseButton);
-	}
-	
-	@Override
-	public void tick() {
-		super.tick();
 	}
 	
 }
