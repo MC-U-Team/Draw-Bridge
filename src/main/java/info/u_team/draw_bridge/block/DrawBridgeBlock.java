@@ -2,7 +2,6 @@ package info.u_team.draw_bridge.block;
 
 import info.u_team.draw_bridge.init.*;
 import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
-import info.u_team.draw_bridge.util.InventoryStackHandler;
 import info.u_team.u_team_core.block.UTileEntityBlock;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
@@ -50,8 +49,8 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 	@Override
 	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
 		isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).ifPresent(drawBridge -> {
-			drawBridge.getSlots().map(InventoryStackHandler::getInventory).ifPresent(inventory -> InventoryHelper.dropInventoryItems(world, pos, inventory));
-			drawBridge.getRenderSlot().map(InventoryStackHandler::getInventory).ifPresent(inventory -> InventoryHelper.dropInventoryItems(world, pos, inventory));
+			InventoryHelper.dropInventoryItems(world, pos, drawBridge.getSlots().getInventory());
+			InventoryHelper.dropInventoryItems(world, pos, drawBridge.getRenderSlot().getInventory());
 			world.updateComparatorOutputLevel(pos, this);
 		});
 		super.onReplaced(state, world, pos, newState, isMoving);
