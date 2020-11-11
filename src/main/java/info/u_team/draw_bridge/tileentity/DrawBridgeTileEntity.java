@@ -8,7 +8,7 @@ import info.u_team.draw_bridge.container.DrawBridgeContainer;
 import info.u_team.draw_bridge.init.*;
 import info.u_team.draw_bridge.util.*;
 import info.u_team.u_team_core.api.sync.*;
-import info.u_team.u_team_core.tileentity.*;
+import info.u_team.u_team_core.tileentity.UTickableTileEntity;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.*;
 import net.minecraft.inventory.container.Container;
@@ -16,7 +16,7 @@ import net.minecraft.item.*;
 import net.minecraft.nbt.*;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.*;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
@@ -24,7 +24,7 @@ import net.minecraftforge.api.distmarker.*;
 import net.minecraftforge.client.model.data.*;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class DrawBridgeTileEntity extends UTickableTileEntity implements ITickableTileEntity, IInitSyncedTileEntity {
+public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSyncedTileEntity {
 	
 	public static final ModelProperty<BlockState> BLOCKSTATE_PROPERTY = new ModelProperty<BlockState>();
 	
