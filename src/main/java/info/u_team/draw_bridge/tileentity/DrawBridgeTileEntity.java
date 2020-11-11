@@ -22,14 +22,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
 import net.minecraftforge.api.distmarker.*;
 import net.minecraftforge.client.model.data.*;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSyncedTileEntity {
 	
 	public static final ModelProperty<BlockState> BLOCKSTATE_PROPERTY = new ModelProperty<BlockState>();
 	
-	private final LazyOptional<InventoryStackHandler> slots = LazyOptional.of(() -> new SingleStackInventoryStackHandler(10));
-	private final LazyOptional<InventoryStackHandler> renderSlot = LazyOptional.of(() -> new SingleStackInventoryStackHandler(1) {
+	private final InventoryStackHandler slots = new SingleStackInventoryStackHandler(10);
+	
+	private final InventoryStackHandler renderSlot = new SingleStackInventoryStackHandler(1) {
 		
 		@Override
 		public boolean isItemValid(int index, ItemStack stack) {
@@ -67,7 +67,10 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 			}
 			renderBlockState = ((BlockItem) item).getBlock().getDefaultState();
 		}
-	});
+	};
+	
+	// private final LazyOptional<InventoryStackHandler> slotsOptional = LazyOptional.of(() -> slots);
+	// private final LazyOptional<InventoryStackHandler> renderSlotOptional = LazyOptional.of(() -> renderSlot);
 	
 	private boolean powered;
 	private int speed;
@@ -135,9 +138,6 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	
 	@Override
 	public void tickServer() {
-		if (!slots.isPresent()) {
-			return;
-		}
 		if (localSpeed <= 1) {
 			localSpeed = speed;
 			if (powered && extendState < 10) {
@@ -172,17 +172,15 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	private void trySetBlock(Direction facing) {
 		final BlockPos newPos = pos.offset(facing, extendState + 1);
 		if ((world.isAirBlock(newPos) /* || world.getFluidState(newPos).getFluid() == Fluids.EMPTY */)) {
-			slots.ifPresent(inventory -> {
-				final ItemStack itemstack = inventory.getStackInSlot(extendState);
-				if (itemstack.isEmpty()) {
-					ourBlocks[extendState] = false;
-				} else {
-					final Block block = Block.getBlockFromItem(itemstack.getItem());
-					world.setBlockState(newPos, block.getDefaultState(), 2);
-					inventory.getInventory().removeStackFromSlot(extendState);
-					ourBlocks[extendState] = true;
-				}
-			});
+			final ItemStack itemstack = slots.getStackInSlot(extendState);
+			if (itemstack.isEmpty()) {
+				ourBlocks[extendState] = false;
+			} else {
+				final Block block = Block.getBlockFromItem(itemstack.getItem());
+				world.setBlockState(newPos, block.getDefaultState(), 2);
+				slots.getInventory().removeStackFromSlot(extendState);
+				ourBlocks[extendState] = true;
+			}
 		} else {
 			ourBlocks[extendState] = false;
 		}
@@ -198,15 +196,13 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 		if (ourBlocks[extendState]) {
 			final BlockPos newPos = pos.offset(facing, extendState + 1);
 			if (!world.isAirBlock(newPos)) {
-				slots.ifPresent(inventory -> {
-					final BlockState state = world.getBlockState(newPos);
-					final Block block = state.getBlock();
-					
-					final ItemStack stack = new ItemStack(block);
-					inventory.getInventory().setInventorySlotContents(extendState, stack);
-					
-					world.setBlockState(newPos, Blocks.AIR.getDefaultState(), 2);
-				});
+				final BlockState state = world.getBlockState(newPos);
+				final Block block = state.getBlock();
+				
+				final ItemStack stack = new ItemStack(block);
+				slots.getInventory().setInventorySlotContents(extendState, stack);
+				
+				world.setBlockState(newPos, Blocks.AIR.getDefaultState(), 2);
 			}
 			ourBlocks[extendState] = false;
 		}
@@ -216,8 +212,8 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	
 	@Override
 	public void readNBT(BlockState state, CompoundNBT compound) {
-		slots.ifPresent(inventory -> inventory.deserializeNBT(compound.getCompound("slots")));
-		renderSlot.ifPresent(inventory -> inventory.deserializeNBT(compound.getCompound("render_slot")));
+		slots.deserializeNBT(compound.getCompound("slots"));
+		renderSlot.deserializeNBT(compound.getCompound("render_slot"));
 		
 		powered = compound.getBoolean("powered");
 		extendState = compound.getInt("extend");
@@ -237,8 +233,8 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	
 	@Override
 	public void writeNBT(CompoundNBT compound) {
-		slots.ifPresent(inventory -> compound.put("slots", inventory.serializeNBT()));
-		renderSlot.ifPresent(inventory -> compound.put("render_slot", inventory.serializeNBT()));
+		compound.put("slots", slots.serializeNBT());
+		compound.put("render_slot", renderSlot.serializeNBT());
 		
 		compound.putBoolean("powered", powered);
 		compound.putInt("extend", extendState);
@@ -266,11 +262,11 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	
 	// Slot getter
 	
-	public LazyOptional<InventoryStackHandler> getSlots() {
+	public InventoryStackHandler getSlots() {
 		return slots;
 	}
 	
-	public LazyOptional<InventoryStackHandler> getRenderSlot() {
+	public InventoryStackHandler getRenderSlot() {
 		return renderSlot;
 	}
 	
