@@ -3,7 +3,6 @@ package info.u_team.draw_bridge.container;
 import info.u_team.draw_bridge.container.slot.DrawBridgeSlot;
 import info.u_team.draw_bridge.init.DrawBridgeContainerTypes;
 import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
-import info.u_team.draw_bridge.util.InventoryStackHandler;
 import info.u_team.u_team_core.api.sync.MessageHolder;
 import info.u_team.u_team_core.api.sync.MessageHolder.EmptyMessageHolder;
 import info.u_team.u_team_core.container.UTileEntityContainer;
@@ -30,8 +29,8 @@ public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEnti
 	
 	@Override
 	protected void init(boolean server) {
-		tileEntity.getSlots().map(InventoryStackHandler::getInventory).ifPresent(slots -> appendInventory(slots, (inv, index, xPosition, yPosition) -> new DrawBridgeSlot(tileEntity, inv, index, xPosition, yPosition), 2, 5, 8, 18));
-		tileEntity.getRenderSlot().ifPresent(slot -> appendInventory(slot, 1, 1, 134, 18));
+		appendInventory(tileEntity.getSlots().getInventory(), (inv, index, xPosition, yPosition) -> new DrawBridgeSlot(tileEntity, inv, index, xPosition, yPosition), 2, 5, 8, 18);
+		appendInventory(tileEntity.getRenderSlot(), 1, 1, 134, 18);
 		appendPlayerInventory(playerInventory, 8, 102);
 		addServerToClientTracker(tileEntity.getExtendedHolder());
 		addServerToClientTracker(tileEntity.getSpeedHolder());
@@ -59,16 +58,10 @@ public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEnti
 					if (!mergeItemStack(itemstack1, 0, 10, false)) {
 						return ItemStack.EMPTY;
 					}
-					// if (!mergeItemStack(itemstack1, 11, 38, false)) {
-					// return ItemStack.EMPTY;
-					// }
 				} else {
 					if (!mergeItemStack(itemstack1, 0, 10, false)) {
 						return ItemStack.EMPTY;
 					}
-					// if (!mergeItemStack(itemstack1, 38, 47, false)) {
-					// return ItemStack.EMPTY;
-					// }
 				}
 			}
 			if (itemstack1.isEmpty()) {
