@@ -1,5 +1,6 @@
 package info.u_team.draw_bridge.container;
 
+import info.u_team.draw_bridge.block.DrawBridgeBlock;
 import info.u_team.draw_bridge.container.slot.DrawBridgeSlot;
 import info.u_team.draw_bridge.init.DrawBridgeContainerTypes;
 import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
@@ -7,6 +8,7 @@ import info.u_team.draw_bridge.util.DrawBridgeCamouflageRenderTypes;
 import info.u_team.u_team_core.api.sync.MessageHolder;
 import info.u_team.u_team_core.api.sync.MessageHolder.EmptyMessageHolder;
 import info.u_team.u_team_core.container.UTileEntityContainer;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.*;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -42,7 +44,15 @@ public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEnti
 			tileEntity.setNeedRedstone(!tileEntity.isNeedRedstone());
 			tileEntity.neighborChanged();
 		}));
-		camouflageTypeMessage = addClientToServerTracker(new MessageHolder(buffer -> buffer.readEnumValue(DrawBridgeCamouflageRenderTypes.class)));
+		camouflageTypeMessage = addClientToServerTracker(new MessageHolder(buffer -> {
+			final DrawBridgeCamouflageRenderTypes type = buffer.readEnumValue(DrawBridgeCamouflageRenderTypes.class);
+			if (tileEntity.hasWorld()) {
+				final BlockState previousState = tileEntity.getBlockState();
+				final BlockState newState = type.getBlock().getDefaultState().with(DrawBridgeBlock.FACING, previousState.get(DrawBridgeBlock.FACING));
+				tileEntity.getWorld().setBlockState(tileEntity.getPos(), newState, 2);
+				tileEntity.updateContainingBlockInfo();
+			}
+		}));
 	}
 	
 	@Override
