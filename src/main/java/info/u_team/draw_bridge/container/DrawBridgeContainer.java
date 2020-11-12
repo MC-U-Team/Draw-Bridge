@@ -19,7 +19,7 @@ public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEnti
 	// Messages from the client to the server
 	private MessageHolder speedMessage;
 	private EmptyMessageHolder needRedstoneMessage;
-	private MessageHolder camouflageTypeMessage;
+	private EmptyMessageHolder camouflageTypeMessage;
 	
 	// Client
 	public DrawBridgeContainer(int id, PlayerInventory playerInventory, PacketBuffer buffer) {
@@ -44,10 +44,10 @@ public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEnti
 			tileEntity.setNeedRedstone(!tileEntity.isNeedRedstone());
 			tileEntity.neighborChanged();
 		}));
-		camouflageTypeMessage = addClientToServerTracker(new MessageHolder(buffer -> {
-			final DrawBridgeCamouflageRenderTypes type = buffer.readEnumValue(DrawBridgeCamouflageRenderTypes.class);
+		camouflageTypeMessage = addClientToServerTracker(new EmptyMessageHolder(() -> {
 			if (tileEntity.hasWorld()) {
 				final BlockState previousState = tileEntity.getBlockState();
+				final DrawBridgeCamouflageRenderTypes type = DrawBridgeCamouflageRenderTypes.getType(previousState.getBlock());
 				if (previousState.getBlock() != type.getBlock()) {
 					final BlockState newState = type.getBlock().getDefaultState().with(DrawBridgeBlock.FACING, previousState.get(DrawBridgeBlock.FACING));
 					tileEntity.getWorld().setBlockState(tileEntity.getPos(), newState, 2);
@@ -102,7 +102,7 @@ public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEnti
 		return needRedstoneMessage;
 	}
 	
-	public MessageHolder getCamouflageTypeMessage() {
+	public EmptyMessageHolder getCamouflageTypeMessage() {
 		return camouflageTypeMessage;
 	}
 }
