@@ -55,7 +55,7 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 			sendChangesToClient();
 		}
 		
-		private void setRenderState() {
+		public void setRenderState() {
 			final ItemStack stack = getStackInSlot(0);
 			
 			if (stack.isEmpty()) {
