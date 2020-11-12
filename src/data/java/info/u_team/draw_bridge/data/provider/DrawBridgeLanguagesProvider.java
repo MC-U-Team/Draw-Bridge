@@ -23,6 +23,11 @@ public class DrawBridgeLanguagesProvider extends CommonLanguagesProvider {
 		add(container + ".speed", "Speed:");
 		add(container + ".ticks", "Ticks");
 		add(container + ".need_redstone", "Need redstone power?");
+		add(container + ".render_type.solid", "Solid");
+		add(container + ".render_type.cutout", "Cutout");
+		add(container + ".render_type.cutout_mipped", "Cutout Mipped");
+		add(container + ".render_type.translucent", "Translucent");
+		add(container + ".render_type.tripwire", "Tripwire");
 		
 		// German
 		add("de_de", GROUP, "Zugbrücke");
