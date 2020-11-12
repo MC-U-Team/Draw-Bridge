@@ -11,7 +11,7 @@ public class DrawBridgeTileEntityTypes {
 	
 	public static final TileEntityTypeDeferredRegister TILE_ENTITY_TYPES = TileEntityTypeDeferredRegister.create(DrawBridgeMod.MODID);
 	
-	public static final RegistryObject<TileEntityType<DrawBridgeTileEntity>> DRAW_BRIDGE = TILE_ENTITY_TYPES.register("draw_bridge", () -> TileEntityType.Builder.create(DrawBridgeTileEntity::new, DrawBridgeBlocks.DRAW_BRIDGE.get()));
+	public static final RegistryObject<TileEntityType<DrawBridgeTileEntity>> DRAW_BRIDGE = TILE_ENTITY_TYPES.register("draw_bridge", () -> TileEntityType.Builder.create(DrawBridgeTileEntity::new, DrawBridgeBlocks.DRAW_BRIDGE.get(), DrawBridgeBlocks.DRAW_BRIDGE_SOLID.get(), DrawBridgeBlocks.DRAW_BRIDGE_CUTOUT.get(), DrawBridgeBlocks.DRAW_BRIDGE_CUTOUT_MIPPED.get(), DrawBridgeBlocks.DRAW_BRIDGE_TRANSLUCTENT.get(), DrawBridgeBlocks.DRAW_BRIDGE_TRIPWIRE.get()));
 	
 	public static void registerMod(IEventBus bus) {
 		TILE_ENTITY_TYPES.register(bus);
