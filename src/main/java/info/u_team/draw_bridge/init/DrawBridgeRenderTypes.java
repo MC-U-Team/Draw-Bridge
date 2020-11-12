@@ -9,7 +9,7 @@ public class DrawBridgeRenderTypes {
 	private static void setup(FMLClientSetupEvent event) {
 		RenderTypeLookup.setRenderLayer(DrawBridgeBlocks.DRAW_BRIDGE_CUTOUT.get(), RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(DrawBridgeBlocks.DRAW_BRIDGE_CUTOUT_MIPPED.get(), RenderType.getCutoutMipped());
-		RenderTypeLookup.setRenderLayer(DrawBridgeBlocks.DRAW_BRIDGE_TRANSLUCTENT.get(), RenderType.getTranslucent());
+		RenderTypeLookup.setRenderLayer(DrawBridgeBlocks.DRAW_BRIDGE_TRANSLUCENT.get(), RenderType.getTranslucent());
 		RenderTypeLookup.setRenderLayer(DrawBridgeBlocks.DRAW_BRIDGE_TRIPWIRE.get(), RenderType.getTripwire());
 	}
 	
