@@ -9,6 +9,7 @@ import info.u_team.draw_bridge.util.DrawBridgeCamouflageRenderTypes;
 import info.u_team.u_team_core.gui.elements.*;
 import info.u_team.u_team_core.screen.UBasicContainerScreen;
 import io.netty.buffer.Unpooled;
+import net.minecraft.block.Block;
 import net.minecraft.client.gui.widget.ToggleWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
@@ -20,6 +21,9 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 	private static final ResourceLocation BACKGROUND = new ResourceLocation(DrawBridgeMod.MODID, "textures/gui/draw_bridge.png");
 	
 	private BetterFontSlider slider;
+	
+	private int updateCounter;
+	private Block currentBlock;
 	
 	public DrawBridgeScreen(DrawBridgeContainer container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title, BACKGROUND, 176, 184);
@@ -62,11 +66,11 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 			
 			@Override
 			public ITextComponent getMessage() {
-				return DrawBridgeCamouflageRenderTypes.getType(getContainer().getTileEntity().getWorld().getBlockState(getContainer().getTileEntity().getPos()).getBlock()).getTextComponent();
+				return DrawBridgeCamouflageRenderTypes.getType(currentBlock).getTextComponent();
 			};
 		});
 		renderTypeButton.setPressable(() -> {
-			container.getCamouflageTypeMessage().triggerMessage(() -> new PacketBuffer(Unpooled.buffer(8)).writeEnumValue(DrawBridgeCamouflageRenderTypes.getType(getContainer().getTileEntity().getBlockState().getBlock()).cycle()));
+			container.getCamouflageTypeMessage().triggerMessage(() -> new PacketBuffer(Unpooled.buffer(8)).writeEnumValue(DrawBridgeCamouflageRenderTypes.getType(currentBlock).cycle()));
 		});
 	}
 	
@@ -76,6 +80,18 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 			slider.mouseReleased(mouseX, mouseY, mouseButton);
 		}
 		return super.mouseReleased(mouseX, mouseY, mouseButton);
+	}
+	
+	@Override
+	public void tick() {
+		super.tick();
+		if (updateCounter % 10 == 0) {
+			updateCurrentBlock();
+		}
+	}
+	
+	private void updateCurrentBlock() {
+		currentBlock = getContainer().getTileEntity().getWorld().getBlockState(getContainer().getTileEntity().getPos()).getBlock();
 	}
 	
 }
