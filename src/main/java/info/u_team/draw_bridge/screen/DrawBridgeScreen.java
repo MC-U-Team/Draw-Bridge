@@ -77,6 +77,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 		
 		final BetterButton renderStateButton = addButton(new BetterButton(guiLeft + 150, guiTop + 17, 54, 13, 0.5F, ITextComponent.getTextComponentOrEmpty("Cycle State")) {
 			
+			@Override
 			public void renderToolTip(MatrixStack matrixStack, int mouseX, int mouseY) {
 			}
 		});
