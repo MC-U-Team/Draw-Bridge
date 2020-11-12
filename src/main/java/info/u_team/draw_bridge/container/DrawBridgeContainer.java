@@ -48,9 +48,11 @@ public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEnti
 			final DrawBridgeCamouflageRenderTypes type = buffer.readEnumValue(DrawBridgeCamouflageRenderTypes.class);
 			if (tileEntity.hasWorld()) {
 				final BlockState previousState = tileEntity.getBlockState();
-				final BlockState newState = type.getBlock().getDefaultState().with(DrawBridgeBlock.FACING, previousState.get(DrawBridgeBlock.FACING));
-				tileEntity.getWorld().setBlockState(tileEntity.getPos(), newState, 2);
-				tileEntity.updateContainingBlockInfo();
+				if (previousState.getBlock() != type.getBlock()) {
+					final BlockState newState = type.getBlock().getDefaultState().with(DrawBridgeBlock.FACING, previousState.get(DrawBridgeBlock.FACING));
+					tileEntity.getWorld().setBlockState(tileEntity.getPos(), newState, 2);
+					tileEntity.updateContainingBlockInfo();
+				}
 			}
 		}));
 	}
