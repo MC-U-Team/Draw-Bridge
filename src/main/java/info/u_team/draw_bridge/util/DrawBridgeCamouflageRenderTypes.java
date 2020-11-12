@@ -9,21 +9,28 @@ import com.google.common.collect.ImmutableList;
 
 import info.u_team.draw_bridge.block.DrawBridgeBlock;
 import net.minecraft.block.Block;
+import net.minecraft.util.text.*;
 
 public enum DrawBridgeCamouflageRenderTypes {
 	
-	SOLID(DRAW_BRIDGE),
-	CUTOUT(DRAW_BRIDGE_CUTOUT),
-	CUTOUT_MIPPED(DRAW_BRIDGE_CUTOUT_MIPPED),
-	TRANSLUCTENT(DRAW_BRIDGE_TRANSLUCTENT),
-	TRIPWIRE(DRAW_BRIDGE_TRIPWIRE);
+	SOLID("solid", DRAW_BRIDGE),
+	CUTOUT("cutout", DRAW_BRIDGE_CUTOUT),
+	CUTOUT_MIPPED("cutout_mipped", DRAW_BRIDGE_CUTOUT_MIPPED),
+	TRANSLUCTENT("transluctent", DRAW_BRIDGE_TRANSLUCTENT),
+	TRIPWIRE("tripwire", DRAW_BRIDGE_TRIPWIRE);
 	
 	public static final List<DrawBridgeCamouflageRenderTypes> RENDER_TYPES = ImmutableList.copyOf(values());
 	
+	private final ITextComponent textComponent;
 	private final Supplier<? extends DrawBridgeBlock> blockSupplier;
 	
-	private DrawBridgeCamouflageRenderTypes(Supplier<? extends DrawBridgeBlock> blockSupplier) {
+	private DrawBridgeCamouflageRenderTypes(String name, Supplier<? extends DrawBridgeBlock> blockSupplier) {
+		textComponent = new TranslationTextComponent("container.drawbridge.draw_bridge.render_type." + name);
 		this.blockSupplier = blockSupplier;
+	}
+	
+	public ITextComponent getTextComponent() {
+		return textComponent;
 	}
 	
 	public DrawBridgeBlock getBlock() {
