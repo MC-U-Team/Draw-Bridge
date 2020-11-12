@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import com.google.common.collect.ImmutableList;
 
 import info.u_team.draw_bridge.block.DrawBridgeBlock;
+import net.minecraft.block.Block;
 
 public enum DrawBridgeCamouflageRenderTypes {
 	
@@ -27,6 +28,10 @@ public enum DrawBridgeCamouflageRenderTypes {
 	
 	public DrawBridgeBlock getBlock() {
 		return blockSupplier.get();
+	}
+	
+	public static DrawBridgeCamouflageRenderTypes getType(Block block) {
+		return RENDER_TYPES.stream().filter(type -> type.getBlock() == block).findAny().orElse(SOLID);
 	}
 	
 	public static DrawBridgeCamouflageRenderTypes cycle(DrawBridgeCamouflageRenderTypes type) {
