@@ -16,7 +16,7 @@ public enum DrawBridgeCamouflageRenderTypes {
 	SOLID("solid", DRAW_BRIDGE),
 	CUTOUT("cutout", DRAW_BRIDGE_CUTOUT),
 	CUTOUT_MIPPED("cutout_mipped", DRAW_BRIDGE_CUTOUT_MIPPED),
-	TRANSLUCENT("transluctent", DRAW_BRIDGE_TRANSLUCENT),
+	TRANSLUCENT("translucent", DRAW_BRIDGE_TRANSLUCENT),
 	TRIPWIRE("tripwire", DRAW_BRIDGE_TRIPWIRE);
 	
 	public static final List<DrawBridgeCamouflageRenderTypes> RENDER_TYPES = ImmutableList.copyOf(values());
