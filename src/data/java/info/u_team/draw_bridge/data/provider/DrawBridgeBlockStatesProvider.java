@@ -31,7 +31,7 @@ public class DrawBridgeBlockStatesProvider extends CommonBlockStatesProvider {
 					.build(); //
 		});
 		
-		for (DrawBridgeBlock renderBlocks : ImmutableList.of(DRAW_BRIDGE_CUTOUT.get(), DRAW_BRIDGE_CUTOUT_MIPPED.get(), DRAW_BRIDGE_TRANSLUCTENT.get(), DRAW_BRIDGE_TRIPWIRE.get())) {
+		for (final DrawBridgeBlock renderBlocks : ImmutableList.of(DRAW_BRIDGE_CUTOUT.get(), DRAW_BRIDGE_CUTOUT_MIPPED.get(), DRAW_BRIDGE_TRANSLUCTENT.get(), DRAW_BRIDGE_TRIPWIRE.get())) {
 			getVariantBuilder(renderBlocks).forAllStates(state -> {
 				final Direction direction = state.get(BlockStateProperties.FACING);
 				return ConfiguredModel.builder() //
