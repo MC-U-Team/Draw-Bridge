@@ -348,6 +348,7 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 		
 		if (stack.isEmpty()) {
 			renderBlockState = null;
+			renderSlotStateProperty = -1;
 			return;
 		}
 		final Item item = stack.getItem();
