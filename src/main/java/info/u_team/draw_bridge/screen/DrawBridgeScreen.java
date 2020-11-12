@@ -87,6 +87,12 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 	}
 	
 	@Override
+	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
+		super.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
+		font.func_243248_b(matrixStack, ITextComponent.getTextComponentOrEmpty("Camouflage"), 148, 6, 4210752);
+	}
+	
+	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
 		if (slider != null) {
 			slider.mouseReleased(mouseX, mouseY, mouseButton);
