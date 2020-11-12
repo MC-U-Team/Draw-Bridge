@@ -62,6 +62,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 			}
 		});
 		
+		updateCurrentBlock();
 		final BetterButton renderTypeButton = addButton(new BetterButton(guiLeft + 150, guiTop + 17, 54, 13, 0.5F, ITextComponent.getTextComponentOrEmpty(null)) {
 			
 			@Override
