@@ -34,8 +34,8 @@ public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEnti
 	@Override
 	protected void init(boolean server) {
 		appendInventory(tileEntity.getSlots().getInventory(), (inv, index, xPosition, yPosition) -> new DrawBridgeSlot(tileEntity, inv, index, xPosition, yPosition), 2, 5, 8, 18);
-		appendInventory(tileEntity.getRenderSlot(), 1, 1, 134, 18);
-		appendPlayerInventory(playerInventory, 8, 102);
+		appendInventory(tileEntity.getRenderSlot(), 1, 1, 170, 36);
+		appendPlayerInventory(playerInventory, 26, 86);
 		addServerToClientTracker(tileEntity.getExtendedHolder());
 		addServerToClientTracker(tileEntity.getSpeedHolder());
 		addServerToClientTracker(tileEntity.getNeedRedstoneHolder());
