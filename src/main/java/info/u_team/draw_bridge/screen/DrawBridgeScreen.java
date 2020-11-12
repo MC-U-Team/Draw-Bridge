@@ -1,5 +1,7 @@
 package info.u_team.draw_bridge.screen;
 
+import java.util.stream.Collectors;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import info.u_team.draw_bridge.DrawBridgeMod;
@@ -13,6 +15,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.gui.widget.ToggleWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.state.StateHolder;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.*;
 
@@ -90,7 +93,8 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 				if (isHovered()) {
 					final DrawBridgeTileEntity tileEntity = container.getTileEntity();
 					if (tileEntity.hasRenderBlockState()) {
-						renderTooltip(matrixStack, new TranslationTextComponent("container.drawbridge.draw_bridge.block_state").appendString(": ").appendString(null), mouseX, mouseY);
+						final String blockStateString = tileEntity.getRenderBlockState().getValues().entrySet().stream().map(StateHolder.field_235890_a_).collect(Collectors.joining(","));
+						renderTooltip(matrixStack, new TranslationTextComponent("container.drawbridge.draw_bridge.block_state").appendString(": " + blockStateString), mouseX, mouseY);
 					}
 				}
 			}
