@@ -319,6 +319,14 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 		return renderBlockState;
 	}
 	
+	public int getRenderSlotStateProperty() {
+		return renderSlotStateProperty;
+	}
+	
+	public void setRenderSlotStateProperty(int renderSlotStateProperty) {
+		this.renderSlotStateProperty = renderSlotStateProperty;
+	}
+	
 	// Util methods for render block
 	
 	private void writeRenderState(CompoundNBT compound) {
