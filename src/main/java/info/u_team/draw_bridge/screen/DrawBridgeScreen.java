@@ -18,7 +18,6 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 	
 	private static final ResourceLocation BACKGROUND = new ResourceLocation(DrawBridgeMod.MODID, "textures/gui/draw_bridge.png");
 	
-	private ToggleWidget button;
 	private BetterFontSlider slider;
 	
 	public DrawBridgeScreen(DrawBridgeContainer container, PlayerInventory playerInventory, ITextComponent title) {
@@ -31,7 +30,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 		super.init();
 		final DrawBridgeTileEntity drawBridge = container.getTileEntity();
 		
-		button = addButton(new ToggleWidget(guiLeft + 132, guiTop + 62, 20, 20, drawBridge.isNeedRedstone()) {
+		final ToggleWidget button = addButton(new ToggleWidget(guiLeft + 132, guiTop + 62, 20, 20, drawBridge.isNeedRedstone()) {
 			
 			@Override
 			public void onClick(double mouseX, double mouseY) {
