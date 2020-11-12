@@ -22,7 +22,6 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 	
 	private BetterFontSlider slider;
 	
-	private int updateCounter;
 	private Block currentBlock;
 	
 	public DrawBridgeScreen(DrawBridgeContainer container, PlayerInventory playerInventory, ITextComponent title) {
@@ -85,13 +84,6 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 	@Override
 	public void tick() {
 		super.tick();
-		if (updateCounter % 10 == 0) {
-			updateCurrentBlock();
-		}
-	}
-	
-	private void updateCurrentBlock() {
 		currentBlock = getContainer().getTileEntity().getWorld().getBlockState(getContainer().getTileEntity().getPos()).getBlock();
 	}
-	
 }
