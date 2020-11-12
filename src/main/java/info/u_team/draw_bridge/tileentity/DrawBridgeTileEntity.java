@@ -199,9 +199,9 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	@Override
 	public void readNBT(BlockState state, CompoundNBT compound) {
 		slots.deserializeNBT(compound.getCompound("slots"));
-		renderSlot.deserializeNBT(compound.getCompound("render_slot"));
 		
 		renderSlotStateProperty = compound.getInt("render_slot_state_property");
+		renderSlot.deserializeNBT(compound.getCompound("render_slot"));
 		
 		powered = compound.getBoolean("powered");
 		extendState = compound.getInt("extend");
@@ -222,9 +222,9 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	@Override
 	public void writeNBT(CompoundNBT compound) {
 		compound.put("slots", slots.serializeNBT());
-		compound.put("render_slot", renderSlot.serializeNBT());
 		
 		compound.putInt("render_slot_state_property", renderSlotStateProperty);
+		compound.put("render_slot", renderSlot.serializeNBT());
 		
 		compound.putBoolean("powered", powered);
 		compound.putInt("extend", extendState);
