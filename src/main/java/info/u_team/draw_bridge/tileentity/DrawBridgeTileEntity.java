@@ -42,7 +42,7 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 		
 		@Override
 		protected void onLoaded() {
-			setRenderState();
+			updateRenderState();
 		}
 		
 		@Override
@@ -51,31 +51,8 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 				return;
 			}
 			renderSlotStateProperty = -1;
-			setRenderState();
+			updateRenderState();
 			sendChangesToClient();
-		}
-		
-		private void setRenderState() {
-			final ItemStack stack = getStackInSlot(0);
-			
-			if (stack.isEmpty()) {
-				renderBlockState = null;
-				return;
-			}
-			final Item item = stack.getItem();
-			if (!(item instanceof BlockItem) || item == DrawBridgeBlocks.DRAW_BRIDGE.get().asItem()) {
-				return;
-			}
-			
-			final Block block = ((BlockItem) item).getBlock();
-			final List<BlockState> validStates = block.getStateContainer().getValidStates();
-			
-			if (renderSlotStateProperty >= 0 && renderSlotStateProperty < validStates.size()) {
-				renderBlockState = validStates.get(renderSlotStateProperty);
-			} else {
-				renderSlotStateProperty = -1;
-				renderBlockState = block.getDefaultState();
-			}
 		}
 	};
 	
@@ -355,6 +332,29 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 			renderBlockState = NBTUtil.readBlockState(compound.getCompound("render"));
 		} else {
 			renderBlockState = null;
+		}
+	}
+	
+	public void updateRenderState() {
+		final ItemStack stack = renderSlot.getStackInSlot(0);
+		
+		if (stack.isEmpty()) {
+			renderBlockState = null;
+			return;
+		}
+		final Item item = stack.getItem();
+		if (!(item instanceof BlockItem) || item == DrawBridgeBlocks.DRAW_BRIDGE.get().asItem()) {
+			return;
+		}
+		
+		final Block block = ((BlockItem) item).getBlock();
+		final List<BlockState> validStates = block.getStateContainer().getValidStates();
+		
+		if (renderSlotStateProperty >= 0 && renderSlotStateProperty < validStates.size()) {
+			renderBlockState = validStates.get(renderSlotStateProperty);
+		} else {
+			renderSlotStateProperty = -1;
+			renderBlockState = block.getDefaultState();
 		}
 	}
 	
