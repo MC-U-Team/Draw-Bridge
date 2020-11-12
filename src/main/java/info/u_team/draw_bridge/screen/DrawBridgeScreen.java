@@ -27,6 +27,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 	public DrawBridgeScreen(DrawBridgeContainer container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title, BACKGROUND, 212, 168);
 		backgroundWidth = backgroundHeight = 512;
+		setTextLocation(8, 6, 26, ySize - 94);
 	}
 	
 	@Override
@@ -52,7 +53,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 		});
 		redstoneToggleButton.initTextureValues(xSize, 0, 20, 20, BACKGROUND);
 		
-		slider = addButton(new BetterFontSlider(guiLeft + 7, guiTop + 62, 90, 20, new TranslationTextComponent("container.drawbridge.draw_bridge.speed").appendString(" "), new StringTextComponent(" ").append(new TranslationTextComponent("container.drawbridge.draw_bridge.ticks")), 0, 100, drawBridge.getSpeed(), false, true, 1, null) {
+		slider = addButton(new BetterFontSlider(guiLeft + 7, guiTop + 57, 90, 13, new TranslationTextComponent("container.drawbridge.draw_bridge.speed").appendString(" "), new StringTextComponent(" ").append(new TranslationTextComponent("container.drawbridge.draw_bridge.ticks")), 0, 100, drawBridge.getSpeed(), false, true, 0.75F, null) {
 			
 			@Override
 			public void onRelease(double mouseX, double mouseY) {
@@ -61,7 +62,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 			}
 		});
 		
-		final BetterButton renderTypeButton = addButton(new BetterButton(20, 20, 50, 15, 0.75F, ITextComponent.getTextComponentOrEmpty(null)) {
+		final BetterButton renderTypeButton = addButton(new BetterButton(guiLeft + 150, guiTop + 17, 54, 13, 0.5F, ITextComponent.getTextComponentOrEmpty(null)) {
 			
 			@Override
 			public ITextComponent getMessage() {
