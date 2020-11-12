@@ -85,6 +85,10 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 	@Override
 	public void tick() {
 		super.tick();
+		updateCurrentBlock();
+	}
+	
+	private void updateCurrentBlock() {
 		currentBlock = getContainer().getTileEntity().getWorld().getBlockState(getContainer().getTileEntity().getPos()).getBlock();
 	}
 }
