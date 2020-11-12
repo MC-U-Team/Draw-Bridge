@@ -70,7 +70,14 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 			@Override
 			public ITextComponent getMessage() {
 				return DrawBridgeCamouflageRenderTypes.getType(currentBlock).getTextComponent();
-			};
+			}
+			
+			@Override
+			public void renderToolTip(MatrixStack matrixStack, int mouseX, int mouseY) {
+				if (isHovered()) {
+					renderTooltip(matrixStack, new TranslationTextComponent("container.drawbridge.draw_bridge.render_type"), mouseX, mouseY);
+				}
+			}
 		});
 		renderTypeButton.setPressable(() -> {
 			container.getCamouflageTypeMessage().triggerMessage();
@@ -83,7 +90,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 				if (isHovered()) {
 					final DrawBridgeTileEntity tileEntity = container.getTileEntity();
 					if (tileEntity.hasRenderBlockState()) {
-						renderTooltip(matrixStack, new StringTextComponent("BlockState: " + tileEntity.getRenderBlockState().toString()), mouseX, mouseY);
+						renderTooltip(matrixStack, new TranslationTextComponent("container.drawbridge.draw_bridge.block_state").appendString(": ").appendString(null), mouseX, mouseY);
 					}
 				}
 			}
@@ -96,7 +103,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 	@Override
 	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
 		super.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
-		font.func_243248_b(matrixStack, ITextComponent.getTextComponentOrEmpty("Camouflage"), 148, 6, 4210752);
+		font.func_243248_b(matrixStack, new TranslationTextComponent("container.drawbridge.draw_bridge.camouflage"), 148, 6, 4210752);
 	}
 	
 	@Override
