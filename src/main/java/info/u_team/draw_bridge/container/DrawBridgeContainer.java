@@ -47,7 +47,7 @@ public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEnti
 		camouflageTypeMessage = addClientToServerTracker(new EmptyMessageHolder(() -> {
 			if (tileEntity.hasWorld()) {
 				final BlockState previousState = tileEntity.getBlockState();
-				final DrawBridgeCamouflageRenderTypes type = DrawBridgeCamouflageRenderTypes.getType(previousState.getBlock());
+				final DrawBridgeCamouflageRenderTypes type = DrawBridgeCamouflageRenderTypes.getType(previousState.getBlock()).cycle();
 				if (previousState.getBlock() != type.getBlock()) {
 					final BlockState newState = type.getBlock().getDefaultState().with(DrawBridgeBlock.FACING, previousState.get(DrawBridgeBlock.FACING));
 					tileEntity.getWorld().setBlockState(tileEntity.getPos(), newState, 2);
