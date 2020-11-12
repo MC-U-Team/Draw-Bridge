@@ -7,7 +7,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class DrawBridgeRenderTypes {
 	
 	private static void setup(FMLClientSetupEvent event) {
-		RenderTypeLookup.setRenderLayer(DrawBridgeBlocks.DRAW_BRIDGE_SOLID.get(), RenderType.getSolid());
 		RenderTypeLookup.setRenderLayer(DrawBridgeBlocks.DRAW_BRIDGE_CUTOUT.get(), RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(DrawBridgeBlocks.DRAW_BRIDGE_CUTOUT_MIPPED.get(), RenderType.getCutoutMipped());
 		RenderTypeLookup.setRenderLayer(DrawBridgeBlocks.DRAW_BRIDGE_TRANSLUCTENT.get(), RenderType.getTranslucent());
