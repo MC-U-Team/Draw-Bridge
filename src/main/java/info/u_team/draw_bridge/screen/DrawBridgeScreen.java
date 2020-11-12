@@ -19,6 +19,7 @@ import net.minecraft.util.text.*;
 public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer> {
 	
 	private static final ResourceLocation BACKGROUND = new ResourceLocation(DrawBridgeMod.MODID, "textures/gui/draw_bridge.png");
+	private static final ResourceLocation NEED_REDSTONE_TEXTURE = new ResourceLocation(DrawBridgeMod.MODID, "textures/gui/need_redstone_button.png");
 	
 	private BetterFontSlider slider;
 	
@@ -51,7 +52,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 				}
 			}
 		});
-		redstoneToggleButton.initTextureValues(xSize, 0, 20, 20, BACKGROUND);
+		redstoneToggleButton.initTextureValues(0, 0, 20, 20, NEED_REDSTONE_TEXTURE);
 		
 		slider = addButton(new BetterFontSlider(guiLeft + 7, guiTop + 57, 90, 13, new TranslationTextComponent("container.drawbridge.draw_bridge.speed").appendString(" "), new StringTextComponent(" ").append(new TranslationTextComponent("container.drawbridge.draw_bridge.ticks")), 0, 100, drawBridge.getSpeed(), false, true, 0.75F, null) {
 			
