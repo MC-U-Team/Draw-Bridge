@@ -36,7 +36,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 		super.init();
 		final DrawBridgeTileEntity drawBridge = container.getTileEntity();
 		
-		final ToggleWidget redstoneToggleButton = addButton(new ToggleWidget(guiLeft + 132, guiTop + 62, 20, 20, drawBridge.isNeedRedstone()) {
+		final ToggleWidget redstoneToggleButton = addButton(new ToggleWidget(guiLeft + 105, guiTop + 35, 18, 18, drawBridge.isNeedRedstone()) {
 			
 			@Override
 			public void onClick(double mouseX, double mouseY) {
@@ -52,7 +52,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 				}
 			}
 		});
-		redstoneToggleButton.initTextureValues(0, 0, 20, 20, NEED_REDSTONE_TEXTURE);
+		redstoneToggleButton.initTextureValues(0, 0, 18, 18, NEED_REDSTONE_TEXTURE);
 		
 		slider = addButton(new BetterFontSlider(guiLeft + 7, guiTop + 57, 90, 13, new TranslationTextComponent("container.drawbridge.draw_bridge.speed").appendString(" "), new StringTextComponent(" ").append(new TranslationTextComponent("container.drawbridge.draw_bridge.ticks")), 0, 100, drawBridge.getSpeed(), false, true, 0.75F, null) {
 			
