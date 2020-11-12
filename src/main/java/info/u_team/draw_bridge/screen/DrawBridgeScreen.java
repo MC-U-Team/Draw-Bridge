@@ -25,8 +25,8 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 	private Block currentBlock;
 	
 	public DrawBridgeScreen(DrawBridgeContainer container, PlayerInventory playerInventory, ITextComponent title) {
-		super(container, playerInventory, title, BACKGROUND, 176, 184);
-		ySize = 184;
+		super(container, playerInventory, title, BACKGROUND, 212, 168);
+		backgroundWidth = backgroundHeight = 512;
 	}
 	
 	@Override
