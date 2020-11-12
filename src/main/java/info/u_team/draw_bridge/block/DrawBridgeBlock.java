@@ -50,12 +50,14 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
-		isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).ifPresent(drawBridge -> {
-			InventoryHelper.dropInventoryItems(world, pos, drawBridge.getSlots().getInventory());
-			InventoryHelper.dropInventoryItems(world, pos, drawBridge.getRenderSlot().getInventory());
-			world.updateComparatorOutputLevel(pos, this);
-		});
-		super.onReplaced(state, world, pos, newState, isMoving);
+		if (!(newState.getBlock() instanceof DrawBridgeBlock)) {
+			isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).ifPresent(drawBridge -> {
+				InventoryHelper.dropInventoryItems(world, pos, drawBridge.getSlots().getInventory());
+				InventoryHelper.dropInventoryItems(world, pos, drawBridge.getRenderSlot().getInventory());
+				world.updateComparatorOutputLevel(pos, this);
+			});
+			super.onReplaced(state, world, pos, newState, isMoving);
+		}
 	}
 	
 	// Facing stuff
