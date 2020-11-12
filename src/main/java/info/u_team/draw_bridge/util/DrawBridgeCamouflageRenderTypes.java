@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 
 import info.u_team.draw_bridge.block.DrawBridgeBlock;
 
-public enum DrawBridgeRenderTypes {
+public enum DrawBridgeCamouflageRenderTypes {
 	
 	SOLID(DRAW_BRIDGE),
 	CUTOUT(DRAW_BRIDGE_CUTOUT),
@@ -16,7 +16,7 @@ public enum DrawBridgeRenderTypes {
 	
 	private final Supplier<? extends DrawBridgeBlock> blockSupplier;
 	
-	private DrawBridgeRenderTypes(Supplier<? extends DrawBridgeBlock> blockSupplier) {
+	private DrawBridgeCamouflageRenderTypes(Supplier<? extends DrawBridgeBlock> blockSupplier) {
 		this.blockSupplier = blockSupplier;
 	}
 	
