@@ -8,11 +8,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
-import net.minecraftforge.api.distmarker.*;
 import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.data.IModelData;
 
-@OnlyIn(Dist.CLIENT)
 public class DrawBridgeModel extends BakedModelWrapper<IBakedModel> {
 	
 	public DrawBridgeModel(IBakedModel originalModel) {
