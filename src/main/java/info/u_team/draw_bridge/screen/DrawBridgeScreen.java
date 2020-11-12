@@ -58,11 +58,11 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 			}
 		});
 		
-		final BetterButton renderTypeButton = addButton(new BetterButton(guiLeft + 132, guiTop + 100, 50, 15, 0.75F, ITextComponent.getTextComponentOrEmpty(null)) {
+		final BetterButton renderTypeButton = addButton(new BetterButton(20, 20, 50, 15, 0.75F, ITextComponent.getTextComponentOrEmpty(null)) {
 			
 			@Override
 			public ITextComponent getMessage() {
-				return DrawBridgeCamouflageRenderTypes.getType(getContainer().getTileEntity().getBlockState().getBlock()).getTextComponent();
+				return DrawBridgeCamouflageRenderTypes.getType(getContainer().getTileEntity().getWorld().getBlockState(getContainer().getTileEntity().getPos()).getBlock()).getTextComponent();
 			};
 		});
 		renderTypeButton.setPressable(() -> {
