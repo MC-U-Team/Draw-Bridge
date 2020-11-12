@@ -41,8 +41,8 @@ public enum DrawBridgeCamouflageRenderTypes {
 		return RENDER_TYPES.stream().filter(type -> type.getBlock() == block).findAny().orElse(SOLID);
 	}
 	
-	public static DrawBridgeCamouflageRenderTypes cycle(DrawBridgeCamouflageRenderTypes type) {
-		switch (type) {
+	public DrawBridgeCamouflageRenderTypes cycle() {
+		switch (this) {
 		case SOLID:
 			return CUTOUT;
 		case CUTOUT:

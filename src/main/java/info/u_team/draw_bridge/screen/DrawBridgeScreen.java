@@ -5,7 +5,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import info.u_team.draw_bridge.DrawBridgeMod;
 import info.u_team.draw_bridge.container.DrawBridgeContainer;
 import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
-import info.u_team.u_team_core.gui.elements.BetterFontSlider;
+import info.u_team.draw_bridge.util.DrawBridgeCamouflageRenderTypes;
+import info.u_team.u_team_core.gui.elements.*;
 import info.u_team.u_team_core.screen.UBasicContainerScreen;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.gui.widget.ToggleWidget;
@@ -30,7 +31,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 		super.init();
 		final DrawBridgeTileEntity drawBridge = container.getTileEntity();
 		
-		final ToggleWidget button = addButton(new ToggleWidget(guiLeft + 132, guiTop + 62, 20, 20, drawBridge.isNeedRedstone()) {
+		final ToggleWidget redstoneToggleButton = addButton(new ToggleWidget(guiLeft + 132, guiTop + 62, 20, 20, drawBridge.isNeedRedstone()) {
 			
 			@Override
 			public void onClick(double mouseX, double mouseY) {
@@ -46,7 +47,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 				}
 			}
 		});
-		button.initTextureValues(xSize, 0, 20, 20, BACKGROUND);
+		redstoneToggleButton.initTextureValues(xSize, 0, 20, 20, BACKGROUND);
 		
 		slider = addButton(new BetterFontSlider(guiLeft + 7, guiTop + 62, 90, 20, new TranslationTextComponent("container.drawbridge.draw_bridge.speed").appendString(" "), new StringTextComponent(" ").append(new TranslationTextComponent("container.drawbridge.draw_bridge.ticks")), 0, 100, drawBridge.getSpeed(), false, true, 1, null) {
 			
@@ -55,6 +56,17 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 				super.onRelease(mouseX, mouseY);
 				container.getSpeedMessage().triggerMessage(() -> new PacketBuffer(Unpooled.buffer(1).writeByte(slider.getValueInt())));
 			}
+		});
+		
+		final BetterButton renderTypeButton = addButton(new BetterButton(guiLeft + 132, guiTop + 100, 50, 15, 0.75F, ITextComponent.getTextComponentOrEmpty(null)) {
+			
+			@Override
+			public ITextComponent getMessage() {
+				return DrawBridgeCamouflageRenderTypes.getType(getContainer().getTileEntity().getBlockState().getBlock()).getTextComponent();
+			};
+		});
+		renderTypeButton.setPressable(() -> {
+			container.getCamouflageTypeMessage().triggerMessage(() -> new PacketBuffer(Unpooled.buffer(8)).writeEnumValue(DrawBridgeCamouflageRenderTypes.getType(getContainer().getTileEntity().getBlockState().getBlock()).cycle()));
 		});
 	}
 	
