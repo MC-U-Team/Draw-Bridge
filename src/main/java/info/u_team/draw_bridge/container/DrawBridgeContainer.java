@@ -3,6 +3,7 @@ package info.u_team.draw_bridge.container;
 import info.u_team.draw_bridge.container.slot.DrawBridgeSlot;
 import info.u_team.draw_bridge.init.DrawBridgeContainerTypes;
 import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
+import info.u_team.draw_bridge.util.DrawBridgeCamouflageRenderTypes;
 import info.u_team.u_team_core.api.sync.MessageHolder;
 import info.u_team.u_team_core.api.sync.MessageHolder.EmptyMessageHolder;
 import info.u_team.u_team_core.container.UTileEntityContainer;
@@ -16,6 +17,7 @@ public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEnti
 	// Messages from the client to the server
 	private MessageHolder speedMessage;
 	private EmptyMessageHolder needRedstoneMessage;
+	private MessageHolder camouflageTypeMessage;
 	
 	// Client
 	public DrawBridgeContainer(int id, PlayerInventory playerInventory, PacketBuffer buffer) {
@@ -40,6 +42,7 @@ public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEnti
 			tileEntity.setNeedRedstone(!tileEntity.isNeedRedstone());
 			tileEntity.neighborChanged();
 		}));
+		camouflageTypeMessage = addClientToServerTracker(new MessageHolder(buffer -> buffer.readEnumValue(DrawBridgeCamouflageRenderTypes.class)));
 	}
 	
 	@Override
@@ -85,5 +88,9 @@ public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEnti
 	
 	public EmptyMessageHolder getNeedRedstoneMessage() {
 		return needRedstoneMessage;
+	}
+	
+	public MessageHolder getCamouflageTypeMessage() {
+		return camouflageTypeMessage;
 	}
 }
