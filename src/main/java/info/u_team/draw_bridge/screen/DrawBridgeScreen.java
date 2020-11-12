@@ -70,7 +70,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 			};
 		});
 		renderTypeButton.setPressable(() -> {
-			container.getCamouflageTypeMessage().triggerMessage(() -> new PacketBuffer(Unpooled.buffer(8)).writeEnumValue(DrawBridgeCamouflageRenderTypes.getType(currentBlock).cycle()));
+			container.getCamouflageTypeMessage().triggerMessage(() -> new PacketBuffer(Unpooled.buffer(4)).writeEnumValue(DrawBridgeCamouflageRenderTypes.getType(currentBlock).cycle()));
 		});
 	}
 	
