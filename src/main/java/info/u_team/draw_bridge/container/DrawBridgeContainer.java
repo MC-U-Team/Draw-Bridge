@@ -20,6 +20,7 @@ public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEnti
 	private MessageHolder speedMessage;
 	private EmptyMessageHolder needRedstoneMessage;
 	private EmptyMessageHolder camouflageTypeMessage;
+	private EmptyMessageHolder camouflageBlockStateMessage;
 	
 	// Client
 	public DrawBridgeContainer(int id, PlayerInventory playerInventory, PacketBuffer buffer) {
@@ -54,6 +55,11 @@ public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEnti
 					tileEntity.updateContainingBlockInfo();
 				}
 			}
+		}));
+		camouflageBlockStateMessage = addClientToServerTracker(new EmptyMessageHolder(() -> {
+			tileEntity.setRenderSlotStateProperty(tileEntity.getRenderSlotStateProperty() + 1);
+			tileEntity.updateRenderState();
+			tileEntity.sendChangesToClient();
 		}));
 	}
 	
@@ -104,5 +110,9 @@ public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEnti
 	
 	public EmptyMessageHolder getCamouflageTypeMessage() {
 		return camouflageTypeMessage;
+	}
+	
+	public EmptyMessageHolder getCamouflageBlockStateMessage() {
+		return camouflageBlockStateMessage;
 	}
 }
