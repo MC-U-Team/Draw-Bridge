@@ -50,6 +50,7 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 			if (!hasWorld() || world.isRemote()) {
 				return;
 			}
+			renderSlotStateProperty = -1;
 			setRenderState();
 			sendChangesToClient();
 		}
@@ -65,9 +66,20 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 			if (!(item instanceof BlockItem) || item == DrawBridgeBlocks.DRAW_BRIDGE.get().asItem()) {
 				return;
 			}
-			renderBlockState = ((BlockItem) item).getBlock().getDefaultState();
+			
+			final Block block = ((BlockItem) item).getBlock();
+			final List<BlockState> validStates = block.getStateContainer().getValidStates();
+			
+			if (renderSlotStateProperty >= 0 && renderSlotStateProperty < validStates.size()) {
+				renderBlockState = validStates.get(renderSlotStateProperty);
+			} else {
+				renderSlotStateProperty = -1;
+				renderBlockState = block.getDefaultState();
+			}
 		}
 	};
+	
+	private int renderSlotStateProperty;
 	
 	private boolean powered;
 	private int speed;
@@ -212,6 +224,8 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 		slots.deserializeNBT(compound.getCompound("slots"));
 		renderSlot.deserializeNBT(compound.getCompound("render_slot"));
 		
+		renderSlotStateProperty = compound.getInt("render_slot_state_property");
+		
 		powered = compound.getBoolean("powered");
 		extendState = compound.getInt("extend");
 		extended = extendState > 0;
@@ -232,6 +246,8 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	public void writeNBT(CompoundNBT compound) {
 		compound.put("slots", slots.serializeNBT());
 		compound.put("render_slot", renderSlot.serializeNBT());
+		
+		compound.putInt("render_slot_state_property", renderSlotStateProperty);
 		
 		compound.putBoolean("powered", powered);
 		compound.putInt("extend", extendState);
