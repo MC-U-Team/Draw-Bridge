@@ -79,6 +79,12 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 			
 			@Override
 			public void renderToolTip(MatrixStack matrixStack, int mouseX, int mouseY) {
+				if (isHovered()) {
+					final DrawBridgeTileEntity tileEntity = container.getTileEntity();
+					if (tileEntity.hasRenderBlockState()) {
+						renderTooltip(matrixStack, new StringTextComponent("BlockState: " + tileEntity.getRenderBlockState().toString()), mouseX, mouseY);
+					}
+				}
 			}
 		});
 		renderStateButton.setPressable(() -> {
@@ -107,6 +113,6 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 	}
 	
 	private void updateCurrentBlock() {
-		currentBlock = getContainer().getTileEntity().getWorld().getBlockState(getContainer().getTileEntity().getPos()).getBlock();
+		currentBlock = container.getTileEntity().getWorld().getBlockState(container.getTileEntity().getPos()).getBlock();
 	}
 }
