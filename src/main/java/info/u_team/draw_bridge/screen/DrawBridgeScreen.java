@@ -74,6 +74,15 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 		renderTypeButton.setPressable(() -> {
 			container.getCamouflageTypeMessage().triggerMessage();
 		});
+		
+		final BetterButton renderStateButton = addButton(new BetterButton(guiLeft + 150, guiTop + 17, 54, 13, 0.5F, ITextComponent.getTextComponentOrEmpty("Cycle State")) {
+			
+			public void renderToolTip(MatrixStack matrixStack, int mouseX, int mouseY) {
+			}
+		});
+		renderStateButton.setPressable(() -> {
+			container.getCamouflageBlockStateMessage().triggerMessage();
+		});
 	}
 	
 	@Override
