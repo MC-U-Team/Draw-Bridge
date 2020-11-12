@@ -22,6 +22,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 	private static final ResourceLocation NEED_REDSTONE_TEXTURE = new ResourceLocation(DrawBridgeMod.MODID, "textures/gui/need_redstone_button.png");
 	
 	private BetterFontSlider slider;
+	private BetterButton renderStateButton;
 	
 	private Block currentBlock;
 	
@@ -75,7 +76,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 			container.getCamouflageTypeMessage().triggerMessage();
 		});
 		
-		final BetterButton renderStateButton = addButton(new BetterButton(guiLeft + 150, guiTop + 57, 54, 13, 0.5F, ITextComponent.getTextComponentOrEmpty("Cycle State")) {
+		renderStateButton = addButton(new BetterButton(guiLeft + 150, guiTop + 57, 54, 13, 0.5F, ITextComponent.getTextComponentOrEmpty("Cycle State")) {
 			
 			@Override
 			public void renderToolTip(MatrixStack matrixStack, int mouseX, int mouseY) {
@@ -110,6 +111,9 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 	public void tick() {
 		super.tick();
 		updateCurrentBlock();
+		if (renderStateButton != null) {
+			renderStateButton.active = container.getTileEntity().hasRenderBlockState();
+		}
 	}
 	
 	private void updateCurrentBlock() {
