@@ -86,7 +86,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 		});
 		updateCurrentBlock();
 		
-		renderStateButton = addButton(new BetterButton(guiLeft + 150, guiTop + 57, 54, 13, 0.5F, ITextComponent.getTextComponentOrEmpty("Cycle State")) {
+		renderStateButton = addButton(new BetterButton(guiLeft + 150, guiTop + 57, 54, 13, 0.5F, new TranslationTextComponent("container.drawbridge.draw_bridge.cycle_block_state")) {
 			
 			@Override
 			public void renderToolTip(MatrixStack matrixStack, int mouseX, int mouseY) {
