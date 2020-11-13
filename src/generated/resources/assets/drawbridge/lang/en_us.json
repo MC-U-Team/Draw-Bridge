@@ -1,7 +1,10 @@
 {
 	"block.drawbridge.draw_bridge": "Drawbridge",
 	"container.drawbridge.draw_bridge": "Drawbridge",
+	"container.drawbridge.draw_bridge.block_state": "Blockstate",
+	"container.drawbridge.draw_bridge.camouflage": "Camouflage",
 	"container.drawbridge.draw_bridge.need_redstone": "Need redstone power?",
+	"container.drawbridge.draw_bridge.render_type": "Rendertype of the camouflage model",
 	"container.drawbridge.draw_bridge.render_type.cutout": "Cutout",
 	"container.drawbridge.draw_bridge.render_type.cutout_mipped": "Cutout Mipped",
 	"container.drawbridge.draw_bridge.render_type.solid": "Solid",
