@@ -31,6 +31,7 @@ public class DrawBridgeLanguagesProvider extends CommonLanguagesProvider {
 		add(container + ".render_type.tripwire", "Tripwire");
 		add(container + ".cycle_block_state", "Cycle State");
 		add(container + ".block_state", "Blockstate");
+		add(container + ".no_cycle_block_state", "Block has only one state");
 		add(container + ".camouflage", "Camouflage");
 		
 		// German
