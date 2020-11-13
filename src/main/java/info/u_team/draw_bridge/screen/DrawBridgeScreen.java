@@ -30,6 +30,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 	private final ITextComponent renderTypeTextComponent;
 	private final ITextComponent cycleBlockStateTextComponent;
 	private final ITextComponent blockStateTextComponent;
+	private final ITextComponent noCycleBlockStateTextComponent;
 	private final ITextComponent camouflageTextComponent;
 	
 	private BetterFontSlider slider;
@@ -50,6 +51,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 		renderTypeTextComponent = new TranslationTextComponent(langKey + "render_type");
 		cycleBlockStateTextComponent = new TranslationTextComponent(langKey + "cycle_block_state");
 		blockStateTextComponent = new TranslationTextComponent(langKey + "block_state");
+		noCycleBlockStateTextComponent = new TranslationTextComponent(langKey + "no_cycle_block_state").mergeStyle(TextFormatting.RED);
 		camouflageTextComponent = new TranslationTextComponent(langKey + "camouflage");
 	}
 	
@@ -110,8 +112,12 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 			public void renderToolTip(MatrixStack matrixStack, int mouseX, int mouseY) {
 				if (isHovered()) {
 					if (drawBridge.hasRenderBlockState()) {
-						final String blockStateString = drawBridge.getRenderBlockState().getValues().entrySet().stream().map(StateHolder.field_235890_a_).collect(Collectors.joining(","));
-						renderTooltip(matrixStack, blockStateTextComponent.copyRaw().appendString(": ").append(new StringTextComponent(blockStateString).mergeStyle(TextFormatting.GREEN)), mouseX, mouseY);
+						if (drawBridge.getRenderBlockState().getBlock().getStateContainer().getValidStates().size() > 1) {
+							final String blockStateString = drawBridge.getRenderBlockState().getValues().entrySet().stream().map(StateHolder.field_235890_a_).collect(Collectors.joining(","));
+							renderTooltip(matrixStack, blockStateTextComponent.copyRaw().appendString(": ").append(new StringTextComponent(blockStateString).mergeStyle(TextFormatting.GREEN)), mouseX, mouseY);
+						} else {
+							renderTooltip(matrixStack, noCycleBlockStateTextComponent, mouseX, mouseY);
+						}
 					}
 				}
 			}
@@ -144,12 +150,14 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 	}
 	
 	private void updateCurrentBlock() {
-		currentBlock = container.getTileEntity().getWorld().getBlockState(container.getTileEntity().getPos()).getBlock();
+		final DrawBridgeTileEntity drawBridge = container.getTileEntity();
+		currentBlock = drawBridge.getWorld().getBlockState(drawBridge.getPos()).getBlock();
 	}
 	
 	private void updateRenderState() {
 		if (renderStateButton != null) {
-			renderStateButton.active = container.getTileEntity().hasRenderBlockState();
+			final DrawBridgeTileEntity drawBridge = container.getTileEntity();
+			renderStateButton.active = drawBridge.hasRenderBlockState() && drawBridge.getRenderBlockState().getBlock().getStateContainer().getValidStates().size() > 1;
 		}
 	}
 }
