@@ -29,6 +29,7 @@ public class DrawBridgeLanguagesProvider extends CommonLanguagesProvider {
 		add(container + ".render_type.cutout_mipped", "Cutout Mipped");
 		add(container + ".render_type.translucent", "Translucent");
 		add(container + ".render_type.tripwire", "Tripwire");
+		add(container + ".cycle_block_state", "Cycle State");
 		add(container + ".block_state", "Blockstate");
 		add(container + ".camouflage", "Camouflage");
 		
