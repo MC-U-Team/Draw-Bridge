@@ -67,7 +67,6 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 			}
 		});
 		
-		updateCurrentBlock();
 		final BetterButton renderTypeButton = addButton(new BetterButton(guiLeft + 150, guiTop + 17, 54, 13, 0.5F, ITextComponent.getTextComponentOrEmpty(null)) {
 			
 			@Override
@@ -85,6 +84,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 		renderTypeButton.setPressable(() -> {
 			container.getCamouflageTypeMessage().triggerMessage();
 		});
+		updateCurrentBlock();
 		
 		renderStateButton = addButton(new BetterButton(guiLeft + 150, guiTop + 57, 54, 13, 0.5F, ITextComponent.getTextComponentOrEmpty("Cycle State")) {
 			
@@ -102,6 +102,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 		renderStateButton.setPressable(() -> {
 			container.getCamouflageBlockStateMessage().triggerMessage();
 		});
+		updateRenderState();
 	}
 	
 	@Override
@@ -122,12 +123,16 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 	public void tick() {
 		super.tick();
 		updateCurrentBlock();
-		if (renderStateButton != null) {
-			renderStateButton.active = container.getTileEntity().hasRenderBlockState();
-		}
+		updateRenderState();
 	}
 	
 	private void updateCurrentBlock() {
 		currentBlock = container.getTileEntity().getWorld().getBlockState(container.getTileEntity().getPos()).getBlock();
+	}
+	
+	private void updateRenderState() {
+		if (renderStateButton != null) {
+			renderStateButton.active = container.getTileEntity().hasRenderBlockState();
+		}
 	}
 }
