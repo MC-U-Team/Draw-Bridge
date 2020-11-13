@@ -5,6 +5,7 @@
 	"container.drawbridge.draw_bridge.camouflage": "Camouflage",
 	"container.drawbridge.draw_bridge.cycle_block_state": "Cycle State",
 	"container.drawbridge.draw_bridge.need_redstone": "Need redstone power?",
+	"container.drawbridge.draw_bridge.no_cycle_block_state": "Block has only one state",
 	"container.drawbridge.draw_bridge.render_type": "Rendertype of the camouflage model",
 	"container.drawbridge.draw_bridge.render_type.cutout": "Cutout",
 	"container.drawbridge.draw_bridge.render_type.cutout_mipped": "Cutout Mipped",
