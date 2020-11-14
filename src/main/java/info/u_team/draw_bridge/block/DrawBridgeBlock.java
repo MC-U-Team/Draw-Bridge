@@ -1,5 +1,7 @@
 package info.u_team.draw_bridge.block;
 
+import java.util.function.*;
+
 import info.u_team.draw_bridge.init.*;
 import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
 import info.u_team.u_team_core.block.UTileEntityBlock;
@@ -132,5 +134,14 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 		return isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).filter(DrawBridgeTileEntity::hasRenderBlockState).map(drawBridge -> {
 			return drawBridge.getRenderBlockState().getAmbientOcclusionLightValue(world, pos);
 		}).orElse(0.2F);
+	}
+	
+	private <T> T getRenderBlockStateProperty(IBlockReader world, BlockPos pos, Function<BlockState, T> function, Supplier<T> elseSupplier) {
+		return isTileEntityFromType(world, pos) //
+				.map(DrawBridgeTileEntity.class::cast) //
+				.filter(DrawBridgeTileEntity::hasRenderBlockState) //
+				.map(DrawBridgeTileEntity::getRenderBlockState) //
+				.map(function) //
+				.orElseGet(elseSupplier);
 	}
 }
