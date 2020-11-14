@@ -119,6 +119,13 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 		}).orElse(super.getLightValue(state, world, pos));
 	}
 	
+	@Override
+	public boolean propagatesSkylightDown(BlockState state, IBlockReader world, BlockPos pos) {
+		return isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).filter(DrawBridgeTileEntity::hasRenderBlockState).map(drawBridge -> {
+			return drawBridge.getRenderBlockState().propagatesSkylightDown(world, pos);
+		}).orElse(false);
+	}
+	
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public float getAmbientOcclusionLightValue(BlockState state, IBlockReader world, BlockPos pos) {
@@ -126,5 +133,4 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 			return drawBridge.getRenderBlockState().getAmbientOcclusionLightValue(world, pos);
 		}).orElse(0.2F);
 	}
-	
 }
