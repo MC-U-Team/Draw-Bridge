@@ -16,6 +16,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.*;
 import net.minecraft.world.*;
+import net.minecraftforge.common.ToolType;
 
 public class DrawBridgeBlock extends UTileEntityBlock {
 	
@@ -24,7 +25,7 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 	public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
 	
 	public DrawBridgeBlock() {
-		super(DrawBridgeItemGroups.GROUP, Properties.create(DRAW_BRIDGE).hardnessAndResistance(1.5F).notSolid().variableOpacity(), DrawBridgeTileEntityTypes.DRAW_BRIDGE);
+		super(DrawBridgeItemGroups.GROUP, Properties.create(DRAW_BRIDGE).hardnessAndResistance(1.5F).harvestTool(ToolType.PICKAXE).notSolid().variableOpacity(), DrawBridgeTileEntityTypes.DRAW_BRIDGE);
 		setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
 	}
 	
