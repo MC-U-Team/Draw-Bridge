@@ -29,7 +29,7 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 	}
 	
 	protected DrawBridgeBlock(Properties properties) {
-		super(DrawBridgeItemGroups.GROUP, properties.hardnessAndResistance(1.5F).harvestTool(ToolType.PICKAXE).notSolid().variableOpacity(), DrawBridgeTileEntityTypes.DRAW_BRIDGE);
+		super(DrawBridgeItemGroups.GROUP, properties.hardnessAndResistance(1.5F).harvestTool(ToolType.PICKAXE).notSolid().variableOpacity().setOpaque(BlockState::hasOpaqueCollisionShape), DrawBridgeTileEntityTypes.DRAW_BRIDGE);
 		setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
 	}
 	
