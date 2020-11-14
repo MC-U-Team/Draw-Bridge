@@ -41,6 +41,16 @@ public class DrawBridgeLanguagesProvider extends CommonLanguagesProvider {
 		add("de_de", container + ".speed", "Geschwindigkeit:");
 		add("de_de", container + ".ticks", "Ticks");
 		add("de_de", container + ".need_redstone", "Wird ein Redstonesignal benötigt?");
+		add("de_de", container + ".render_type", "Rendertyp des Tarnmodells");
+		add("de_de", container + ".render_type.solid", "Solid");
+		add("de_de", container + ".render_type.cutout", "Cutout");
+		add("de_de", container + ".render_type.cutout_mipped", "Cutout Mipped");
+		add("de_de", container + ".render_type.translucent", "Translucent");
+		add("de_de", container + ".render_type.tripwire", "Tripwire");
+		add("de_de", container + ".cycle_block_state", "Ändern des Blockzustands");
+		add("de_de", container + ".block_state", "Blockzustand");
+		add("de_de", container + ".no_cycle_block_state", "Block hat nur einen Zustand");
+		add("de_de", container + ".camouflage", "Tarnung");
 	}
 	
 }
