@@ -12,10 +12,10 @@ public class DrawBridgeBlocks {
 	
 	public static final BlockRegistryObject<DrawBridgeBlock, BlockItem> DRAW_BRIDGE = BLOCKS.register("draw_bridge", DrawBridgeBlock::new);
 	
-	public static final BlockRegistryObject<DrawBridgeBlock, BlockItem> DRAW_BRIDGE_CUTOUT = BLOCKS.register("draw_bridge_cutout", DrawBridgeCamouflage::new);
-	public static final BlockRegistryObject<DrawBridgeBlock, BlockItem> DRAW_BRIDGE_CUTOUT_MIPPED = BLOCKS.register("draw_bridge_cutout_mipped", DrawBridgeCamouflage::new);
-	public static final BlockRegistryObject<DrawBridgeBlock, BlockItem> DRAW_BRIDGE_TRANSLUCENT = BLOCKS.register("draw_bridge_translucent", DrawBridgeCamouflage::new);
-	public static final BlockRegistryObject<DrawBridgeBlock, BlockItem> DRAW_BRIDGE_TRIPWIRE = BLOCKS.register("draw_bridge_tripwire", DrawBridgeCamouflage::new);
+	public static final BlockRegistryObject<DrawBridgeBlock, BlockItem> DRAW_BRIDGE_CUTOUT = BLOCKS.register("draw_bridge_cutout", () -> new DrawBridgeCamouflage(DRAW_BRIDGE));
+	public static final BlockRegistryObject<DrawBridgeBlock, BlockItem> DRAW_BRIDGE_CUTOUT_MIPPED = BLOCKS.register("draw_bridge_cutout_mipped", () -> new DrawBridgeCamouflage(DRAW_BRIDGE));
+	public static final BlockRegistryObject<DrawBridgeBlock, BlockItem> DRAW_BRIDGE_TRANSLUCENT = BLOCKS.register("draw_bridge_translucent", () -> new DrawBridgeCamouflage(DRAW_BRIDGE));
+	public static final BlockRegistryObject<DrawBridgeBlock, BlockItem> DRAW_BRIDGE_TRIPWIRE = BLOCKS.register("draw_bridge_tripwire", () -> new DrawBridgeCamouflage(DRAW_BRIDGE));
 	
 	public static void registerMod(IEventBus bus) {
 		BLOCKS.register(bus);
