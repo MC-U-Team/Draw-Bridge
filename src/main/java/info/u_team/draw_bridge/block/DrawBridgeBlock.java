@@ -128,8 +128,8 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 		return isTileEntityFromType(world, pos) //
 				.map(DrawBridgeTileEntity.class::cast) //
 				.filter(DrawBridgeTileEntity::hasRenderBlockState) //
-				.map(DrawBridgeTileEntity::getRenderBlockState) //
-				.map(function) //
+				.map(drawBridge -> function.apply(drawBridge.getRenderBlockState())) //
 				.orElseGet(elseSupplier);
 	}
+	
 }
