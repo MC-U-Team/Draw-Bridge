@@ -20,12 +20,16 @@ import net.minecraftforge.common.ToolType;
 
 public class DrawBridgeBlock extends UTileEntityBlock {
 	
-	private static final Material DRAW_BRIDGE = new Material.Builder(MaterialColor.IRON).notOpaque().build();
-	
 	public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
 	
+	protected static final Material DRAW_BRIDGE_MATERIAL = new Material.Builder(MaterialColor.IRON).notOpaque().build();
+	
 	public DrawBridgeBlock() {
-		super(DrawBridgeItemGroups.GROUP, Properties.create(DRAW_BRIDGE).hardnessAndResistance(1.5F).harvestTool(ToolType.PICKAXE).notSolid().variableOpacity(), DrawBridgeTileEntityTypes.DRAW_BRIDGE);
+		this(Properties.create(DRAW_BRIDGE_MATERIAL));
+	}
+	
+	protected DrawBridgeBlock(Properties properties) {
+		super(DrawBridgeItemGroups.GROUP, properties.hardnessAndResistance(1.5F).harvestTool(ToolType.PICKAXE).notSolid().variableOpacity(), DrawBridgeTileEntityTypes.DRAW_BRIDGE);
 		setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
 	}
 	
