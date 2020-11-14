@@ -95,37 +95,27 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 	
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-		return isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).filter(DrawBridgeTileEntity::hasRenderBlockState).map(drawBridge -> {
-			return drawBridge.getRenderBlockState().getShape(world, pos, context);
-		}).orElse(VoxelShapes.fullCube());
+		return getRenderBlockStateProperty(world, pos, renderState -> renderState.getShape(world, pos, context), VoxelShapes::fullCube);
 	}
 	
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-		return isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).filter(DrawBridgeTileEntity::hasRenderBlockState).map(drawBridge -> {
-			return drawBridge.getRenderBlockState().getCollisionShape(world, pos, context);
-		}).orElse(VoxelShapes.fullCube());
+		return getRenderBlockStateProperty(world, pos, renderState -> renderState.getCollisionShape(world, pos, context), VoxelShapes::fullCube);
 	}
 	
 	@Override
 	public SoundType getSoundType(BlockState state, IWorldReader world, BlockPos pos, Entity entity) {
-		return isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).filter(DrawBridgeTileEntity::hasRenderBlockState).map(drawBridge -> {
-			return drawBridge.getRenderBlockState().getSoundType(world, pos, entity);
-		}).orElse(super.getSoundType(state, world, pos, entity));
+		return getRenderBlockStateProperty(world, pos, renderState -> renderState.getSoundType(world, pos, entity), () -> soundType);
 	}
 	
 	@Override
 	public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
-		return isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).filter(DrawBridgeTileEntity::hasRenderBlockState).map(drawBridge -> {
-			return drawBridge.getRenderBlockState().getLightValue(world, pos);
-		}).orElse(super.getLightValue(state, world, pos));
+		return getRenderBlockStateProperty(world, pos, renderState -> renderState.getLightValue(world, pos), () -> 0);
 	}
 	
 	@Override
 	public boolean propagatesSkylightDown(BlockState state, IBlockReader world, BlockPos pos) {
-		return isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).filter(DrawBridgeTileEntity::hasRenderBlockState).map(drawBridge -> {
-			return drawBridge.getRenderBlockState().propagatesSkylightDown(world, pos);
-		}).orElse(false);
+		return getRenderBlockStateProperty(world, pos, renderState -> renderState.propagatesSkylightDown(world, pos), () -> false);
 	}
 	
 	@OnlyIn(Dist.CLIENT)
