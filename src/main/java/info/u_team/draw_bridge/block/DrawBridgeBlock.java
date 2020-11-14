@@ -16,6 +16,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.*;
 import net.minecraft.world.*;
+import net.minecraftforge.api.distmarker.*;
 import net.minecraftforge.common.ToolType;
 
 public class DrawBridgeBlock extends UTileEntityBlock {
@@ -117,4 +118,13 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 			return drawBridge.getRenderBlockState().getLightValue(world, pos);
 		}).orElse(super.getLightValue(state, world, pos));
 	}
+	
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	public float getAmbientOcclusionLightValue(BlockState state, IBlockReader world, BlockPos pos) {
+		return isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).filter(DrawBridgeTileEntity::hasRenderBlockState).map(drawBridge -> {
+			return drawBridge.getRenderBlockState().getAmbientOcclusionLightValue(world, pos);
+		}).orElse(0.2F);
+	}
+	
 }
