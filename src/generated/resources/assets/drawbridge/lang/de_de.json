@@ -1,7 +1,17 @@
 {
 	"block.drawbridge.draw_bridge": "Zugbrücke",
 	"container.drawbridge.draw_bridge": "Zugbrücke",
+	"container.drawbridge.draw_bridge.block_state": "Blockzustand",
+	"container.drawbridge.draw_bridge.camouflage": "Tarnung",
+	"container.drawbridge.draw_bridge.cycle_block_state": "Ändern des Blockzustands",
 	"container.drawbridge.draw_bridge.need_redstone": "Wird ein Redstonesignal benötigt?",
+	"container.drawbridge.draw_bridge.no_cycle_block_state": "Block hat nur einen Zustand",
+	"container.drawbridge.draw_bridge.render_type": "Rendertyp des Tarnmodells",
+	"container.drawbridge.draw_bridge.render_type.cutout": "Cutout",
+	"container.drawbridge.draw_bridge.render_type.cutout_mipped": "Cutout Mipped",
+	"container.drawbridge.draw_bridge.render_type.solid": "Solid",
+	"container.drawbridge.draw_bridge.render_type.translucent": "Translucent",
+	"container.drawbridge.draw_bridge.render_type.tripwire": "Tripwire",
 	"container.drawbridge.draw_bridge.speed": "Geschwindigkeit:",
 	"container.drawbridge.draw_bridge.ticks": "Ticks",
 	"itemGroup.drawbridge.group": "Zugbrücke"
