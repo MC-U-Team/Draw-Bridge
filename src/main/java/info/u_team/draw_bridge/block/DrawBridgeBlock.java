@@ -124,12 +124,12 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 		return getRenderBlockStateProperty(world, pos, renderState -> renderState.getAmbientOcclusionLightValue(world, pos), () -> 0.2F);
 	}
 	
-	private <T> T getRenderBlockStateProperty(IBlockReader world, BlockPos pos, Function<BlockState, T> function, Supplier<T> elseSupplier) {
+	private <T> T getRenderBlockStateProperty(IBlockReader world, BlockPos pos, Function<BlockState, T> function, Supplier<T> other) {
 		return isTileEntityFromType(world, pos) //
 				.map(DrawBridgeTileEntity.class::cast) //
 				.filter(DrawBridgeTileEntity::hasRenderBlockState) //
 				.map(drawBridge -> function.apply(drawBridge.getRenderBlockState())) //
-				.orElseGet(elseSupplier);
+				.orElseGet(other);
 	}
 	
 }
