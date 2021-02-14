@@ -10,6 +10,7 @@ import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
 import info.u_team.draw_bridge.util.DrawBridgeCamouflageRenderTypes;
 import info.u_team.u_team_core.gui.elements.*;
 import info.u_team.u_team_core.screen.UBasicContainerScreen;
+import info.u_team.u_team_core.util.WidgetUtil;
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.widget.ToggleWidget;
@@ -33,8 +34,8 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 	private final ITextComponent noCycleBlockStateTextComponent;
 	private final ITextComponent camouflageTextComponent;
 	
-	private BetterFontSlider slider;
-	private BetterButton renderStateButton;
+	private ScalableSlider slider;
+	private ScalableButton renderStateButton;
 	
 	private Block currentBlock;
 	
@@ -78,7 +79,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 		});
 		redstoneToggleButton.initTextureValues(0, 0, 18, 18, NEED_REDSTONE_TEXTURE);
 		
-		slider = addButton(new BetterFontSlider(guiLeft + 7, guiTop + 57, 90, 13, speedTextComponent.copyRaw().appendString(" "), new StringTextComponent(" ").append(ticksTextComponent.copyRaw()), 0, 100, drawBridge.getSpeed(), false, true, 0.75F, null) {
+		slider = addButton(new ScalableSlider(guiLeft + 7, guiTop + 57, 90, 13, speedTextComponent.copyRaw().appendString(" "), new StringTextComponent(" ").append(ticksTextComponent.copyRaw()), 0, 100, drawBridge.getSpeed(), false, true, true, 0.75F) {
 			
 			@Override
 			public void onRelease(double mouseX, double mouseY) {
@@ -87,44 +88,41 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 			}
 		});
 		
-		final BetterButton renderTypeButton = addButton(new BetterButton(guiLeft + 150, guiTop + 17, 54, 13, 0.5F, ITextComponent.getTextComponentOrEmpty(null)) {
+		final ScalableButton renderTypeButton = addButton(new ScalableButton(guiLeft + 150, guiTop + 17, 54, 13, ITextComponent.getTextComponentOrEmpty(null), 0.5F) {
 			
 			@Override
 			public ITextComponent getMessage() {
 				return DrawBridgeCamouflageRenderTypes.getType(currentBlock).getTextComponent();
 			}
-			
-			@Override
-			public void renderToolTip(MatrixStack matrixStack, int mouseX, int mouseY) {
-				if (isHovered()) {
-					renderTooltip(matrixStack, renderTypeTextComponent, mouseX, mouseY);
-				}
-			}
 		});
 		renderTypeButton.setPressable(() -> {
 			container.getCamouflageTypeMessage().triggerMessage();
 		});
+		renderTypeButton.setTooltip((button, matrixStack, mouseX, mouseY) -> {
+			if (WidgetUtil.isHovered(button)) {
+				renderTooltip(matrixStack, renderTypeTextComponent, mouseX, mouseY);
+			}
+		});
+		
 		updateCurrentBlock();
 		
-		renderStateButton = addButton(new BetterButton(guiLeft + 150, guiTop + 57, 54, 13, 0.5F, cycleBlockStateTextComponent) {
-			
-			@Override
-			public void renderToolTip(MatrixStack matrixStack, int mouseX, int mouseY) {
-				if (isHovered()) {
-					if (drawBridge.hasRenderBlockState()) {
-						if (drawBridge.getRenderBlockState().getBlock().getStateContainer().getValidStates().size() > 1) {
-							final String blockStateString = drawBridge.getRenderBlockState().getValues().entrySet().stream().map(StateHolder.field_235890_a_).collect(Collectors.joining(","));
-							renderTooltip(matrixStack, blockStateTextComponent.copyRaw().appendString(": ").append(new StringTextComponent(blockStateString).mergeStyle(TextFormatting.GREEN)), mouseX, mouseY);
-						} else {
-							renderTooltip(matrixStack, noCycleBlockStateTextComponent, mouseX, mouseY);
-						}
+		renderStateButton = addButton(new ScalableButton(guiLeft + 150, guiTop + 57, 54, 13, cycleBlockStateTextComponent, 0.5F));
+		renderStateButton.setPressable(() -> {
+			container.getCamouflageBlockStateMessage().triggerMessage();
+		});
+		renderStateButton.setTooltip((button, matrixStack, mouseX, mouseY) -> {
+			if (WidgetUtil.isHovered(button)) {
+				if (drawBridge.hasRenderBlockState()) {
+					if (drawBridge.getRenderBlockState().getBlock().getStateContainer().getValidStates().size() > 1) {
+						final String blockStateString = drawBridge.getRenderBlockState().getValues().entrySet().stream().map(StateHolder.field_235890_a_).collect(Collectors.joining(","));
+						renderTooltip(matrixStack, blockStateTextComponent.copyRaw().appendString(": ").append(new StringTextComponent(blockStateString).mergeStyle(TextFormatting.GREEN)), mouseX, mouseY);
+					} else {
+						renderTooltip(matrixStack, noCycleBlockStateTextComponent, mouseX, mouseY);
 					}
 				}
 			}
 		});
-		renderStateButton.setPressable(() -> {
-			container.getCamouflageBlockStateMessage().triggerMessage();
-		});
+		
 		updateRenderState();
 	}
 	
