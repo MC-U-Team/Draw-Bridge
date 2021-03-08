@@ -18,7 +18,7 @@ public class DrawBridgeColors {
 					if (drawBridge.hasRenderBlockState()) {
 						try {
 							return event.getBlockColors().getColor(drawBridge.getRenderBlockState(), world, pos, tintIndex);
-						} catch (Exception ex) {
+						} catch (final Exception ex) {
 							LogManager.getLogger().warn("Failed to get camouflage block color for camouflage blockstate " + drawBridge.getRenderBlockState() + " at position " + pos, ex);
 						}
 					}
