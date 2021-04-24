@@ -79,7 +79,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 		});
 		redstoneToggleButton.initTextureValues(0, 0, 18, 18, NEED_REDSTONE_TEXTURE);
 		
-		slider = addButton(new ScalableSlider(guiLeft + 7, guiTop + 57, 90, 13, speedTextComponent.copyRaw().appendString(" "), new StringTextComponent(" ").append(ticksTextComponent.copyRaw()), 0, 100, drawBridge.getSpeed(), false, true, true, 0.75F) {
+		slider = addButton(new ScalableSlider(guiLeft + 7, guiTop + 57, 90, 13, speedTextComponent.copyRaw().appendString(" "), new StringTextComponent(" ").appendSibling(ticksTextComponent.copyRaw()), 0, 100, drawBridge.getSpeed(), false, true, true, 0.75F) {
 			
 			@Override
 			public void onRelease(double mouseX, double mouseY) {
@@ -114,8 +114,8 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 			if (WidgetUtil.isHovered(button)) {
 				if (drawBridge.hasRenderBlockState()) {
 					if (drawBridge.getRenderBlockState().getBlock().getStateContainer().getValidStates().size() > 1) {
-						final String blockStateString = drawBridge.getRenderBlockState().getValues().entrySet().stream().map(StateHolder.field_235890_a_).collect(Collectors.joining(","));
-						renderTooltip(matrixStack, blockStateTextComponent.copyRaw().appendString(": ").append(new StringTextComponent(blockStateString).mergeStyle(TextFormatting.GREEN)), mouseX, mouseY);
+						final String blockStateString = drawBridge.getRenderBlockState().getValues().entrySet().stream().map(StateHolder.printableFunction).collect(Collectors.joining(","));
+						renderTooltip(matrixStack, blockStateTextComponent.copyRaw().appendString(": ").appendSibling(new StringTextComponent(blockStateString).mergeStyle(TextFormatting.GREEN)), mouseX, mouseY);
 					} else {
 						renderTooltip(matrixStack, noCycleBlockStateTextComponent, mouseX, mouseY);
 					}
@@ -129,7 +129,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 	@Override
 	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
 		super.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
-		font.func_243248_b(matrixStack, camouflageTextComponent, 148, 6, 4210752);
+		font.drawText(matrixStack, camouflageTextComponent, 148, 6, 4210752);
 	}
 	
 	@Override
