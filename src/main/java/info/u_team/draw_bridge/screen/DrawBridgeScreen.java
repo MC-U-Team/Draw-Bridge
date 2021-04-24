@@ -8,7 +8,8 @@ import info.u_team.draw_bridge.DrawBridgeMod;
 import info.u_team.draw_bridge.container.DrawBridgeContainer;
 import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
 import info.u_team.draw_bridge.util.DrawBridgeCamouflageRenderTypes;
-import info.u_team.u_team_core.gui.elements.*;
+import info.u_team.u_team_core.gui.elements.ScalableButton;
+import info.u_team.u_team_core.gui.elements.ScalableSlider;
 import info.u_team.u_team_core.screen.UBasicContainerScreen;
 import info.u_team.u_team_core.util.WidgetUtil;
 import io.netty.buffer.Unpooled;
@@ -18,7 +19,10 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.state.StateHolder;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer> {
 	

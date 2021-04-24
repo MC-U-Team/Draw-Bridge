@@ -4,7 +4,8 @@ import static info.u_team.draw_bridge.init.DrawBridgeBlocks.DRAW_BRIDGE;
 
 import java.util.function.BiConsumer;
 
-import info.u_team.u_team_core.data.*;
+import info.u_team.u_team_core.data.CommonLootTablesProvider;
+import info.u_team.u_team_core.data.GenerationData;
 import net.minecraft.loot.LootTable;
 import net.minecraft.util.ResourceLocation;
 

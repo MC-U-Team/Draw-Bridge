@@ -1,6 +1,10 @@
 package info.u_team.draw_bridge.util;
 
-import static info.u_team.draw_bridge.init.DrawBridgeBlocks.*;
+import static info.u_team.draw_bridge.init.DrawBridgeBlocks.DRAW_BRIDGE;
+import static info.u_team.draw_bridge.init.DrawBridgeBlocks.DRAW_BRIDGE_CUTOUT;
+import static info.u_team.draw_bridge.init.DrawBridgeBlocks.DRAW_BRIDGE_CUTOUT_MIPPED;
+import static info.u_team.draw_bridge.init.DrawBridgeBlocks.DRAW_BRIDGE_TRANSLUCENT;
+import static info.u_team.draw_bridge.init.DrawBridgeBlocks.DRAW_BRIDGE_TRIPWIRE;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -9,7 +13,8 @@ import com.google.common.collect.ImmutableList;
 
 import info.u_team.draw_bridge.block.DrawBridgeBlock;
 import net.minecraft.block.Block;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public enum DrawBridgeCamouflageRenderTypes {
 	

@@ -1,13 +1,19 @@
 package info.u_team.draw_bridge.data.provider;
 
-import static info.u_team.draw_bridge.init.DrawBridgeBlocks.*;
+import static info.u_team.draw_bridge.init.DrawBridgeBlocks.DRAW_BRIDGE;
+import static info.u_team.draw_bridge.init.DrawBridgeBlocks.DRAW_BRIDGE_CUTOUT;
+import static info.u_team.draw_bridge.init.DrawBridgeBlocks.DRAW_BRIDGE_CUTOUT_MIPPED;
+import static info.u_team.draw_bridge.init.DrawBridgeBlocks.DRAW_BRIDGE_TRANSLUCENT;
+import static info.u_team.draw_bridge.init.DrawBridgeBlocks.DRAW_BRIDGE_TRIPWIRE;
 
 import com.google.common.collect.ImmutableList;
 
 import info.u_team.draw_bridge.block.DrawBridgeBlock;
-import info.u_team.u_team_core.data.*;
+import info.u_team.u_team_core.data.CommonBlockStatesProvider;
+import info.u_team.u_team_core.data.GenerationData;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.*;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 
 public class DrawBridgeBlockStatesProvider extends CommonBlockStatesProvider {

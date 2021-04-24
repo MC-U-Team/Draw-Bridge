@@ -3,12 +3,14 @@ package info.u_team.draw_bridge.util;
 import java.util.stream.IntStream;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.*;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.items.*;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class InventoryStackHandler implements IItemHandlerModifiable, INBTSerializable<CompoundNBT> {
 	

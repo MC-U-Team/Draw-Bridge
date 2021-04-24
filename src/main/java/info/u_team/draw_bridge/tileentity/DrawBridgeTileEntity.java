@@ -1,27 +1,44 @@
 package info.u_team.draw_bridge.tileentity;
 
-import java.util.*;
-import java.util.stream.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import info.u_team.draw_bridge.block.DrawBridgeBlock;
 import info.u_team.draw_bridge.container.DrawBridgeContainer;
-import info.u_team.draw_bridge.init.*;
-import info.u_team.draw_bridge.util.*;
-import info.u_team.u_team_core.api.sync.*;
+import info.u_team.draw_bridge.init.DrawBridgeBlocks;
+import info.u_team.draw_bridge.init.DrawBridgeTileEntityTypes;
+import info.u_team.draw_bridge.util.InventoryStackHandler;
+import info.u_team.draw_bridge.util.SingleStackInventoryStackHandler;
+import info.u_team.u_team_core.api.sync.BufferReferenceHolder;
+import info.u_team.u_team_core.api.sync.IInitSyncedTileEntity;
 import info.u_team.u_team_core.tileentity.UTickableTileEntity;
-import net.minecraft.block.*;
-import net.minecraft.entity.player.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.item.*;
-import net.minecraft.nbt.*;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.*;
-import net.minecraftforge.api.distmarker.*;
-import net.minecraftforge.client.model.data.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelProperty;
 
 public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSyncedTileEntity {
 	

@@ -5,7 +5,8 @@ import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.*;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.ItemStack;
 
 public class DrawBridgeSlot extends Slot {
 	

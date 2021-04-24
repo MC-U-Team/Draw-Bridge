@@ -1,8 +1,10 @@
 package info.u_team.draw_bridge.init;
 
 import info.u_team.draw_bridge.DrawBridgeMod;
-import info.u_team.draw_bridge.block.*;
-import info.u_team.u_team_core.util.registry.*;
+import info.u_team.draw_bridge.block.DrawBridgeBlock;
+import info.u_team.draw_bridge.block.DrawBridgeCamouflage;
+import info.u_team.u_team_core.util.registry.BlockDeferredRegister;
+import info.u_team.u_team_core.util.registry.BlockRegistryObject;
 import net.minecraft.item.BlockItem;
 import net.minecraftforge.eventbus.api.IEventBus;
 

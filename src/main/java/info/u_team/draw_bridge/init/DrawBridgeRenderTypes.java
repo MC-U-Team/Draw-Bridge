@@ -1,6 +1,7 @@
 package info.u_team.draw_bridge.init;
 
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
