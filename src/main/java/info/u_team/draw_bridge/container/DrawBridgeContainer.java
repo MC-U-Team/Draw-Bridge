@@ -8,12 +8,12 @@ import info.u_team.draw_bridge.util.DrawBridgeCamouflageRenderTypes;
 import info.u_team.u_team_core.api.sync.MessageHolder;
 import info.u_team.u_team_core.api.sync.MessageHolder.EmptyMessageHolder;
 import info.u_team.u_team_core.container.UTileEntityContainer;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEntity> {
 	
@@ -24,12 +24,12 @@ public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEnti
 	private EmptyMessageHolder camouflageBlockStateMessage;
 	
 	// Client
-	public DrawBridgeContainer(int id, PlayerInventory playerInventory, PacketBuffer buffer) {
+	public DrawBridgeContainer(int id, Inventory playerInventory, FriendlyByteBuf buffer) {
 		super(DrawBridgeContainerTypes.DRAW_BRIDGE.get(), id, playerInventory, buffer);
 	}
 	
 	// Server
-	public DrawBridgeContainer(int id, PlayerInventory playerInventory, DrawBridgeTileEntity tileEntity) {
+	public DrawBridgeContainer(int id, Inventory playerInventory, DrawBridgeTileEntity tileEntity) {
 		super(DrawBridgeContainerTypes.DRAW_BRIDGE.get(), id, playerInventory, tileEntity);
 	}
 	
@@ -47,13 +47,13 @@ public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEnti
 			tileEntity.neighborChanged();
 		}));
 		camouflageTypeMessage = addClientToServerTracker(new EmptyMessageHolder(() -> {
-			if (tileEntity.hasWorld()) {
+			if (tileEntity.hasLevel()) {
 				final BlockState previousState = tileEntity.getBlockState();
 				final DrawBridgeCamouflageRenderTypes type = DrawBridgeCamouflageRenderTypes.getType(previousState.getBlock()).cycle();
 				if (previousState.getBlock() != type.getBlock()) {
-					final BlockState newState = type.getBlock().getDefaultState().with(DrawBridgeBlock.FACING, previousState.get(DrawBridgeBlock.FACING));
-					tileEntity.getWorld().setBlockState(tileEntity.getPos(), newState, 2);
-					tileEntity.updateContainingBlockInfo();
+					final BlockState newState = type.getBlock().defaultBlockState().setValue(DrawBridgeBlock.FACING, previousState.getValue(DrawBridgeBlock.FACING));
+					tileEntity.getLevel().setBlock(tileEntity.getBlockPos(), newState, 2);
+					tileEntity.clearCache();
 				}
 			}
 		}));
@@ -65,31 +65,31 @@ public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEnti
 	}
 	
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity player, int index) {
+	public ItemStack quickMoveStack(Player player, int index) {
 		ItemStack itemstack = ItemStack.EMPTY;
-		final Slot slot = inventorySlots.get(index);
-		if (slot != null && slot.getHasStack()) {
-			final ItemStack itemstack1 = slot.getStack();
+		final Slot slot = slots.get(index);
+		if (slot != null && slot.hasItem()) {
+			final ItemStack itemstack1 = slot.getItem();
 			itemstack = itemstack1.copy();
 			if (index < 11) {
-				if (!mergeItemStack(itemstack1, 11, 47, true)) {
+				if (!moveItemStackTo(itemstack1, 11, 47, true)) {
 					return ItemStack.EMPTY;
 				}
 			} else {
 				if (index >= 38) {
-					if (!mergeItemStack(itemstack1, 0, 10, false)) {
+					if (!moveItemStackTo(itemstack1, 0, 10, false)) {
 						return ItemStack.EMPTY;
 					}
 				} else {
-					if (!mergeItemStack(itemstack1, 0, 10, false)) {
+					if (!moveItemStackTo(itemstack1, 0, 10, false)) {
 						return ItemStack.EMPTY;
 					}
 				}
 			}
 			if (itemstack1.isEmpty()) {
-				slot.putStack(ItemStack.EMPTY);
+				slot.set(ItemStack.EMPTY);
 			} else {
-				slot.onSlotChanged();
+				slot.setChanged();
 			}
 			
 			if (itemstack1.getCount() == itemstack.getCount()) {

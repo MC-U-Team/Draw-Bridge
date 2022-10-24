@@ -2,32 +2,32 @@ package info.u_team.draw_bridge.util;
 
 import java.util.stream.IntStream;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.NonNullList;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class InventoryStackHandler implements IItemHandlerModifiable, INBTSerializable<CompoundNBT> {
+public class InventoryStackHandler implements IItemHandlerModifiable, INBTSerializable<CompoundTag> {
 	
 	private final NonNullList<ItemStack> stacks;
 	
-	private final IInventory inventory;
+	private final Container inventory;
 	
 	public InventoryStackHandler(int size) {
 		stacks = NonNullList.withSize(size, ItemStack.EMPTY);
 		inventory = createInventory(stacks);
 	}
 	
-	protected IInventory createInventory(NonNullList<ItemStack> stacks) {
+	protected Container createInventory(NonNullList<ItemStack> stacks) {
 		return new Inventory(stacks, this);
 	}
 	
-	public IInventory getInventory() {
+	public Container getInventory() {
 		return inventory;
 	}
 	
@@ -43,7 +43,7 @@ public class InventoryStackHandler implements IItemHandlerModifiable, INBTSerial
 	
 	@Override
 	public void setStackInSlot(int index, ItemStack stack) {
-		inventory.setInventorySlotContents(index, stack);
+		inventory.setItem(index, stack);
 	}
 	
 	@Override
@@ -116,7 +116,7 @@ public class InventoryStackHandler implements IItemHandlerModifiable, INBTSerial
 	
 	@Override
 	public int getSlotLimit(int index) {
-		return inventory.getInventoryStackLimit();
+		return inventory.getMaxStackSize();
 	}
 	
 	@Override
@@ -129,13 +129,13 @@ public class InventoryStackHandler implements IItemHandlerModifiable, INBTSerial
 	}
 	
 	@Override
-	public CompoundNBT serializeNBT() {
-		return ItemStackHelper.saveAllItems(new CompoundNBT(), stacks, false);
+	public CompoundTag serializeNBT() {
+		return ContainerHelper.saveAllItems(new CompoundTag(), stacks, false);
 	}
 	
 	@Override
-	public void deserializeNBT(CompoundNBT compound) {
-		ItemStackHelper.loadAllItems(compound, stacks);
+	public void deserializeNBT(CompoundTag compound) {
+		ContainerHelper.loadAllItems(compound, stacks);
 		onLoaded();
 	}
 	
@@ -146,7 +146,7 @@ public class InventoryStackHandler implements IItemHandlerModifiable, INBTSerial
 	protected void onLoaded() {
 	}
 	
-	protected static class Inventory implements IInventory {
+	protected static class Inventory implements Container {
 		
 		private final NonNullList<ItemStack> stacks;
 		private final InventoryStackHandler handler;
@@ -157,13 +157,13 @@ public class InventoryStackHandler implements IItemHandlerModifiable, INBTSerial
 		}
 		
 		@Override
-		public void clear() {
+		public void clearContent() {
 			stacks.clear();
 			IntStream.range(0, stacks.size()).forEach(handler::slotChanged);
 		}
 		
 		@Override
-		public void setInventorySlotContents(int index, ItemStack stack) {
+		public void setItem(int index, ItemStack stack) {
 			stacks.set(index, stack);
 			final int limit = handler.getStackLimit(index, stack);
 			if (stack.getCount() > limit) {
@@ -173,18 +173,18 @@ public class InventoryStackHandler implements IItemHandlerModifiable, INBTSerial
 		}
 		
 		@Override
-		public ItemStack removeStackFromSlot(int index) {
-			final ItemStack stack = ItemStackHelper.getAndRemove(stacks, index);
+		public ItemStack removeItemNoUpdate(int index) {
+			final ItemStack stack = ContainerHelper.takeItem(stacks, index);
 			handler.slotChanged(index);
 			return stack;
 		}
 		
 		@Override
-		public void markDirty() {
+		public void setChanged() {
 		}
 		
 		@Override
-		public boolean isUsableByPlayer(PlayerEntity player) {
+		public boolean stillValid(Player player) {
 			return true;
 		}
 		
@@ -194,18 +194,18 @@ public class InventoryStackHandler implements IItemHandlerModifiable, INBTSerial
 		}
 		
 		@Override
-		public ItemStack getStackInSlot(int index) {
+		public ItemStack getItem(int index) {
 			return stacks.get(index);
 		}
 		
 		@Override
-		public int getSizeInventory() {
+		public int getContainerSize() {
 			return stacks.size();
 		}
 		
 		@Override
-		public ItemStack decrStackSize(int index, int count) {
-			final ItemStack stack = ItemStackHelper.getAndSplit(stacks, index, count);
+		public ItemStack removeItem(int index, int count) {
+			final ItemStack stack = ContainerHelper.removeItem(stacks, index, count);
 			handler.slotChanged(index);
 			return stack;
 		}

@@ -1,8 +1,8 @@
 package info.u_team.draw_bridge.util;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.NonNullList;
 
 public class SingleStackInventoryStackHandler extends InventoryStackHandler {
 	
@@ -11,11 +11,11 @@ public class SingleStackInventoryStackHandler extends InventoryStackHandler {
 	}
 	
 	@Override
-	protected IInventory createInventory(NonNullList<ItemStack> stacks) {
+	protected Container createInventory(NonNullList<ItemStack> stacks) {
 		return new Inventory(stacks, this) {
 			
 			@Override
-			public int getInventoryStackLimit() {
+			public int getMaxStackSize() {
 				return 1;
 			}
 		};

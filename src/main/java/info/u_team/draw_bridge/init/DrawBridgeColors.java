@@ -3,7 +3,7 @@ package info.u_team.draw_bridge.init;
 import org.apache.logging.log4j.LogManager;
 
 import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
@@ -12,7 +12,7 @@ public class DrawBridgeColors {
 	private static void colorHandlerBlock(ColorHandlerEvent.Block event) {
 		event.getBlockColors().register((state, world, pos, tintIndex) -> {
 			if (world != null && pos != null) {
-				final TileEntity tileEntity = world.getTileEntity(pos);
+				final BlockEntity tileEntity = world.getBlockEntity(pos);
 				if (tileEntity instanceof DrawBridgeTileEntity) {
 					final DrawBridgeTileEntity drawBridge = (DrawBridgeTileEntity) tileEntity;
 					if (drawBridge.hasRenderBlockState()) {

@@ -3,15 +3,15 @@ package info.u_team.draw_bridge.init;
 import java.util.Map;
 
 import info.u_team.draw_bridge.model.DrawBridgeModel;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 public class DrawBridgeModels {
 	
 	private static void onModelBake(ModelBakeEvent event) {
-		final Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
+		final Map<ResourceLocation, BakedModel> modelRegistry = event.getModelRegistry();
 		final ResourceLocation registyName = DrawBridgeBlocks.DRAW_BRIDGE.get().getRegistryName();
 		modelRegistry.entrySet().stream().filter(entry -> {
 			final ResourceLocation location = entry.getKey();

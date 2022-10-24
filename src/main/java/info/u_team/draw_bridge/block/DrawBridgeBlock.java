@@ -7,55 +7,57 @@ import info.u_team.draw_bridge.init.DrawBridgeItemGroups;
 import info.u_team.draw_bridge.init.DrawBridgeTileEntityTypes;
 import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
 import info.u_team.u_team_core.block.UTileEntityBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.Containers;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
+
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class DrawBridgeBlock extends UTileEntityBlock {
 	
 	public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
 	
-	protected static final Material DRAW_BRIDGE_MATERIAL = new Material.Builder(MaterialColor.IRON).notOpaque().build();
+	protected static final Material DRAW_BRIDGE_MATERIAL = new Material.Builder(MaterialColor.METAL).notSolidBlocking().build();
 	
 	public DrawBridgeBlock() {
-		this(Properties.create(DRAW_BRIDGE_MATERIAL));
+		this(Properties.of(DRAW_BRIDGE_MATERIAL));
 	}
 	
 	protected DrawBridgeBlock(Properties properties) {
-		super(DrawBridgeItemGroups.GROUP, properties.hardnessAndResistance(1.5F).harvestTool(ToolType.PICKAXE).notSolid().variableOpacity().setOpaque(BlockState::hasOpaqueCollisionShape), DrawBridgeTileEntityTypes.DRAW_BRIDGE);
-		setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
+		super(DrawBridgeItemGroups.GROUP, properties.strength(1.5F).harvestTool(ToolType.PICKAXE).noOcclusion().dynamicShape().isRedstoneConductor(BlockState::isCollisionShapeFullBlock), DrawBridgeTileEntityTypes.DRAW_BRIDGE);
+		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 	
 	// Trigger drawbridge
 	
 	@Override
-	public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-		if (world.isRemote) {
+	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+		if (world.isClientSide) {
 			return;
 		}
 		isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).ifPresent(DrawBridgeTileEntity::neighborChanged);
@@ -64,7 +66,7 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 	// Open gui
 	
 	@Override
-	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		return openContainer(world, pos, player, true);
 	}
 	
@@ -72,74 +74,74 @@ public class DrawBridgeBlock extends UTileEntityBlock {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (!(newState.getBlock() instanceof DrawBridgeBlock)) {
 			isTileEntityFromType(world, pos).map(DrawBridgeTileEntity.class::cast).ifPresent(drawBridge -> {
-				InventoryHelper.dropInventoryItems(world, pos, drawBridge.getSlots().getInventory());
-				InventoryHelper.dropInventoryItems(world, pos, drawBridge.getRenderSlot().getInventory());
-				world.updateComparatorOutputLevel(pos, this);
+				Containers.dropContents(world, pos, drawBridge.getSlots().getInventory());
+				Containers.dropContents(world, pos, drawBridge.getRenderSlot().getInventory());
+				world.updateNeighbourForOutputSignal(pos, this);
 			});
-			super.onReplaced(state, world, pos, newState, isMoving);
+			super.onRemove(state, world, pos, newState, isMoving);
 		}
 	}
 	
 	// Facing stuff
 	
 	@Override
-	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		return getDefaultState().with(FACING, context.getNearestLookingDirection().getOpposite());
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
+		return defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite());
 	}
 	
 	@Override
 	public BlockState rotate(BlockState state, Rotation rotation) {
-		return state.with(FACING, rotation.rotate(state.get(FACING)));
+		return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
 	public BlockState mirror(BlockState state, Mirror mirror) {
-		return state.rotate(mirror.toRotation(state.get(FACING)));
+		return state.rotate(mirror.getRotation(state.getValue(FACING)));
 	}
 	
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
 		builder.add(FACING);
 	}
 	
 	// Simulate camouflage block
 	
 	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-		return getRenderBlockStateProperty(world, pos, renderState -> renderState.getShape(world, pos, context), VoxelShapes::fullCube);
+	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+		return getRenderBlockStateProperty(world, pos, renderState -> renderState.getShape(world, pos, context), Shapes::block);
 	}
 	
 	@Override
-	public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-		return getRenderBlockStateProperty(world, pos, renderState -> renderState.getCollisionShape(world, pos, context), VoxelShapes::fullCube);
+	public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+		return getRenderBlockStateProperty(world, pos, renderState -> renderState.getCollisionShape(world, pos, context), Shapes::block);
 	}
 	
 	@Override
-	public SoundType getSoundType(BlockState state, IWorldReader world, BlockPos pos, Entity entity) {
+	public SoundType getSoundType(BlockState state, LevelReader world, BlockPos pos, Entity entity) {
 		return getRenderBlockStateProperty(world, pos, renderState -> renderState.getSoundType(world, pos, entity), () -> soundType);
 	}
 	
 	@Override
-	public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
+	public int getLightValue(BlockState state, BlockGetter world, BlockPos pos) {
 		return getRenderBlockStateProperty(world, pos, renderState -> renderState.getLightValue(world, pos), () -> 0);
 	}
 	
 	@Override
-	public boolean propagatesSkylightDown(BlockState state, IBlockReader world, BlockPos pos) {
+	public boolean propagatesSkylightDown(BlockState state, BlockGetter world, BlockPos pos) {
 		return getRenderBlockStateProperty(world, pos, renderState -> renderState.propagatesSkylightDown(world, pos), () -> false);
 	}
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public float getAmbientOcclusionLightValue(BlockState state, IBlockReader world, BlockPos pos) {
-		return getRenderBlockStateProperty(world, pos, renderState -> renderState.getAmbientOcclusionLightValue(world, pos), () -> 0.2F);
+	public float getShadeBrightness(BlockState state, BlockGetter world, BlockPos pos) {
+		return getRenderBlockStateProperty(world, pos, renderState -> renderState.getShadeBrightness(world, pos), () -> 0.2F);
 	}
 	
-	private <T> T getRenderBlockStateProperty(IBlockReader world, BlockPos pos, Function<BlockState, T> function, Supplier<T> other) {
+	private <T> T getRenderBlockStateProperty(BlockGetter world, BlockPos pos, Function<BlockState, T> function, Supplier<T> other) {
 		return isTileEntityFromType(world, pos) //
 				.map(DrawBridgeTileEntity.class::cast) //
 				.filter(DrawBridgeTileEntity::hasRenderBlockState) //

@@ -2,22 +2,24 @@ package info.u_team.draw_bridge.block;
 
 import java.util.function.Supplier;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class DrawBridgeCamouflage extends DrawBridgeBlock {
 	
 	private final Supplier<? extends DrawBridgeBlock> baseDrawBridgeBlockSupplier;
 	
 	public DrawBridgeCamouflage(Supplier<? extends DrawBridgeBlock> baseDrawBridgeBlockSupplier) {
-		super(addLootFrom(baseDrawBridgeBlockSupplier, Properties.create(DRAW_BRIDGE_MATERIAL)));
+		super(addLootFrom(baseDrawBridgeBlockSupplier, Properties.of(DRAW_BRIDGE_MATERIAL)));
 		this.baseDrawBridgeBlockSupplier = baseDrawBridgeBlockSupplier;
 	}
 	
@@ -27,7 +29,7 @@ public class DrawBridgeCamouflage extends DrawBridgeBlock {
 	}
 	
 	@Override
-	public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
+	public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
 		return new ItemStack(baseDrawBridgeBlockSupplier.get());
 	}
 	

@@ -15,24 +15,24 @@ import info.u_team.draw_bridge.util.SingleStackInventoryStackHandler;
 import info.u_team.u_team_core.api.sync.BufferReferenceHolder;
 import info.u_team.u_team_core.api.sync.IInitSyncedTileEntity;
 import info.u_team.u_team_core.tileentity.UTickableTileEntity;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.EmptyModelData;
@@ -64,7 +64,7 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 		
 		@Override
 		protected void slotChanged(int index) {
-			if (!hasWorld() || world.isRemote()) {
+			if (!hasLevel() || level.isClientSide()) {
 				return;
 			}
 			renderSlotStateProperty = -1;
@@ -98,13 +98,13 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	// Neighbor update
 	
 	public void neighborChanged() {
-		final boolean newPowered = world.isBlockPowered(pos);
+		final boolean newPowered = level.hasNeighborSignal(worldPosition);
 		updatePoweredState(newPowered);
 		
 		final Set<DrawBridgeTileEntity> drawBridges = new HashSet<>();
 		collect(drawBridges, this, 0);
 		
-		final boolean newPoweredState = drawBridges.stream().anyMatch(drawBridge -> world.isBlockPowered(drawBridge.pos)) | newPowered;
+		final boolean newPoweredState = drawBridges.stream().anyMatch(drawBridge -> level.hasNeighborSignal(drawBridge.worldPosition)) | newPowered;
 		drawBridges.stream().forEach(drawBridge -> drawBridge.updatePoweredState(newPoweredState));
 	}
 	
@@ -118,8 +118,8 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 		if (depth >= 20) {
 			return;
 		}
-		getNeighbors(callerTileEntity.pos).stream().forEach(neighbor -> {
-			final TileEntity tileEntity = world.getTileEntity(neighbor);
+		getNeighbors(callerTileEntity.worldPosition).stream().forEach(neighbor -> {
+			final BlockEntity tileEntity = level.getBlockEntity(neighbor);
 			if (!(tileEntity instanceof DrawBridgeTileEntity)) {
 				return;
 			}
@@ -132,11 +132,11 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	}
 	
 	private List<BlockPos> getNeighbors(BlockPos except) {
-		return getPosExcept(pos, except).filter(pos -> world.getBlockState(pos).getBlock() == DrawBridgeBlocks.DRAW_BRIDGE.get()).collect(Collectors.toList());
+		return getPosExcept(worldPosition, except).filter(pos -> level.getBlockState(pos).getBlock() == DrawBridgeBlocks.DRAW_BRIDGE.get()).collect(Collectors.toList());
 	}
 	
 	private Stream<BlockPos> getPosExcept(BlockPos start, BlockPos except) {
-		return Stream.of(Direction.values()).map(start::offset).filter(pos -> !pos.equals(except));
+		return Stream.of(Direction.values()).map(start::relative).filter(pos -> !pos.equals(except));
 	}
 	
 	@Override
@@ -151,7 +151,7 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 				} else {
 					extend();
 				}
-				markDirty();
+				setChanged();
 			} else if (!powered && extendState > 0) {
 				if (localSpeed == 0) {
 					for (int i = extendState; i > 0; i--) {
@@ -160,28 +160,28 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 				} else {
 					retract();
 				}
-				markDirty();
+				setChanged();
 			}
 		}
 		localSpeed--;
 	}
 	
 	private void extend() {
-		final Direction facing = world.getBlockState(pos).get(DrawBridgeBlock.FACING);
+		final Direction facing = level.getBlockState(worldPosition).getValue(DrawBridgeBlock.FACING);
 		trySetBlock(facing);
 		extended = ++extendState > 0;
 	}
 	
 	private void trySetBlock(Direction facing) {
-		final BlockPos newPos = pos.offset(facing, extendState + 1);
-		if ((world.isAirBlock(newPos) /* || world.getFluidState(newPos).getFluid() == Fluids.EMPTY */)) {
+		final BlockPos newPos = worldPosition.relative(facing, extendState + 1);
+		if ((level.isEmptyBlock(newPos) /* || world.getFluidState(newPos).getFluid() == Fluids.EMPTY */)) {
 			final ItemStack itemstack = slots.getStackInSlot(extendState);
 			if (itemstack.isEmpty()) {
 				ourBlocks[extendState] = false;
 			} else {
-				final Block block = Block.getBlockFromItem(itemstack.getItem());
-				world.setBlockState(newPos, block.getDefaultState(), 2);
-				slots.getInventory().removeStackFromSlot(extendState);
+				final Block block = Block.byItem(itemstack.getItem());
+				level.setBlock(newPos, block.defaultBlockState(), 2);
+				slots.getInventory().removeItemNoUpdate(extendState);
 				ourBlocks[extendState] = true;
 			}
 		} else {
@@ -190,22 +190,22 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	}
 	
 	private void retract() {
-		final Direction facing = world.getBlockState(pos).get(DrawBridgeBlock.FACING);
+		final Direction facing = level.getBlockState(worldPosition).getValue(DrawBridgeBlock.FACING);
 		extended = --extendState > 0;
 		tryRemoveBlock(facing);
 	}
 	
 	private void tryRemoveBlock(Direction facing) {
 		if (ourBlocks[extendState]) {
-			final BlockPos newPos = pos.offset(facing, extendState + 1);
-			if (!world.isAirBlock(newPos)) {
-				final BlockState state = world.getBlockState(newPos);
+			final BlockPos newPos = worldPosition.relative(facing, extendState + 1);
+			if (!level.isEmptyBlock(newPos)) {
+				final BlockState state = level.getBlockState(newPos);
 				final Block block = state.getBlock();
 				
 				final ItemStack stack = new ItemStack(block);
-				slots.getInventory().setInventorySlotContents(extendState, stack);
+				slots.getInventory().setItem(extendState, stack);
 				
-				world.setBlockState(newPos, Blocks.AIR.getDefaultState(), 2);
+				level.setBlock(newPos, Blocks.AIR.defaultBlockState(), 2);
 			}
 			ourBlocks[extendState] = false;
 		}
@@ -214,7 +214,7 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	// NBT
 	
 	@Override
-	public void readNBT(BlockState state, CompoundNBT compound) {
+	public void readNBT(BlockState state, CompoundTag compound) {
 		slots.deserializeNBT(compound.getCompound("slots"));
 		
 		renderSlotStateProperty = compound.getInt("render_slot_state_property");
@@ -226,7 +226,7 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 		speed = compound.getInt("speed");
 		needRedstone = compound.getBoolean("need_redstone");
 		
-		final CompoundNBT ourBlocksTag = compound.getCompound("our_blocks");
+		final CompoundTag ourBlocksTag = compound.getCompound("our_blocks");
 		for (int i = 0; i < ourBlocks.length; i++) {
 			if (ourBlocksTag.contains("" + i)) {
 				ourBlocks[i] = ourBlocksTag.getBoolean("" + i);
@@ -237,7 +237,7 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	}
 	
 	@Override
-	public void writeNBT(CompoundNBT compound) {
+	public void writeNBT(CompoundTag compound) {
 		compound.put("slots", slots.serializeNBT());
 		
 		compound.putInt("render_slot_state_property", renderSlotStateProperty);
@@ -248,7 +248,7 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 		compound.putInt("speed", speed);
 		compound.putBoolean("need_redstone", needRedstone);
 		
-		final CompoundNBT ourBlocksTag = new CompoundNBT();
+		final CompoundTag ourBlocksTag = new CompoundTag();
 		for (int i = 0; i < ourBlocks.length; i++) {
 			ourBlocksTag.putBoolean("" + i, ourBlocks[i]);
 		}
@@ -258,13 +258,13 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	// Container
 	
 	@Override
-	public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
+	public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
 		return new DrawBridgeContainer(id, playerInventory, this);
 	}
 	
 	@Override
-	public ITextComponent getDisplayName() {
-		return new TranslationTextComponent("container.drawbridge.draw_bridge");
+	public Component getDisplayName() {
+		return new TranslatableComponent("container.drawbridge.draw_bridge");
 	}
 	
 	// Slot getter
@@ -280,7 +280,7 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	// Sync methods for container
 	
 	@Override
-	public void sendInitialDataBuffer(PacketBuffer buffer) {
+	public void sendInitialDataBuffer(FriendlyByteBuf buffer) {
 		buffer.writeBoolean(extended);
 		buffer.writeVarInt(speed);
 		buffer.writeBoolean(needRedstone);
@@ -288,7 +288,7 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void handleInitialDataBuffer(PacketBuffer buffer) {
+	public void handleInitialDataBuffer(FriendlyByteBuf buffer) {
 		extended = buffer.readBoolean();
 		speed = buffer.readVarInt();
 		needRedstone = buffer.readBoolean();
@@ -346,15 +346,15 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	
 	// Util methods for render block
 	
-	private void writeRenderState(CompoundNBT compound) {
+	private void writeRenderState(CompoundTag compound) {
 		if (renderBlockState != null) {
-			compound.put("render", NBTUtil.writeBlockState(renderBlockState));
+			compound.put("render", NbtUtils.writeBlockState(renderBlockState));
 		}
 	}
 	
-	private void readRenderState(CompoundNBT compound) {
+	private void readRenderState(CompoundTag compound) {
 		if (compound.contains("render")) {
-			renderBlockState = NBTUtil.readBlockState(compound.getCompound("render"));
+			renderBlockState = NbtUtils.readBlockState(compound.getCompound("render"));
 		} else {
 			renderBlockState = null;
 		}
@@ -374,40 +374,40 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 		}
 		
 		final Block block = ((BlockItem) item).getBlock();
-		final List<BlockState> validStates = block.getStateContainer().getValidStates();
+		final List<BlockState> validStates = block.getStateDefinition().getPossibleStates();
 		
 		if (renderSlotStateProperty >= 0 && renderSlotStateProperty < validStates.size()) {
 			renderBlockState = validStates.get(renderSlotStateProperty);
 		} else {
 			renderSlotStateProperty = -1;
-			renderBlockState = block.getDefaultState();
+			renderBlockState = block.defaultBlockState();
 		}
 	}
 	
 	// Sync methods chunk
 	
 	@Override
-	public void sendChunkLoadData(CompoundNBT compound) {
+	public void sendChunkLoadData(CompoundTag compound) {
 		writeRenderState(compound);
 	}
 	
 	@Override
-	public void handleChunkLoadData(CompoundNBT compound) {
+	public void handleChunkLoadData(CompoundTag compound) {
 		readRenderState(compound);
-		world.getChunkProvider().getLightManager().checkBlock(pos);
+		level.getChunkSource().getLightEngine().checkBlock(worldPosition);
 	}
 	
 	@Override
-	public void sendUpdateStateData(CompoundNBT compound) {
+	public void sendUpdateStateData(CompoundTag compound) {
 		writeRenderState(compound);
 	}
 	
 	@Override
-	public void handleUpdateStateData(CompoundNBT compound) {
+	public void handleUpdateStateData(CompoundTag compound) {
 		readRenderState(compound);
 		requestModelDataUpdate();
-		world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 0);
-		world.getChunkProvider().getLightManager().checkBlock(pos);
+		level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 0);
+		level.getChunkSource().getLightEngine().checkBlock(worldPosition);
 	}
 	
 	// Model data
@@ -423,10 +423,10 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	// Send update tag even if tag is empty
 	
 	@Override
-	public SUpdateTileEntityPacket getUpdatePacket() {
-		final CompoundNBT compound = new CompoundNBT();
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+		final CompoundTag compound = new CompoundTag();
 		sendUpdateStateData(compound);
-		return new SUpdateTileEntityPacket(pos, -1, compound);
+		return new ClientboundBlockEntityDataPacket(worldPosition, -1, compound);
 	}
 	
 }

@@ -12,9 +12,9 @@ import java.util.function.Supplier;
 import com.google.common.collect.ImmutableList;
 
 import info.u_team.draw_bridge.block.DrawBridgeBlock;
-import net.minecraft.block.Block;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public enum DrawBridgeCamouflageRenderTypes {
 	
@@ -26,15 +26,15 @@ public enum DrawBridgeCamouflageRenderTypes {
 	
 	public static final List<DrawBridgeCamouflageRenderTypes> RENDER_TYPES = ImmutableList.copyOf(values());
 	
-	private final ITextComponent textComponent;
+	private final Component textComponent;
 	private final Supplier<? extends DrawBridgeBlock> blockSupplier;
 	
 	private DrawBridgeCamouflageRenderTypes(String name, Supplier<? extends DrawBridgeBlock> blockSupplier) {
-		textComponent = new TranslationTextComponent("container.drawbridge.draw_bridge.render_type." + name);
+		textComponent = new TranslatableComponent("container.drawbridge.draw_bridge.render_type." + name);
 		this.blockSupplier = blockSupplier;
 	}
 	
-	public ITextComponent getTextComponent() {
+	public Component getTextComponent() {
 		return textComponent;
 	}
 	

@@ -6,9 +6,9 @@ import java.util.function.Consumer;
 
 import info.u_team.u_team_core.data.CommonRecipesProvider;
 import info.u_team.u_team_core.data.GenerationData;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.ShapedRecipeBuilder;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraftforge.common.Tags;
 
 public class DrawBridgeRecipesProvider extends CommonRecipesProvider {
@@ -18,16 +18,16 @@ public class DrawBridgeRecipesProvider extends CommonRecipesProvider {
 	}
 	
 	@Override
-	protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
-		ShapedRecipeBuilder.shapedRecipe(DRAW_BRIDGE.get()) //
-				.patternLine("ICI") //
-				.patternLine("RPR") //
-				.patternLine("RPR") //
-				.key('I', getIngredientOfTag(Tags.Items.INGOTS_IRON)) //
-				.key('C', getIngredientOfTag(Tags.Items.CHESTS_WOODEN)) //
-				.key('R', getIngredientOfTag(Tags.Items.DUSTS_REDSTONE)) //
-				.key('P', Blocks.PISTON) //
-				.addCriterion("has_redstone", hasItem(Tags.Items.DUSTS_REDSTONE)) //
-				.build(consumer);
+	protected void registerRecipes(Consumer<FinishedRecipe> consumer) {
+		ShapedRecipeBuilder.shaped(DRAW_BRIDGE.get()) //
+				.pattern("ICI") //
+				.pattern("RPR") //
+				.pattern("RPR") //
+				.define('I', getIngredientOfTag(Tags.Items.INGOTS_IRON)) //
+				.define('C', getIngredientOfTag(Tags.Items.CHESTS_WOODEN)) //
+				.define('R', getIngredientOfTag(Tags.Items.DUSTS_REDSTONE)) //
+				.define('P', Blocks.PISTON) //
+				.unlockedBy("has_redstone", hasItem(Tags.Items.DUSTS_REDSTONE)) //
+				.save(consumer);
 	}
 }
