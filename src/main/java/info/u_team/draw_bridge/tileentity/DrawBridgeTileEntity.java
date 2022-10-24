@@ -12,35 +12,31 @@ import info.u_team.draw_bridge.init.DrawBridgeBlocks;
 import info.u_team.draw_bridge.init.DrawBridgeTileEntityTypes;
 import info.u_team.draw_bridge.util.InventoryStackHandler;
 import info.u_team.draw_bridge.util.SingleStackInventoryStackHandler;
-import info.u_team.u_team_core.api.sync.BufferReferenceHolder;
-import info.u_team.u_team_core.api.sync.IInitSyncedTileEntity;
-import info.u_team.u_team_core.tileentity.UTickableTileEntity;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.entity.player.Player;
+import info.u_team.u_team_core.api.block.MenuSyncedBlockEntity;
+import info.u_team.u_team_core.api.sync.DataHolder;
+import info.u_team.u_team_core.blockentity.UBlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
-public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSyncedTileEntity {
+public class DrawBridgeTileEntity extends UBlockEntity implements MenuSyncedBlockEntity {
 	
 	public static final ModelProperty<BlockState> BLOCKSTATE_PROPERTY = new ModelProperty<BlockState>();
 	
@@ -87,12 +83,12 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	private BlockState renderBlockState;
 	
 	// Used for syncing the data in containers
-	private final BufferReferenceHolder extendedHolder = BufferReferenceHolder.createBooleanHolder(() -> extended, value -> extended = value);
-	private final BufferReferenceHolder speedHolder = BufferReferenceHolder.createByteHolder(() -> (byte) speed, value -> speed = value); // The speed is only in the range of 0 to 100 so we can cast to a byte here
-	private final BufferReferenceHolder needRedstoneHolder = BufferReferenceHolder.createBooleanHolder(() -> needRedstone, value -> needRedstone = value);
+	private final DataHolder extendedHolder = DataHolder.createBooleanHolder(() -> extended, value -> extended = value);
+	private final DataHolder speedHolder = DataHolder.createByteHolder(() -> (byte) speed, value -> speed = value); // The speed is only in the range of 0 to 100 so we can cast to a byte here
+	private final DataHolder needRedstoneHolder = DataHolder.createBooleanHolder(() -> needRedstone, value -> needRedstone = value);
 	
-	public DrawBridgeTileEntity() {
-		super(DrawBridgeTileEntityTypes.DRAW_BRIDGE.get());
+	public DrawBridgeTileEntity(BlockPos pos, BlockState state) {
+		super(DrawBridgeTileEntityTypes.DRAW_BRIDGE.get(), pos, state);
 	}
 	
 	// Neighbor update
@@ -139,7 +135,6 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 		return Stream.of(Direction.values()).map(start::relative).filter(pos -> !pos.equals(except));
 	}
 	
-	@Override
 	public void tickServer() {
 		if (localSpeed <= 1) {
 			localSpeed = speed;
@@ -214,7 +209,7 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	// NBT
 	
 	@Override
-	public void readNBT(BlockState state, CompoundTag compound) {
+	public void loadNBT(CompoundTag compound) {
 		slots.deserializeNBT(compound.getCompound("slots"));
 		
 		renderSlotStateProperty = compound.getInt("render_slot_state_property");
@@ -237,7 +232,7 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	}
 	
 	@Override
-	public void writeNBT(CompoundTag compound) {
+	public void saveNBT(CompoundTag compound) {
 		compound.put("slots", slots.serializeNBT());
 		
 		compound.putInt("render_slot_state_property", renderSlotStateProperty);
@@ -264,7 +259,7 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	
 	@Override
 	public Component getDisplayName() {
-		return new TranslatableComponent("container.drawbridge.draw_bridge");
+		return Component.translatable("container.drawbridge.draw_bridge");
 	}
 	
 	// Slot getter
@@ -280,7 +275,7 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	// Sync methods for container
 	
 	@Override
-	public void sendInitialDataBuffer(FriendlyByteBuf buffer) {
+	public void sendInitialMenuDataToClient(FriendlyByteBuf buffer) {
 		buffer.writeBoolean(extended);
 		buffer.writeVarInt(speed);
 		buffer.writeBoolean(needRedstone);
@@ -288,21 +283,21 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void handleInitialDataBuffer(FriendlyByteBuf buffer) {
+	public void handleInitialMenuDataFromServer(FriendlyByteBuf buffer) {
 		extended = buffer.readBoolean();
 		speed = buffer.readVarInt();
 		needRedstone = buffer.readBoolean();
 	}
 	
-	public BufferReferenceHolder getExtendedHolder() {
+	public DataHolder getExtendedHolder() {
 		return extendedHolder;
 	}
 	
-	public BufferReferenceHolder getSpeedHolder() {
+	public DataHolder getSpeedHolder() {
 		return speedHolder;
 	}
 	
-	public BufferReferenceHolder getNeedRedstoneHolder() {
+	public DataHolder getNeedRedstoneHolder() {
 		return needRedstoneHolder;
 	}
 	
@@ -413,20 +408,11 @@ public class DrawBridgeTileEntity extends UTickableTileEntity implements IInitSy
 	// Model data
 	
 	@Override
-	public IModelData getModelData() {
+	public ModelData getModelData() {
 		if (renderBlockState != null) {
-			return new ModelDataMap.Builder().withInitial(BLOCKSTATE_PROPERTY, renderBlockState).build();
+			return ModelData.builder().with(BLOCKSTATE_PROPERTY, renderBlockState).build();
 		}
-		return EmptyModelData.INSTANCE;
-	}
-	
-	// Send update tag even if tag is empty
-	
-	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket() {
-		final CompoundTag compound = new CompoundTag();
-		sendUpdateStateData(compound);
-		return new ClientboundBlockEntityDataPacket(worldPosition, -1, compound);
+		return ModelData.EMPTY;
 	}
 	
 }
