@@ -68,7 +68,7 @@ minecraft {
 			args "--output", file("src/generated/resources")
 			args "--validate"
 			args "--existing", file("src/main/resources")
-						
+			
 			mods {
 				"${config.mod.modid}" {
 					source sourceSets.main
@@ -137,8 +137,6 @@ curseforge {
 		
 		relations {
 			requiredDependency "u-team-core"
-			optionalDependency "jei"
-			optionalDependency "curios"
 		}
 		
 		mainArtifact(tasks.getByName("jar")) {
