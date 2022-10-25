@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import info.u_team.draw_bridge.block.DrawBridgeBlock;
-import info.u_team.draw_bridge.init.DrawBridgeBlocks;
 import info.u_team.draw_bridge.init.DrawBridgeBlockEntityTypes;
+import info.u_team.draw_bridge.init.DrawBridgeBlocks;
 import info.u_team.draw_bridge.menu.DrawBridgeMenu;
 import info.u_team.draw_bridge.util.InventoryStackHandler;
 import info.u_team.draw_bridge.util.SingleStackInventoryStackHandler;

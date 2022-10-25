@@ -1,8 +1,8 @@
 package info.u_team.draw_bridge.util;
 
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
 
 public class SingleStackInventoryStackHandler extends InventoryStackHandler {
 	

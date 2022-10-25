@@ -4,8 +4,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import info.u_team.draw_bridge.blockentity.DrawBridgeBlockEntity;
-import info.u_team.draw_bridge.init.DrawBridgeItemGroups;
 import info.u_team.draw_bridge.init.DrawBridgeBlockEntityTypes;
+import info.u_team.draw_bridge.init.DrawBridgeItemGroups;
 import info.u_team.u_team_core.block.UEntityBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

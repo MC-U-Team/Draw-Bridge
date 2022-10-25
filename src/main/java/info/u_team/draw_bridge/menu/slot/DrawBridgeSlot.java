@@ -2,8 +2,8 @@ package info.u_team.draw_bridge.menu.slot;
 
 import info.u_team.draw_bridge.blockentity.DrawBridgeBlockEntity;
 import info.u_team.draw_bridge.init.DrawBridgeBlocks;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
