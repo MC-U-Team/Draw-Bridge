@@ -38,7 +38,7 @@ public class DrawBridgeScreen extends UContainerMenuScreen<DrawBridgeContainer> 
 	
 	public DrawBridgeScreen(DrawBridgeContainer container, Inventory playerInventory, Component title) {
 		super(container, playerInventory, title, BACKGROUND, 212, 168);
-		backgroundWidth = backgroundHeight = 512;
+		setBackgroundDimensions(512);
 		setTextLocation(8, 6, 26, imageHeight - 94);
 		
 		final String langKey = "container.drawbridge.draw_bridge.";

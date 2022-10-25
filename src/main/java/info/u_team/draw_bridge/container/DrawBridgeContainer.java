@@ -33,7 +33,7 @@ public class DrawBridgeContainer extends UBlockEntityContainerMenu<DrawBridgeTil
 	@Override
 	protected void init(LogicalSide side) {
 		addSlots(blockEntity.getSlots().getInventory(), (inv, index, xPosition, yPosition) -> new DrawBridgeSlot(blockEntity, inv, index, xPosition, yPosition), 2, 5, 8, 18);
-		addSlots(blockEntity.getRenderSlot(), 1, 1, 170, 36);
+		addSlots(blockEntity.getRenderSlot(), 1, 1, 170, 27);
 		addPlayerInventory(playerInventory, 26, 86);
 		addDataHolderToClient(blockEntity.getExtendedHolder());
 		addDataHolderToClient(blockEntity.getSpeedHolder());
