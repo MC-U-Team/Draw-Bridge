@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -21,10 +21,10 @@ public class DrawBridgeCamouflage extends DrawBridgeBlock {
 		this.baseDrawBridgeBlockSupplier = baseDrawBridgeBlockSupplier;
 	}
 	
-	@Override
-	public BlockItem blockItem() {
-		return null;
-	}
+//	@Override
+//	public Item blockItem() {
+//		return baseDrawBridgeBlockSupplier.get().blockItem(); // TODO maybe fix? Not sure if that is right
+//	}
 	
 	@Override
 	public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player) {
