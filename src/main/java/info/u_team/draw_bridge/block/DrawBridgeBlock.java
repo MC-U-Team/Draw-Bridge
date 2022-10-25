@@ -85,7 +85,7 @@ public class DrawBridgeBlock extends UEntityBlock {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (!(newState.getBlock() instanceof DrawBridgeBlock)) {
+		if (!state.is(newState.getBlock())) {
 			getBlockEntity(world, pos).map(DrawBridgeTileEntity.class::cast).ifPresent(drawBridge -> {
 				Containers.dropContents(world, pos, drawBridge.getSlots().getInventory());
 				Containers.dropContents(world, pos, drawBridge.getRenderSlot().getInventory());

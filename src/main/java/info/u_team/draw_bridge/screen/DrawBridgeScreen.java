@@ -7,7 +7,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import info.u_team.draw_bridge.DrawBridgeMod;
 import info.u_team.draw_bridge.container.DrawBridgeContainer;
 import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
-import info.u_team.draw_bridge.util.DrawBridgeCamouflageRenderTypes;
 import info.u_team.u_team_core.gui.elements.ScalableButton;
 import info.u_team.u_team_core.gui.elements.ScalableSlider;
 import info.u_team.u_team_core.screen.UContainerMenuScreen;
@@ -19,7 +18,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.StateHolder;
 
 public class DrawBridgeScreen extends UContainerMenuScreen<DrawBridgeContainer> {
@@ -30,7 +28,6 @@ public class DrawBridgeScreen extends UContainerMenuScreen<DrawBridgeContainer> 
 	private final Component needRedstoneTextComponent;
 	private final Component speedTextComponent;
 	private final Component ticksTextComponent;
-	private final Component renderTypeTextComponent;
 	private final Component cycleBlockStateTextComponent;
 	private final Component blockStateTextComponent;
 	private final Component noCycleBlockStateTextComponent;
@@ -38,8 +35,6 @@ public class DrawBridgeScreen extends UContainerMenuScreen<DrawBridgeContainer> 
 	
 	private ScalableSlider slider;
 	private ScalableButton renderStateButton;
-	
-	private Block currentBlock;
 	
 	public DrawBridgeScreen(DrawBridgeContainer container, Inventory playerInventory, Component title) {
 		super(container, playerInventory, title, BACKGROUND, 212, 168);
@@ -51,7 +46,6 @@ public class DrawBridgeScreen extends UContainerMenuScreen<DrawBridgeContainer> 
 		needRedstoneTextComponent = Component.translatable(langKey + "need_redstone");
 		speedTextComponent = Component.translatable(langKey + "speed");
 		ticksTextComponent = Component.translatable(langKey + "ticks");
-		renderTypeTextComponent = Component.translatable(langKey + "render_type");
 		cycleBlockStateTextComponent = Component.translatable(langKey + "cycle_block_state");
 		blockStateTextComponent = Component.translatable(langKey + "block_state");
 		noCycleBlockStateTextComponent = Component.translatable(langKey + "no_cycle_block_state").withStyle(ChatFormatting.RED);
@@ -90,24 +84,6 @@ public class DrawBridgeScreen extends UContainerMenuScreen<DrawBridgeContainer> 
 			}
 		});
 		
-		final ScalableButton renderTypeButton = addRenderableWidget(new ScalableButton(leftPos + 150, topPos + 17, 54, 13, Component.nullToEmpty(null), 0.5F) {
-			
-			@Override
-			public Component getMessage() {
-				return DrawBridgeCamouflageRenderTypes.getType(currentBlock).getTextComponent();
-			}
-		});
-		renderTypeButton.setPressable(() -> {
-			menu.getCamouflageTypeMessage().triggerMessage();
-		});
-		renderTypeButton.setTooltip((button, matrixStack, mouseX, mouseY) -> {
-			if (WidgetUtil.isHovered(button)) {
-				renderTooltip(matrixStack, renderTypeTextComponent, mouseX, mouseY);
-			}
-		});
-		
-		updateCurrentBlock();
-		
 		renderStateButton = addRenderableWidget(new ScalableButton(leftPos + 150, topPos + 57, 54, 13, cycleBlockStateTextComponent, 0.5F));
 		renderStateButton.setPressable(() -> {
 			menu.getCamouflageBlockStateMessage().triggerMessage();
@@ -145,13 +121,7 @@ public class DrawBridgeScreen extends UContainerMenuScreen<DrawBridgeContainer> 
 	@Override
 	public void containerTick() {
 		super.containerTick();
-		updateCurrentBlock();
 		updateRenderState();
-	}
-	
-	private void updateCurrentBlock() {
-		final DrawBridgeTileEntity drawBridge = menu.getBlockEntity();
-		currentBlock = drawBridge.getLevel().getBlockState(drawBridge.getBlockPos()).getBlock();
 	}
 	
 	private void updateRenderState() {

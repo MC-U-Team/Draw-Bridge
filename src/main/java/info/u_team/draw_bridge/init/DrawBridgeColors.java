@@ -13,8 +13,7 @@ public class DrawBridgeColors {
 		event.register((state, world, pos, tintIndex) -> {
 			if (world != null && pos != null) {
 				final BlockEntity tileEntity = world.getBlockEntity(pos);
-				if (tileEntity instanceof DrawBridgeTileEntity) {
-					final DrawBridgeTileEntity drawBridge = (DrawBridgeTileEntity) tileEntity;
+				if (tileEntity instanceof DrawBridgeTileEntity drawBridge) {
 					if (drawBridge.hasRenderBlockState()) {
 						try {
 							return event.getBlockColors().getColor(drawBridge.getRenderBlockState(), world, pos, tintIndex);
@@ -25,7 +24,7 @@ public class DrawBridgeColors {
 				}
 			}
 			return -1;
-		}, DrawBridgeBlocks.DRAW_BRIDGE.get(), DrawBridgeBlocks.DRAW_BRIDGE_CUTOUT.get(), DrawBridgeBlocks.DRAW_BRIDGE_CUTOUT_MIPPED.get(), DrawBridgeBlocks.DRAW_BRIDGE_TRANSLUCENT.get(), DrawBridgeBlocks.DRAW_BRIDGE_TRIPWIRE.get());
+		}, DrawBridgeBlocks.DRAW_BRIDGE.get());
 	}
 	
 	public static void registerMod(IEventBus bus) {

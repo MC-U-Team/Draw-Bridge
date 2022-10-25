@@ -12,7 +12,6 @@ public class DrawBridgeClientConstruct implements ModConstruct {
 	public void construct() {
 		BusRegister.registerMod(DrawBridgeColors::registerMod);
 		BusRegister.registerMod(DrawBridgeModels::registerMod);
-		BusRegister.registerMod(DrawBridgeRenderTypes::registerMod);
 		BusRegister.registerMod(DrawBridgeScreens::registerMod);
 	}
 	

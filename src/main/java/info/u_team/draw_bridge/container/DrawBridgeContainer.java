@@ -1,10 +1,8 @@
 package info.u_team.draw_bridge.container;
 
-import info.u_team.draw_bridge.block.DrawBridgeBlock;
 import info.u_team.draw_bridge.container.slot.DrawBridgeSlot;
 import info.u_team.draw_bridge.init.DrawBridgeContainerTypes;
 import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
-import info.u_team.draw_bridge.util.DrawBridgeCamouflageRenderTypes;
 import info.u_team.u_team_core.api.sync.MessageHolder;
 import info.u_team.u_team_core.api.sync.MessageHolder.EmptyMessageHolder;
 import info.u_team.u_team_core.menu.UBlockEntityContainerMenu;
@@ -13,7 +11,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fml.LogicalSide;
 
 public class DrawBridgeContainer extends UBlockEntityContainerMenu<DrawBridgeTileEntity> {
@@ -21,7 +18,6 @@ public class DrawBridgeContainer extends UBlockEntityContainerMenu<DrawBridgeTil
 	// Messages from the client to the server
 	private MessageHolder speedMessage;
 	private EmptyMessageHolder needRedstoneMessage;
-	private EmptyMessageHolder camouflageTypeMessage;
 	private EmptyMessageHolder camouflageBlockStateMessage;
 	
 	// Client
@@ -46,17 +42,6 @@ public class DrawBridgeContainer extends UBlockEntityContainerMenu<DrawBridgeTil
 		needRedstoneMessage = addDataHolderToServer(new EmptyMessageHolder(() -> {
 			blockEntity.setNeedRedstone(!blockEntity.isNeedRedstone());
 			blockEntity.neighborChanged();
-		}));
-		camouflageTypeMessage = addDataHolderToServer(new EmptyMessageHolder(() -> {
-			if (blockEntity.hasLevel()) {
-				final BlockState previousState = blockEntity.getBlockState();
-				final DrawBridgeCamouflageRenderTypes type = DrawBridgeCamouflageRenderTypes.getType(previousState.getBlock()).cycle();
-				if (previousState.getBlock() != type.getBlock()) {
-					final BlockState newState = type.getBlock().defaultBlockState().setValue(DrawBridgeBlock.FACING, previousState.getValue(DrawBridgeBlock.FACING));
-					blockEntity.getLevel().setBlock(blockEntity.getBlockPos(), newState, 2);
-					// blockEntity.clearCache(); TODO need to be fixed?
-				}
-			}
 		}));
 		camouflageBlockStateMessage = addDataHolderToServer(new EmptyMessageHolder(() -> {
 			blockEntity.setRenderSlotStateProperty(blockEntity.getRenderSlotStateProperty() + 1);
@@ -108,10 +93,6 @@ public class DrawBridgeContainer extends UBlockEntityContainerMenu<DrawBridgeTil
 	
 	public EmptyMessageHolder getNeedRedstoneMessage() {
 		return needRedstoneMessage;
-	}
-	
-	public EmptyMessageHolder getCamouflageTypeMessage() {
-		return camouflageTypeMessage;
 	}
 	
 	public EmptyMessageHolder getCamouflageBlockStateMessage() {
