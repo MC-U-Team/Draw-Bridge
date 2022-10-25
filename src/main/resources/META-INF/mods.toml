@@ -1,18 +1,18 @@
 modLoader="javafml"
 loaderVersion="[43,)"
 issueTrackerURL="https://github.com/MC-U-Team/Draw-Bridge/issues"
-displayURL="https://u-team.info/mods/drawbridge"
-logoFile="logo.png"
 license="Apache-2.0 License"
-credits="Team U-Team"
-authors="HyCraftHD, MrTroble"
 
 [[mods]]
 	modId="drawbridge"
 	version="${file.jarVersion}"
 	displayName="Draw Bridge"
+	displayURL="https://u-team.info/mods/drawbridge"
 	updateJSONURL="https://api.u-team.info/update/drawbridge.json"
-	description="A standalone simple drawbridge mod"
+	logoFile="logo.png"
+	credits="Team U-Team"
+	authors="HyCraftHD, MrTroble"
+	description="Join our discord server here: https://discord.hycrafthd.net\n\nA standalone simple drawbridge mod"
 	
 	[[dependencies.drawbridge]]
 	    modId="forge"
