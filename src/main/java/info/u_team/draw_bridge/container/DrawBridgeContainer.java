@@ -54,7 +54,7 @@ public class DrawBridgeContainer extends UBlockEntityContainerMenu<DrawBridgeTil
 				if (previousState.getBlock() != type.getBlock()) {
 					final BlockState newState = type.getBlock().defaultBlockState().setValue(DrawBridgeBlock.FACING, previousState.getValue(DrawBridgeBlock.FACING));
 					blockEntity.getLevel().setBlock(blockEntity.getBlockPos(), newState, 2);
-					blockEntity.clearCache();
+					// blockEntity.clearCache(); TODO need to be fixed?
 				}
 			}
 		}));
