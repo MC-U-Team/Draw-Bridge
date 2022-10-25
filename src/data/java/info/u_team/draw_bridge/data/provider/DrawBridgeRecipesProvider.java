@@ -4,21 +4,21 @@ import static info.u_team.draw_bridge.init.DrawBridgeBlocks.DRAW_BRIDGE;
 
 import java.util.function.Consumer;
 
-import info.u_team.u_team_core.data.CommonRecipesProvider;
+import info.u_team.u_team_core.data.CommonRecipeProvider;
 import info.u_team.u_team_core.data.GenerationData;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 
-public class DrawBridgeRecipesProvider extends CommonRecipesProvider {
+public class DrawBridgeRecipesProvider extends CommonRecipeProvider {
 	
-	public DrawBridgeRecipesProvider(GenerationData data) {
-		super(data);
+	public DrawBridgeRecipesProvider(GenerationData generationData) {
+		super(generationData);
 	}
 	
 	@Override
-	protected void registerRecipes(Consumer<FinishedRecipe> consumer) {
+	public void register(Consumer<FinishedRecipe> consumer) {
 		ShapedRecipeBuilder.shaped(DRAW_BRIDGE.get()) //
 				.pattern("ICI") //
 				.pattern("RPR") //
@@ -27,7 +27,7 @@ public class DrawBridgeRecipesProvider extends CommonRecipesProvider {
 				.define('C', getIngredientOfTag(Tags.Items.CHESTS_WOODEN)) //
 				.define('R', getIngredientOfTag(Tags.Items.DUSTS_REDSTONE)) //
 				.define('P', Blocks.PISTON) //
-				.unlockedBy("has_redstone", hasItem(Tags.Items.DUSTS_REDSTONE)) //
+				.unlockedBy("has_redstone", has(Tags.Items.DUSTS_REDSTONE)) //
 				.save(consumer);
 	}
 }

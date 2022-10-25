@@ -8,12 +8,12 @@ import info.u_team.u_team_core.data.GenerationData;
 
 public class DrawBridgeLanguagesProvider extends CommonLanguagesProvider {
 	
-	public DrawBridgeLanguagesProvider(GenerationData data) {
-		super(data);
+	public DrawBridgeLanguagesProvider(GenerationData generationData) {
+		super(generationData);
 	}
 	
 	@Override
-	public void addTranslations() {
+	public void register() {
 		
 		final String container = "container.drawbridge.draw_bridge";
 		

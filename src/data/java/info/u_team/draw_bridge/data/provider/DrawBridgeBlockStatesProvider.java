@@ -9,21 +9,21 @@ import static info.u_team.draw_bridge.init.DrawBridgeBlocks.DRAW_BRIDGE_TRIPWIRE
 import com.google.common.collect.ImmutableList;
 
 import info.u_team.draw_bridge.block.DrawBridgeBlock;
-import info.u_team.u_team_core.data.CommonBlockStatesProvider;
+import info.u_team.u_team_core.data.CommonBlockStateProvider;
 import info.u_team.u_team_core.data.GenerationData;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 
-public class DrawBridgeBlockStatesProvider extends CommonBlockStatesProvider {
+public class DrawBridgeBlockStatesProvider extends CommonBlockStateProvider {
 	
-	public DrawBridgeBlockStatesProvider(GenerationData data) {
-		super(data);
+	public DrawBridgeBlockStatesProvider(GenerationData generationData) {
+		super(generationData);
 	}
 	
 	@Override
-	protected void registerStatesAndModels() {
+	public void register() {
 		final ResourceLocation side = modLoc("block/draw_bridge_side");
 		final ResourceLocation front = modLoc("block/draw_bridge_front");
 		final ResourceLocation back = modLoc("block/draw_bridge_back");
