@@ -27,6 +27,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -135,30 +136,30 @@ public class DrawBridgeTileEntity extends UBlockEntity implements MenuSyncedBloc
 		return Stream.of(Direction.values()).map(start::relative).filter(pos -> !pos.equals(except));
 	}
 	
-	public void tickServer() {
-		if (localSpeed <= 1) {
-			localSpeed = speed;
-			if (powered && extendState < 10) {
-				if (localSpeed == 0) {
-					for (int i = extendState; i < 10; i++) {
-						extend();
+	public static void serverTick(Level level, BlockPos pos, BlockState state, DrawBridgeTileEntity blockEntity) {
+		if (blockEntity.localSpeed <= 1) {
+			blockEntity.localSpeed = blockEntity.speed;
+			if (blockEntity.powered && blockEntity.extendState < 10) {
+				if (blockEntity.localSpeed == 0) {
+					for (int i = blockEntity.extendState; i < 10; i++) {
+						blockEntity.extend();
 					}
 				} else {
-					extend();
+					blockEntity.extend();
 				}
-				setChanged();
-			} else if (!powered && extendState > 0) {
-				if (localSpeed == 0) {
-					for (int i = extendState; i > 0; i--) {
-						retract();
+				blockEntity.setChanged();
+			} else if (!blockEntity.powered && blockEntity.extendState > 0) {
+				if (blockEntity.localSpeed == 0) {
+					for (int i = blockEntity.extendState; i > 0; i--) {
+						blockEntity.retract();
 					}
 				} else {
-					retract();
+					blockEntity.retract();
 				}
-				setChanged();
+				blockEntity.setChanged();
 			}
 		}
-		localSpeed--;
+		blockEntity.localSpeed--;
 	}
 	
 	private void extend() {

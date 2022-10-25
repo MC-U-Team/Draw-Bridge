@@ -22,6 +22,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -48,6 +51,16 @@ public class DrawBridgeBlock extends UEntityBlock {
 	protected DrawBridgeBlock(Properties properties) {
 		super(DrawBridgeItemGroups.GROUP, properties.strength(1.5F).noOcclusion().dynamicShape().isRedstoneConductor(BlockState::isCollisionShapeFullBlock), DrawBridgeTileEntityTypes.DRAW_BRIDGE);
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
+	}
+	
+	// Tick drawbridge
+	
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+		if ((type != blockEntityType.get()) || level.isClientSide()) {
+			return null;
+		}
+		return (level_, pos, state_, instance) -> DrawBridgeTileEntity.serverTick(level_, pos, state_, (DrawBridgeTileEntity) instance);
 	}
 	
 	// Trigger drawbridge
