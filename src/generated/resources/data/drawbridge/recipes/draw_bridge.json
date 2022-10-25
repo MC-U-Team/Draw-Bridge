@@ -1,24 +1,24 @@
 {
 	"type": "minecraft:crafting_shaped",
+	"key": {
+		"C": {
+			"tag": "forge:chests/wooden"
+		},
+		"I": {
+			"tag": "forge:ingots/iron"
+		},
+		"P": {
+			"item": "minecraft:piston"
+		},
+		"R": {
+			"tag": "forge:dusts/redstone"
+		}
+	},
 	"pattern": [
 		"ICI",
 		"RPR",
 		"RPR"
 	],
-	"key": {
-		"I": {
-			"tag": "forge:ingots/iron"
-		},
-		"C": {
-			"tag": "forge:chests/wooden"
-		},
-		"R": {
-			"tag": "forge:dusts/redstone"
-		},
-		"P": {
-			"item": "minecraft:piston"
-		}
-	},
 	"result": {
 		"item": "drawbridge:draw_bridge"
 	}

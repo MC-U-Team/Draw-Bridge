@@ -2,11 +2,11 @@
 	"parent": "minecraft:block/cube",
 	"textures": {
 		"down": "drawbridge:block/draw_bridge_side",
-		"up": "drawbridge:block/draw_bridge_side",
-		"north": "drawbridge:block/draw_bridge_front",
-		"south": "drawbridge:block/draw_bridge_back",
 		"east": "drawbridge:block/draw_bridge_side",
-		"west": "drawbridge:block/draw_bridge_side",
-		"particle": "drawbridge:block/draw_bridge_side"
+		"north": "drawbridge:block/draw_bridge_front",
+		"particle": "drawbridge:block/draw_bridge_side",
+		"south": "drawbridge:block/draw_bridge_back",
+		"up": "drawbridge:block/draw_bridge_side",
+		"west": "drawbridge:block/draw_bridge_side"
 	}
 }
