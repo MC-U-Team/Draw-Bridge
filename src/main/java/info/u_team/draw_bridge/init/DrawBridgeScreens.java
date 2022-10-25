@@ -7,7 +7,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 public class DrawBridgeScreens {
 	
 	private static void register(RegisterMenuScreensEvent event) {
-		event.registerScreen(DrawBridgeContainerTypes.DRAW_BRIDGE, DrawBridgeScreen::new);
+		event.registerScreen(DrawBridgeMenuTypes.DRAW_BRIDGE, DrawBridgeScreen::new);
 	}
 	
 	public static void registerMod(IEventBus bus) {

@@ -1,4 +1,4 @@
-package info.u_team.draw_bridge.tileentity;
+package info.u_team.draw_bridge.blockentity;
 
 import java.util.HashSet;
 import java.util.List;
@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import info.u_team.draw_bridge.block.DrawBridgeBlock;
-import info.u_team.draw_bridge.container.DrawBridgeContainer;
 import info.u_team.draw_bridge.init.DrawBridgeBlocks;
-import info.u_team.draw_bridge.init.DrawBridgeTileEntityTypes;
+import info.u_team.draw_bridge.init.DrawBridgeBlockEntityTypes;
+import info.u_team.draw_bridge.menu.DrawBridgeMenu;
 import info.u_team.draw_bridge.util.InventoryStackHandler;
 import info.u_team.draw_bridge.util.SingleStackInventoryStackHandler;
 import info.u_team.u_team_core.api.block.MenuSyncedBlockEntity;
@@ -37,7 +37,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
-public class DrawBridgeTileEntity extends UBlockEntity implements MenuSyncedBlockEntity {
+public class DrawBridgeBlockEntity extends UBlockEntity implements MenuSyncedBlockEntity {
 	
 	public static final ModelProperty<BlockState> BLOCKSTATE_PROPERTY = new ModelProperty<BlockState>();
 	
@@ -88,8 +88,8 @@ public class DrawBridgeTileEntity extends UBlockEntity implements MenuSyncedBloc
 	private final DataHolder speedHolder = DataHolder.createByteHolder(() -> (byte) speed, value -> speed = value); // The speed is only in the range of 0 to 100 so we can cast to a byte here
 	private final DataHolder needRedstoneHolder = DataHolder.createBooleanHolder(() -> needRedstone, value -> needRedstone = value);
 	
-	public DrawBridgeTileEntity(BlockPos pos, BlockState state) {
-		super(DrawBridgeTileEntityTypes.DRAW_BRIDGE.get(), pos, state);
+	public DrawBridgeBlockEntity(BlockPos pos, BlockState state) {
+		super(DrawBridgeBlockEntityTypes.DRAW_BRIDGE.get(), pos, state);
 	}
 	
 	// Neighbor update
@@ -98,7 +98,7 @@ public class DrawBridgeTileEntity extends UBlockEntity implements MenuSyncedBloc
 		final boolean newPowered = level.hasNeighborSignal(worldPosition);
 		updatePoweredState(newPowered);
 		
-		final Set<DrawBridgeTileEntity> drawBridges = new HashSet<>();
+		final Set<DrawBridgeBlockEntity> drawBridges = new HashSet<>();
 		collect(drawBridges, this, 0);
 		
 		final boolean newPoweredState = drawBridges.stream().anyMatch(drawBridge -> level.hasNeighborSignal(drawBridge.worldPosition)) | newPowered;
@@ -111,16 +111,16 @@ public class DrawBridgeTileEntity extends UBlockEntity implements MenuSyncedBloc
 		powered = needRedstone ? newPowered : !newPowered;
 	}
 	
-	private void collect(Set<DrawBridgeTileEntity> tileEntites, DrawBridgeTileEntity callerTileEntity, int depth) {
+	private void collect(Set<DrawBridgeBlockEntity> tileEntites, DrawBridgeBlockEntity callerTileEntity, int depth) {
 		if (depth >= 20) {
 			return;
 		}
 		getNeighbors(callerTileEntity.worldPosition).stream().forEach(neighbor -> {
 			final BlockEntity tileEntity = level.getBlockEntity(neighbor);
-			if (!(tileEntity instanceof DrawBridgeTileEntity)) {
+			if (!(tileEntity instanceof DrawBridgeBlockEntity)) {
 				return;
 			}
-			final DrawBridgeTileEntity drawBridge = (DrawBridgeTileEntity) tileEntity;
+			final DrawBridgeBlockEntity drawBridge = (DrawBridgeBlockEntity) tileEntity;
 			
 			if (tileEntites.add(drawBridge)) {
 				drawBridge.collect(tileEntites, drawBridge, depth + 1);
@@ -136,7 +136,7 @@ public class DrawBridgeTileEntity extends UBlockEntity implements MenuSyncedBloc
 		return Stream.of(Direction.values()).map(start::relative).filter(pos -> !pos.equals(except));
 	}
 	
-	public static void serverTick(Level level, BlockPos pos, BlockState state, DrawBridgeTileEntity blockEntity) {
+	public static void serverTick(Level level, BlockPos pos, BlockState state, DrawBridgeBlockEntity blockEntity) {
 		if (blockEntity.localSpeed <= 1) {
 			blockEntity.localSpeed = blockEntity.speed;
 			if (blockEntity.powered && blockEntity.extendState < 10) {
@@ -255,7 +255,7 @@ public class DrawBridgeTileEntity extends UBlockEntity implements MenuSyncedBloc
 	
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
-		return new DrawBridgeContainer(id, playerInventory, this);
+		return new DrawBridgeMenu(id, playerInventory, this);
 	}
 	
 	@Override

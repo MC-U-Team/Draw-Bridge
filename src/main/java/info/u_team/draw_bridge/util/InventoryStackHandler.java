@@ -142,7 +142,7 @@ public class InventoryStackHandler implements IItemHandlerModifiable, INBTSerial
 	protected void slotChanged(int index) {
 	}
 	
-	// If used in tileentites, then the world might be null
+	// If used in tileentites, then the level might be null
 	protected void onLoaded() {
 	}
 	

@@ -3,9 +3,9 @@ package info.u_team.draw_bridge.block;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import info.u_team.draw_bridge.blockentity.DrawBridgeBlockEntity;
 import info.u_team.draw_bridge.init.DrawBridgeItemGroups;
-import info.u_team.draw_bridge.init.DrawBridgeTileEntityTypes;
-import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
+import info.u_team.draw_bridge.init.DrawBridgeBlockEntityTypes;
 import info.u_team.u_team_core.block.UEntityBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -49,7 +49,7 @@ public class DrawBridgeBlock extends UEntityBlock {
 	}
 	
 	protected DrawBridgeBlock(Properties properties) {
-		super(DrawBridgeItemGroups.GROUP, properties.strength(1.5F).noOcclusion().dynamicShape().isRedstoneConductor(BlockState::isCollisionShapeFullBlock), DrawBridgeTileEntityTypes.DRAW_BRIDGE);
+		super(DrawBridgeItemGroups.GROUP, properties.strength(1.5F).noOcclusion().dynamicShape().isRedstoneConductor(BlockState::isCollisionShapeFullBlock), DrawBridgeBlockEntityTypes.DRAW_BRIDGE);
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 	
@@ -60,38 +60,38 @@ public class DrawBridgeBlock extends UEntityBlock {
 		if ((type != blockEntityType.get()) || level.isClientSide()) {
 			return null;
 		}
-		return (level_, pos, state_, instance) -> DrawBridgeTileEntity.serverTick(level_, pos, state_, (DrawBridgeTileEntity) instance);
+		return (level_, pos, state_, instance) -> DrawBridgeBlockEntity.serverTick(level_, pos, state_, (DrawBridgeBlockEntity) instance);
 	}
 	
 	// Trigger drawbridge
 	
 	@Override
-	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-		if (world.isClientSide) {
+	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+		if (level.isClientSide) {
 			return;
 		}
-		getBlockEntity(world, pos).map(DrawBridgeTileEntity.class::cast).ifPresent(DrawBridgeTileEntity::neighborChanged);
+		getBlockEntity(level, pos).map(DrawBridgeBlockEntity.class::cast).ifPresent(DrawBridgeBlockEntity::neighborChanged);
 	}
 	
 	// Open gui
 	
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		return openMenu(world, pos, player, true);
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		return openMenu(level, pos, player, true);
 	}
 	
 	// Drop items
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
+	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (!state.is(newState.getBlock())) {
-			getBlockEntity(world, pos).map(DrawBridgeTileEntity.class::cast).ifPresent(drawBridge -> {
-				Containers.dropContents(world, pos, drawBridge.getSlots().getInventory());
-				Containers.dropContents(world, pos, drawBridge.getRenderSlot().getInventory());
-				world.updateNeighbourForOutputSignal(pos, this);
+			getBlockEntity(level, pos).map(DrawBridgeBlockEntity.class::cast).ifPresent(drawBridge -> {
+				Containers.dropContents(level, pos, drawBridge.getSlots().getInventory());
+				Containers.dropContents(level, pos, drawBridge.getRenderSlot().getInventory());
+				level.updateNeighbourForOutputSignal(pos, this);
 			});
-			super.onRemove(state, world, pos, newState, isMoving);
+			super.onRemove(state, level, pos, newState, isMoving);
 		}
 	}
 	
@@ -121,40 +121,40 @@ public class DrawBridgeBlock extends UEntityBlock {
 	// Simulate camouflage block
 	
 	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-		return getRenderBlockStateProperty(world, pos, renderState -> renderState.getShape(world, pos, context), Shapes::block);
+	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+		return getRenderBlockStateProperty(level, pos, renderState -> renderState.getShape(level, pos, context), Shapes::block);
 	}
 	
 	@Override
-	public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-		return getRenderBlockStateProperty(world, pos, renderState -> renderState.getCollisionShape(world, pos, context), Shapes::block);
+	public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+		return getRenderBlockStateProperty(level, pos, renderState -> renderState.getCollisionShape(level, pos, context), Shapes::block);
 	}
 	
 	@Override
-	public SoundType getSoundType(BlockState state, LevelReader world, BlockPos pos, Entity entity) {
-		return getRenderBlockStateProperty(world, pos, renderState -> renderState.getSoundType(world, pos, entity), () -> soundType);
+	public SoundType getSoundType(BlockState state, LevelReader level, BlockPos pos, Entity entity) {
+		return getRenderBlockStateProperty(level, pos, renderState -> renderState.getSoundType(level, pos, entity), () -> soundType);
 	}
 	
 	@Override
-	public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
-		return getRenderBlockStateProperty(world, pos, renderState -> renderState.getLightEmission(world, pos), () -> 0);
+	public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
+		return getRenderBlockStateProperty(level, pos, renderState -> renderState.getLightEmission(level, pos), () -> 0);
 	}
 	
 	@Override
-	public boolean propagatesSkylightDown(BlockState state, BlockGetter world, BlockPos pos) {
-		return getRenderBlockStateProperty(world, pos, renderState -> renderState.propagatesSkylightDown(world, pos), () -> false);
+	public boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
+		return getRenderBlockStateProperty(level, pos, renderState -> renderState.propagatesSkylightDown(level, pos), () -> false);
 	}
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public float getShadeBrightness(BlockState state, BlockGetter world, BlockPos pos) {
-		return getRenderBlockStateProperty(world, pos, renderState -> renderState.getShadeBrightness(world, pos), () -> 0.2F);
+	public float getShadeBrightness(BlockState state, BlockGetter level, BlockPos pos) {
+		return getRenderBlockStateProperty(level, pos, renderState -> renderState.getShadeBrightness(level, pos), () -> 0.2F);
 	}
 	
-	private <T> T getRenderBlockStateProperty(BlockGetter world, BlockPos pos, Function<BlockState, T> function, Supplier<T> other) {
-		return getBlockEntity(world, pos) //
-				.map(DrawBridgeTileEntity.class::cast) //
-				.filter(DrawBridgeTileEntity::hasRenderBlockState) //
+	private <T> T getRenderBlockStateProperty(BlockGetter level, BlockPos pos, Function<BlockState, T> function, Supplier<T> other) {
+		return getBlockEntity(level, pos) //
+				.map(DrawBridgeBlockEntity.class::cast) //
+				.filter(DrawBridgeBlockEntity::hasRenderBlockState) //
 				.map(drawBridge -> function.apply(drawBridge.getRenderBlockState())) //
 				.orElseGet(other);
 	}

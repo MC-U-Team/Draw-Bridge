@@ -11,8 +11,8 @@ public class DrawBridgeCommonConstruct implements ModConstruct {
 	@Override
 	public void construct() {
 		BusRegister.registerMod(DrawBridgeBlocks::registerMod);
-		BusRegister.registerMod(DrawBridgeContainerTypes::registerMod);
-		BusRegister.registerMod(DrawBridgeTileEntityTypes::registerMod);
+		BusRegister.registerMod(DrawBridgeMenuTypes::registerMod);
+		BusRegister.registerMod(DrawBridgeBlockEntityTypes::registerMod);
 	}
 	
 }

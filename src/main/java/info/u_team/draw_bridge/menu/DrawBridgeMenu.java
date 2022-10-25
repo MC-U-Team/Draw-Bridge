@@ -1,8 +1,8 @@
-package info.u_team.draw_bridge.container;
+package info.u_team.draw_bridge.menu;
 
-import info.u_team.draw_bridge.container.slot.DrawBridgeSlot;
-import info.u_team.draw_bridge.init.DrawBridgeContainerTypes;
-import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
+import info.u_team.draw_bridge.blockentity.DrawBridgeBlockEntity;
+import info.u_team.draw_bridge.init.DrawBridgeMenuTypes;
+import info.u_team.draw_bridge.menu.slot.DrawBridgeSlot;
 import info.u_team.u_team_core.api.sync.MessageHolder;
 import info.u_team.u_team_core.api.sync.MessageHolder.EmptyMessageHolder;
 import info.u_team.u_team_core.menu.UBlockEntityContainerMenu;
@@ -13,7 +13,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.LogicalSide;
 
-public class DrawBridgeContainer extends UBlockEntityContainerMenu<DrawBridgeTileEntity> {
+public class DrawBridgeMenu extends UBlockEntityContainerMenu<DrawBridgeBlockEntity> {
 	
 	// Messages from the client to the server
 	private MessageHolder speedMessage;
@@ -21,18 +21,18 @@ public class DrawBridgeContainer extends UBlockEntityContainerMenu<DrawBridgeTil
 	private EmptyMessageHolder camouflageBlockStateMessage;
 	
 	// Client
-	public DrawBridgeContainer(int id, Inventory playerInventory, FriendlyByteBuf buffer) {
-		super(DrawBridgeContainerTypes.DRAW_BRIDGE.get(), id, playerInventory, buffer);
+	public DrawBridgeMenu(int containerId, Inventory playerInventory, FriendlyByteBuf buffer) {
+		super(DrawBridgeMenuTypes.DRAW_BRIDGE.get(), containerId, playerInventory, buffer);
 	}
 	
 	// Server
-	public DrawBridgeContainer(int id, Inventory playerInventory, DrawBridgeTileEntity tileEntity) {
-		super(DrawBridgeContainerTypes.DRAW_BRIDGE.get(), id, playerInventory, tileEntity);
+	public DrawBridgeMenu(int containerId, Inventory playerInventory, DrawBridgeBlockEntity blockEntity) {
+		super(DrawBridgeMenuTypes.DRAW_BRIDGE.get(), containerId, playerInventory, blockEntity);
 	}
 	
 	@Override
 	protected void init(LogicalSide side) {
-		addSlots(blockEntity.getSlots().getInventory(), (inv, index, xPosition, yPosition) -> new DrawBridgeSlot(blockEntity, inv, index, xPosition, yPosition), 2, 5, 8, 18);
+		addSlots(blockEntity.getSlots().getInventory(), (inventory, index, xPosition, yPosition) -> new DrawBridgeSlot(blockEntity, inventory, index, xPosition, yPosition), 2, 5, 8, 18);
 		addSlots(blockEntity.getRenderSlot(), 1, 1, 170, 27);
 		addPlayerInventory(playerInventory, 26, 86);
 		addDataHolderToClient(blockEntity.getExtendedHolder());

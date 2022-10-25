@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 
-import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
+import info.u_team.draw_bridge.blockentity.DrawBridgeBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -41,8 +41,8 @@ public class DrawBridgeModel extends BakedModelWrapper<BakedModel> {
 	}
 	
 	private <T> T withCamouflageModel(ModelData data, BiFunction<BakedModel, BlockState, T> function, Supplier<T> other) {
-		if (data.has(DrawBridgeTileEntity.BLOCKSTATE_PROPERTY)) {
-			final BlockState state = data.get(DrawBridgeTileEntity.BLOCKSTATE_PROPERTY);
+		if (data.has(DrawBridgeBlockEntity.BLOCKSTATE_PROPERTY)) {
+			final BlockState state = data.get(DrawBridgeBlockEntity.BLOCKSTATE_PROPERTY);
 			final BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(state);
 			try {
 				return function.apply(model, state);

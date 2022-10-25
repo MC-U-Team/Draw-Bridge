@@ -1,7 +1,7 @@
-package info.u_team.draw_bridge.container.slot;
+package info.u_team.draw_bridge.menu.slot;
 
+import info.u_team.draw_bridge.blockentity.DrawBridgeBlockEntity;
 import info.u_team.draw_bridge.init.DrawBridgeBlocks;
-import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
@@ -10,9 +10,9 @@ import net.minecraft.world.item.ItemStack;
 
 public class DrawBridgeSlot extends Slot {
 	
-	private final DrawBridgeTileEntity drawBridge;
+	private final DrawBridgeBlockEntity drawBridge;
 	
-	public DrawBridgeSlot(DrawBridgeTileEntity drawBridge, Container inventory, int index, int xPosition, int yPosition) {
+	public DrawBridgeSlot(DrawBridgeBlockEntity drawBridge, Container inventory, int index, int xPosition, int yPosition) {
 		super(inventory, index, xPosition, yPosition);
 		this.drawBridge = drawBridge;
 	}
