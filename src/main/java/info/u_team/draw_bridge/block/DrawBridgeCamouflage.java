@@ -2,17 +2,15 @@ package info.u_team.draw_bridge.block;
 
 import java.util.function.Supplier;
 
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class DrawBridgeCamouflage extends DrawBridgeBlock {
 	
@@ -24,12 +22,12 @@ public class DrawBridgeCamouflage extends DrawBridgeBlock {
 	}
 	
 	@Override
-	public BlockItem getBlockItem() {
+	public BlockItem blockItem() {
 		return null;
 	}
 	
 	@Override
-	public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+	public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player) {
 		return new ItemStack(baseDrawBridgeBlockSupplier.get());
 	}
 	

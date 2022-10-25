@@ -7,15 +7,16 @@ import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
 import info.u_team.draw_bridge.util.DrawBridgeCamouflageRenderTypes;
 import info.u_team.u_team_core.api.sync.MessageHolder;
 import info.u_team.u_team_core.api.sync.MessageHolder.EmptyMessageHolder;
-import info.u_team.u_team_core.container.UTileEntityContainer;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
+import info.u_team.u_team_core.menu.UBlockEntityContainerMenu;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.fml.LogicalSide;
 
-public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEntity> {
+public class DrawBridgeContainer extends UBlockEntityContainerMenu<DrawBridgeTileEntity> {
 	
 	// Messages from the client to the server
 	private MessageHolder speedMessage;
@@ -34,33 +35,33 @@ public class DrawBridgeContainer extends UTileEntityContainer<DrawBridgeTileEnti
 	}
 	
 	@Override
-	protected void init(boolean server) {
-		appendInventory(tileEntity.getSlots().getInventory(), (inv, index, xPosition, yPosition) -> new DrawBridgeSlot(tileEntity, inv, index, xPosition, yPosition), 2, 5, 8, 18);
-		appendInventory(tileEntity.getRenderSlot(), 1, 1, 170, 36);
-		appendPlayerInventory(playerInventory, 26, 86);
-		addServerToClientTracker(tileEntity.getExtendedHolder());
-		addServerToClientTracker(tileEntity.getSpeedHolder());
-		addServerToClientTracker(tileEntity.getNeedRedstoneHolder());
-		speedMessage = addClientToServerTracker(new MessageHolder(buffer -> tileEntity.setSpeed(buffer.readByte())));
-		needRedstoneMessage = addClientToServerTracker(new EmptyMessageHolder(() -> {
-			tileEntity.setNeedRedstone(!tileEntity.isNeedRedstone());
-			tileEntity.neighborChanged();
+	protected void init(LogicalSide side) {
+		addSlots(blockEntity.getSlots().getInventory(), (inv, index, xPosition, yPosition) -> new DrawBridgeSlot(blockEntity, inv, index, xPosition, yPosition), 2, 5, 8, 18);
+		addSlots(blockEntity.getRenderSlot(), 1, 1, 170, 36);
+		addPlayerInventory(playerInventory, 26, 86);
+		addDataHolderToClient(blockEntity.getExtendedHolder());
+		addDataHolderToClient(blockEntity.getSpeedHolder());
+		addDataHolderToClient(blockEntity.getNeedRedstoneHolder());
+		speedMessage = addDataHolderToServer(new MessageHolder(buffer -> blockEntity.setSpeed(buffer.readByte())));
+		needRedstoneMessage = addDataHolderToServer(new EmptyMessageHolder(() -> {
+			blockEntity.setNeedRedstone(!blockEntity.isNeedRedstone());
+			blockEntity.neighborChanged();
 		}));
-		camouflageTypeMessage = addClientToServerTracker(new EmptyMessageHolder(() -> {
-			if (tileEntity.hasLevel()) {
-				final BlockState previousState = tileEntity.getBlockState();
+		camouflageTypeMessage = addDataHolderToServer(new EmptyMessageHolder(() -> {
+			if (blockEntity.hasLevel()) {
+				final BlockState previousState = blockEntity.getBlockState();
 				final DrawBridgeCamouflageRenderTypes type = DrawBridgeCamouflageRenderTypes.getType(previousState.getBlock()).cycle();
 				if (previousState.getBlock() != type.getBlock()) {
 					final BlockState newState = type.getBlock().defaultBlockState().setValue(DrawBridgeBlock.FACING, previousState.getValue(DrawBridgeBlock.FACING));
-					tileEntity.getLevel().setBlock(tileEntity.getBlockPos(), newState, 2);
-					tileEntity.clearCache();
+					blockEntity.getLevel().setBlock(blockEntity.getBlockPos(), newState, 2);
+					blockEntity.clearCache();
 				}
 			}
 		}));
-		camouflageBlockStateMessage = addClientToServerTracker(new EmptyMessageHolder(() -> {
-			tileEntity.setRenderSlotStateProperty(tileEntity.getRenderSlotStateProperty() + 1);
-			tileEntity.updateRenderState();
-			tileEntity.sendChangesToClient();
+		camouflageBlockStateMessage = addDataHolderToServer(new EmptyMessageHolder(() -> {
+			blockEntity.setRenderSlotStateProperty(blockEntity.getRenderSlotStateProperty() + 1);
+			blockEntity.updateRenderState();
+			blockEntity.sendChangesToClient();
 		}));
 	}
 	

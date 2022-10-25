@@ -2,21 +2,21 @@ package info.u_team.draw_bridge.init;
 
 import info.u_team.draw_bridge.DrawBridgeMod;
 import info.u_team.draw_bridge.container.DrawBridgeContainer;
-import info.u_team.u_team_core.containertype.UContainerType;
+import info.u_team.u_team_core.menutype.UMenuType;
 import info.u_team.u_team_core.util.registry.CommonDeferredRegister;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class DrawBridgeContainerTypes {
 	
-	public static final CommonDeferredRegister<MenuType<?>> CONTAINER_TYPES = CommonDeferredRegister.create(ForgeRegistries.CONTAINERS, DrawBridgeMod.MODID);
+	public static final CommonDeferredRegister<MenuType<?>> MENU_TYPES = CommonDeferredRegister.create(ForgeRegistries.MENU_TYPES, DrawBridgeMod.MODID);
 	
-	public static final RegistryObject<MenuType<DrawBridgeContainer>> DRAW_BRIDGE = CONTAINER_TYPES.register("draw_bridge", () -> new UContainerType<DrawBridgeContainer>(DrawBridgeContainer::new));
+	public static final RegistryObject<MenuType<DrawBridgeContainer>> DRAW_BRIDGE = MENU_TYPES.register("draw_bridge", () -> new UMenuType<DrawBridgeContainer>(DrawBridgeContainer::new));
 	
 	public static void registerMod(IEventBus bus) {
-		CONTAINER_TYPES.register(bus);
+		MENU_TYPES.register(bus);
 	}
 	
 }

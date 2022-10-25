@@ -10,21 +10,19 @@ import info.u_team.draw_bridge.tileentity.DrawBridgeTileEntity;
 import info.u_team.draw_bridge.util.DrawBridgeCamouflageRenderTypes;
 import info.u_team.u_team_core.gui.elements.ScalableButton;
 import info.u_team.u_team_core.gui.elements.ScalableSlider;
-import info.u_team.u_team_core.screen.UBasicContainerScreen;
+import info.u_team.u_team_core.screen.UContainerMenuScreen;
 import info.u_team.u_team_core.util.WidgetUtil;
 import io.netty.buffer.Unpooled;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.client.gui.components.StateSwitchingButton;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.state.StateHolder;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.client.gui.components.StateSwitchingButton;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.StateHolder;
 
-public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer> {
+public class DrawBridgeScreen extends UContainerMenuScreen<DrawBridgeContainer> {
 	
 	private static final ResourceLocation BACKGROUND = new ResourceLocation(DrawBridgeMod.MODID, "textures/gui/draw_bridge.png");
 	private static final ResourceLocation NEED_REDSTONE_TEXTURE = new ResourceLocation(DrawBridgeMod.MODID, "textures/gui/need_redstone_button.png");
@@ -50,22 +48,22 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 		
 		final String langKey = "container.drawbridge.draw_bridge.";
 		
-		needRedstoneTextComponent = new TranslatableComponent(langKey + "need_redstone");
-		speedTextComponent = new TranslatableComponent(langKey + "speed");
-		ticksTextComponent = new TranslatableComponent(langKey + "ticks");
-		renderTypeTextComponent = new TranslatableComponent(langKey + "render_type");
-		cycleBlockStateTextComponent = new TranslatableComponent(langKey + "cycle_block_state");
-		blockStateTextComponent = new TranslatableComponent(langKey + "block_state");
-		noCycleBlockStateTextComponent = new TranslatableComponent(langKey + "no_cycle_block_state").withStyle(ChatFormatting.RED);
-		camouflageTextComponent = new TranslatableComponent(langKey + "camouflage");
+		needRedstoneTextComponent = Component.translatable(langKey + "need_redstone");
+		speedTextComponent = Component.translatable(langKey + "speed");
+		ticksTextComponent = Component.translatable(langKey + "ticks");
+		renderTypeTextComponent = Component.translatable(langKey + "render_type");
+		cycleBlockStateTextComponent = Component.translatable(langKey + "cycle_block_state");
+		blockStateTextComponent = Component.translatable(langKey + "block_state");
+		noCycleBlockStateTextComponent = Component.translatable(langKey + "no_cycle_block_state").withStyle(ChatFormatting.RED);
+		camouflageTextComponent = Component.translatable(langKey + "camouflage");
 	}
 	
 	@Override
 	protected void init() {
 		super.init();
-		final DrawBridgeTileEntity drawBridge = menu.getTileEntity();
+		final DrawBridgeTileEntity drawBridge = menu.getBlockEntity();
 		
-		final StateSwitchingButton redstoneToggleButton = addButton(new StateSwitchingButton(leftPos + 105, topPos + 35, 18, 18, drawBridge.isNeedRedstone()) {
+		final StateSwitchingButton redstoneToggleButton = addRenderableWidget(new StateSwitchingButton(leftPos + 105, topPos + 35, 18, 18, drawBridge.isNeedRedstone()) {
 			
 			@Override
 			public void onClick(double mouseX, double mouseY) {
@@ -76,23 +74,23 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 			
 			@Override
 			public void renderToolTip(PoseStack matrixStack, int mouseX, int mouseY) {
-				if (isHovered()) {
+				if (WidgetUtil.isHovered(this)) {
 					renderTooltip(matrixStack, needRedstoneTextComponent, mouseX, mouseY);
 				}
 			}
 		});
 		redstoneToggleButton.initTextureValues(0, 0, 18, 18, NEED_REDSTONE_TEXTURE);
 		
-		slider = addButton(new ScalableSlider(leftPos + 7, topPos + 57, 90, 13, speedTextComponent.plainCopy().append(" "), new TextComponent(" ").append(ticksTextComponent.plainCopy()), 0, 100, drawBridge.getSpeed(), false, true, true, 0.75F) {
+		slider = addRenderableWidget(new ScalableSlider(leftPos + 7, topPos + 57, 90, 13, speedTextComponent.plainCopy().append(" "), Component.literal(" ").append(ticksTextComponent.plainCopy()), 0, 100, drawBridge.getSpeed(), false, true, true, 0.75F) {
 			
 			@Override
 			public void onRelease(double mouseX, double mouseY) {
 				super.onRelease(mouseX, mouseY);
-				menu.getSpeedMessage().triggerMessage(() -> new FriendlyByteBuf(Unpooled.buffer(1).writeByte(slider.getValueInt())));
+				menu.getSpeedMessage().triggerMessage(() -> new FriendlyByteBuf(Unpooled.buffer(1).writeByte(getValueInt())));
 			}
 		});
 		
-		final ScalableButton renderTypeButton = addButton(new ScalableButton(leftPos + 150, topPos + 17, 54, 13, Component.nullToEmpty(null), 0.5F) {
+		final ScalableButton renderTypeButton = addRenderableWidget(new ScalableButton(leftPos + 150, topPos + 17, 54, 13, Component.nullToEmpty(null), 0.5F) {
 			
 			@Override
 			public Component getMessage() {
@@ -110,7 +108,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 		
 		updateCurrentBlock();
 		
-		renderStateButton = addButton(new ScalableButton(leftPos + 150, topPos + 57, 54, 13, cycleBlockStateTextComponent, 0.5F));
+		renderStateButton = addRenderableWidget(new ScalableButton(leftPos + 150, topPos + 57, 54, 13, cycleBlockStateTextComponent, 0.5F));
 		renderStateButton.setPressable(() -> {
 			menu.getCamouflageBlockStateMessage().triggerMessage();
 		});
@@ -119,7 +117,7 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 				if (drawBridge.hasRenderBlockState()) {
 					if (drawBridge.getRenderBlockState().getBlock().getStateDefinition().getPossibleStates().size() > 1) {
 						final String blockStateString = drawBridge.getRenderBlockState().getValues().entrySet().stream().map(StateHolder.PROPERTY_ENTRY_TO_STRING_FUNCTION).collect(Collectors.joining(","));
-						renderTooltip(matrixStack, blockStateTextComponent.plainCopy().append(": ").append(new TextComponent(blockStateString).withStyle(ChatFormatting.GREEN)), mouseX, mouseY);
+						renderTooltip(matrixStack, blockStateTextComponent.plainCopy().append(": ").append(Component.literal(blockStateString).withStyle(ChatFormatting.GREEN)), mouseX, mouseY);
 					} else {
 						renderTooltip(matrixStack, noCycleBlockStateTextComponent, mouseX, mouseY);
 					}
@@ -145,20 +143,20 @@ public class DrawBridgeScreen extends UBasicContainerScreen<DrawBridgeContainer>
 	}
 	
 	@Override
-	public void tick() {
-		super.tick();
+	public void containerTick() {
+		super.containerTick();
 		updateCurrentBlock();
 		updateRenderState();
 	}
 	
 	private void updateCurrentBlock() {
-		final DrawBridgeTileEntity drawBridge = menu.getTileEntity();
+		final DrawBridgeTileEntity drawBridge = menu.getBlockEntity();
 		currentBlock = drawBridge.getLevel().getBlockState(drawBridge.getBlockPos()).getBlock();
 	}
 	
 	private void updateRenderState() {
 		if (renderStateButton != null) {
-			final DrawBridgeTileEntity drawBridge = menu.getTileEntity();
+			final DrawBridgeTileEntity drawBridge = menu.getBlockEntity();
 			renderStateButton.active = drawBridge.hasRenderBlockState() && drawBridge.getRenderBlockState().getBlock().getStateDefinition().getPossibleStates().size() > 1;
 		}
 	}
