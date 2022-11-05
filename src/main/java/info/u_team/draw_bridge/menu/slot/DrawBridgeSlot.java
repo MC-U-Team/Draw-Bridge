@@ -24,13 +24,7 @@ public class DrawBridgeSlot extends Slot {
 	
 	@Override
 	public boolean mayPlace(ItemStack stack) {
-		if (drawBridge.isExtended()) {
-			return false;
-		}
-		if (stack == null || !(stack.getItem() instanceof BlockItem)) {
-			return false;
-		}
-		if (stack.getItem() == DrawBridgeBlocks.DRAW_BRIDGE.get().asItem()) {
+		if (drawBridge.isExtended() || stack == null || !(stack.getItem() instanceof BlockItem) || (stack.getItem() == DrawBridgeBlocks.DRAW_BRIDGE.get().asItem())) {
 			return false;
 		}
 		return true;

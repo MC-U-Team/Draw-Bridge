@@ -13,7 +13,7 @@ public class DrawBridgeMenuTypes {
 	
 	public static final CommonDeferredRegister<MenuType<?>> MENU_TYPES = CommonDeferredRegister.create(ForgeRegistries.MENU_TYPES, DrawBridgeMod.MODID);
 	
-	public static final RegistryObject<MenuType<DrawBridgeMenu>> DRAW_BRIDGE = MENU_TYPES.register("draw_bridge", () -> new UMenuType<DrawBridgeMenu>(DrawBridgeMenu::new));
+	public static final RegistryObject<MenuType<DrawBridgeMenu>> DRAW_BRIDGE = MENU_TYPES.register("draw_bridge", () -> new UMenuType<>(DrawBridgeMenu::new));
 	
 	public static void registerMod(IEventBus bus) {
 		MENU_TYPES.register(bus);

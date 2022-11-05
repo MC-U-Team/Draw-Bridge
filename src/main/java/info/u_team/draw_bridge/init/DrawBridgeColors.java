@@ -13,7 +13,7 @@ public class DrawBridgeColors {
 		event.register((state, world, pos, tintIndex) -> {
 			if (world != null && pos != null) {
 				final BlockEntity tileEntity = world.getBlockEntity(pos);
-				if (tileEntity instanceof DrawBridgeBlockEntity drawBridge) {
+				if (tileEntity instanceof final DrawBridgeBlockEntity drawBridge) {
 					if (drawBridge.hasRenderBlockState()) {
 						try {
 							return event.getBlockColors().getColor(drawBridge.getRenderBlockState(), world, pos, tintIndex);

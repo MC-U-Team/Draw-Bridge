@@ -39,7 +39,7 @@ import net.minecraftforge.client.model.data.ModelProperty;
 
 public class DrawBridgeBlockEntity extends UBlockEntity implements MenuSyncedBlockEntity {
 	
-	public static final ModelProperty<BlockState> BLOCKSTATE_PROPERTY = new ModelProperty<BlockState>();
+	public static final ModelProperty<BlockState> BLOCKSTATE_PROPERTY = new ModelProperty<>();
 	
 	private final InventoryStackHandler slots = new SingleStackInventoryStackHandler(10);
 	
@@ -117,11 +117,9 @@ public class DrawBridgeBlockEntity extends UBlockEntity implements MenuSyncedBlo
 		}
 		getNeighbors(callerTileEntity.worldPosition).stream().forEach(neighbor -> {
 			final BlockEntity tileEntity = level.getBlockEntity(neighbor);
-			if (!(tileEntity instanceof DrawBridgeBlockEntity)) {
+			if (!(tileEntity instanceof DrawBridgeBlockEntity drawBridge)) {
 				return;
 			}
-			final DrawBridgeBlockEntity drawBridge = (DrawBridgeBlockEntity) tileEntity;
-			
 			if (tileEntites.add(drawBridge)) {
 				drawBridge.collect(tileEntites, drawBridge, depth + 1);
 			}
