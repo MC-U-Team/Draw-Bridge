@@ -1,5 +1,5 @@
 {
-	"itemGroup.drawbridge.group": "Vindebro",
+	"itemGroup.drawbridge.tab": "Vindebro",
 	"block.drawbridge.draw_bridge": "Vindebro",
 	"container.drawbridge.draw_bridge": "Vindebro",
 	"container.drawbridge.draw_bridge.speed": "Hastighed:",

@@ -1,7 +1,7 @@
 package info.u_team.draw_bridge.data.provider;
 
 import static info.u_team.draw_bridge.init.DrawBridgeBlocks.DRAW_BRIDGE;
-import static info.u_team.draw_bridge.init.DrawBridgeItemGroups.GROUP;
+import static info.u_team.draw_bridge.init.DrawBridgeCreativeTabs.GROUP;
 
 import info.u_team.u_team_core.data.CommonLanguagesProvider;
 import info.u_team.u_team_core.data.GenerationData;

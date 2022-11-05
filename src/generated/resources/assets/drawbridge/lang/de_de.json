@@ -14,5 +14,5 @@
 	"container.drawbridge.draw_bridge.render_type.tripwire": "Tripwire",
 	"container.drawbridge.draw_bridge.speed": "Geschwindigkeit:",
 	"container.drawbridge.draw_bridge.ticks": "Ticks",
-	"itemGroup.drawbridge.group": "Zugbrücke"
+	"itemGroup.drawbridge.tab": "Zugbrücke"
 }

@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 
 import info.u_team.draw_bridge.blockentity.DrawBridgeBlockEntity;
 import info.u_team.draw_bridge.init.DrawBridgeBlockEntityTypes;
-import info.u_team.draw_bridge.init.DrawBridgeItemGroups;
+import info.u_team.draw_bridge.init.DrawBridgeCreativeTabs;
 import info.u_team.u_team_core.block.UEntityBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -49,7 +49,7 @@ public class DrawBridgeBlock extends UEntityBlock {
 	}
 	
 	protected DrawBridgeBlock(Properties properties) {
-		super(DrawBridgeItemGroups.GROUP, properties.strength(1.5F).noOcclusion().dynamicShape().isRedstoneConductor(BlockState::isCollisionShapeFullBlock), DrawBridgeBlockEntityTypes.DRAW_BRIDGE);
+		super(DrawBridgeCreativeTabs.GROUP, properties.strength(1.5F).noOcclusion().dynamicShape().isRedstoneConductor(BlockState::isCollisionShapeFullBlock), DrawBridgeBlockEntityTypes.DRAW_BRIDGE);
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 	
