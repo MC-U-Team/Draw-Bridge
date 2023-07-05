@@ -2,19 +2,18 @@ package info.u_team.draw_bridge.init;
 
 import info.u_team.draw_bridge.DrawBridgeMod;
 import info.u_team.draw_bridge.block.DrawBridgeBlock;
-import info.u_team.u_team_core.util.registry.BlockDeferredRegister;
-import info.u_team.u_team_core.util.registry.BlockRegistryObject;
-import net.minecraft.world.item.BlockItem;
-import net.minecraftforge.eventbus.api.IEventBus;
+import info.u_team.u_team_core.api.registry.BlockRegister;
+import info.u_team.u_team_core.api.registry.BlockRegistryEntry;
+import net.minecraft.world.item.Item;
 
 public class DrawBridgeBlocks {
 	
-	public static final BlockDeferredRegister BLOCKS = BlockDeferredRegister.create(DrawBridgeMod.MODID);
+	public static final BlockRegister BLOCKS = BlockRegister.create(DrawBridgeMod.MODID);
 	
-	public static final BlockRegistryObject<DrawBridgeBlock, BlockItem> DRAW_BRIDGE = BLOCKS.register("draw_bridge", DrawBridgeBlock::new);
+	public static final BlockRegistryEntry<DrawBridgeBlock, Item> DRAW_BRIDGE = BLOCKS.register("draw_bridge", DrawBridgeBlock::new);
 	
-	public static void registerMod(IEventBus bus) {
-		BLOCKS.register(bus);
+	static void register() {
+		BLOCKS.register();
 	}
 	
 }

@@ -1,7 +1,7 @@
 package info.u_team.draw_bridge.data.provider;
 
 import static info.u_team.draw_bridge.init.DrawBridgeBlocks.DRAW_BRIDGE;
-import static info.u_team.draw_bridge.init.DrawBridgeCreativeTabs.GROUP;
+import static info.u_team.draw_bridge.init.DrawBridgeCreativeTabs.TAB;
 
 import info.u_team.u_team_core.data.CommonLanguagesProvider;
 import info.u_team.u_team_core.data.GenerationData;
@@ -18,7 +18,7 @@ public class DrawBridgeLanguagesProvider extends CommonLanguagesProvider {
 		final String container = "container.drawbridge.draw_bridge";
 		
 		// English
-		add(GROUP, "Drawbridge");
+		add(TAB.get(), "Drawbridge");
 		addBlock(DRAW_BRIDGE, "Drawbridge");
 		add(container, "Drawbridge");
 		add(container + ".speed", "Speed:");
@@ -36,7 +36,7 @@ public class DrawBridgeLanguagesProvider extends CommonLanguagesProvider {
 		add(container + ".camouflage", "Camouflage");
 		
 		// German
-		add("de_de", GROUP, "Zugbrücke");
+		add("de_de", TAB.get(), "Zugbrücke");
 		addBlock("de_de", DRAW_BRIDGE, "Zugbrücke");
 		add("de_de", container, "Zugbrücke");
 		add("de_de", container + ".speed", "Geschwindigkeit:");

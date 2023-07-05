@@ -3,15 +3,16 @@ package info.u_team.draw_bridge.menu;
 import info.u_team.draw_bridge.blockentity.DrawBridgeBlockEntity;
 import info.u_team.draw_bridge.init.DrawBridgeMenuTypes;
 import info.u_team.draw_bridge.menu.slot.DrawBridgeSlot;
+import info.u_team.u_team_core.api.network.NetworkEnvironment;
 import info.u_team.u_team_core.api.sync.MessageHolder;
 import info.u_team.u_team_core.api.sync.MessageHolder.EmptyMessageHolder;
+import info.u_team.u_team_core.menu.ItemHandlerSlotCreator;
 import info.u_team.u_team_core.menu.UBlockEntityContainerMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.LogicalSide;
 
 public class DrawBridgeMenu extends UBlockEntityContainerMenu<DrawBridgeBlockEntity> {
 	
@@ -31,9 +32,9 @@ public class DrawBridgeMenu extends UBlockEntityContainerMenu<DrawBridgeBlockEnt
 	}
 	
 	@Override
-	protected void init(LogicalSide side) {
-		addSlots(blockEntity.getSlots().getInventory(), (inventory, index, xPosition, yPosition) -> new DrawBridgeSlot(blockEntity, inventory, index, xPosition, yPosition), 2, 5, 8, 18);
-		addSlots(blockEntity.getRenderSlot(), 1, 1, 170, 27);
+	protected void init(NetworkEnvironment environment) {
+		addSlots((index, xPosition, yPosition) -> new DrawBridgeSlot(blockEntity, blockEntity.getSlots().getInventory(), index, xPosition, yPosition), 2, 5, 8, 18);
+		addSlots(ItemHandlerSlotCreator.of(blockEntity.getRenderSlot()), 1, 1, 170, 27);
 		addPlayerInventory(playerInventory, 26, 86);
 		addDataHolderToClient(blockEntity.getExtendedHolder());
 		addDataHolderToClient(blockEntity.getSpeedHolder());

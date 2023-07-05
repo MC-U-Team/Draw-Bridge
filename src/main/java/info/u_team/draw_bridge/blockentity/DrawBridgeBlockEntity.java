@@ -17,6 +17,7 @@ import info.u_team.u_team_core.api.sync.DataHolder;
 import info.u_team.u_team_core.blockentity.UBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
@@ -348,7 +349,7 @@ public class DrawBridgeBlockEntity extends UBlockEntity implements MenuSyncedBlo
 	
 	private void readRenderState(CompoundTag compound) {
 		if (compound.contains("render")) {
-			renderBlockState = NbtUtils.readBlockState(compound.getCompound("render"));
+			renderBlockState = NbtUtils.readBlockState(level.holderLookup(Registries.BLOCK), compound.getCompound("render"));
 		} else {
 			renderBlockState = null;
 		}

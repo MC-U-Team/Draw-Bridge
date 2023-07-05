@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 
 import info.u_team.draw_bridge.blockentity.DrawBridgeBlockEntity;
 import info.u_team.draw_bridge.init.DrawBridgeBlockEntityTypes;
-import info.u_team.draw_bridge.init.DrawBridgeCreativeTabs;
 import info.u_team.u_team_core.block.UEntityBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -29,27 +28,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class DrawBridgeBlock extends UEntityBlock {
 	
 	public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
 	
-	protected static final Material DRAW_BRIDGE_MATERIAL = new Material.Builder(MaterialColor.METAL).notSolidBlocking().build();
-	
 	public DrawBridgeBlock() {
-		this(Properties.of(DRAW_BRIDGE_MATERIAL));
-	}
-	
-	protected DrawBridgeBlock(Properties properties) {
-		super(DrawBridgeCreativeTabs.GROUP, properties.strength(1.5F).noOcclusion().dynamicShape().isRedstoneConductor(BlockState::isCollisionShapeFullBlock), DrawBridgeBlockEntityTypes.DRAW_BRIDGE);
+		super(Properties.of().strength(1.5F).mapColor(MapColor.METAL).noOcclusion().dynamicShape().isRedstoneConductor(BlockState::isCollisionShapeFullBlock), DrawBridgeBlockEntityTypes.DRAW_BRIDGE);
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 	
@@ -145,7 +135,6 @@ public class DrawBridgeBlock extends UEntityBlock {
 		return getRenderBlockStateProperty(level, pos, renderState -> renderState.propagatesSkylightDown(level, pos), () -> false);
 	}
 	
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public float getShadeBrightness(BlockState state, BlockGetter level, BlockPos pos) {
 		return getRenderBlockStateProperty(level, pos, renderState -> renderState.getShadeBrightness(level, pos), () -> 0.2F);

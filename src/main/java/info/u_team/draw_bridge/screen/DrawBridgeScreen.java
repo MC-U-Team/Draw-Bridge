@@ -2,17 +2,15 @@ package info.u_team.draw_bridge.screen;
 
 import java.util.stream.Collectors;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import info.u_team.draw_bridge.DrawBridgeMod;
 import info.u_team.draw_bridge.blockentity.DrawBridgeBlockEntity;
 import info.u_team.draw_bridge.menu.DrawBridgeMenu;
-import info.u_team.u_team_core.gui.elements.ScalableButton;
-import info.u_team.u_team_core.gui.elements.ScalableSlider;
+import info.u_team.u_team_core.gui.elements.UButton;
+import info.u_team.u_team_core.gui.elements.USlider;
 import info.u_team.u_team_core.screen.UContainerMenuScreen;
-import info.u_team.u_team_core.util.WidgetUtil;
 import io.netty.buffer.Unpooled;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.StateSwitchingButton;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -33,8 +31,8 @@ public class DrawBridgeScreen extends UContainerMenuScreen<DrawBridgeMenu> {
 	private final Component noCycleBlockStateTextComponent;
 	private final Component camouflageTextComponent;
 	
-	private ScalableSlider slider;
-	private ScalableButton renderStateButton;
+	private USlider slider;
+	private UButton renderStateButton;
 	
 	public DrawBridgeScreen(DrawBridgeMenu container, Inventory playerInventory, Component title) {
 		super(container, playerInventory, title, BACKGROUND, 212, 168);
@@ -67,15 +65,16 @@ public class DrawBridgeScreen extends UContainerMenuScreen<DrawBridgeMenu> {
 			}
 			
 			@Override
-			public void renderToolTip(PoseStack poseStack, int mouseX, int mouseY) {
-				if (WidgetUtil.isHovered(this)) {
-					renderTooltip(poseStack, needRedstoneTextComponent, mouseX, mouseY);
+			public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+				super.render(guiGraphics, mouseX, mouseY, partialTick);
+				if (isHovered) {
+					guiGraphics.renderTooltip(font, needRedstoneTextComponent, mouseX, mouseY);
 				}
 			}
 		});
 		redstoneToggleButton.initTextureValues(0, 0, 18, 18, NEED_REDSTONE_TEXTURE);
 		
-		slider = addRenderableWidget(new ScalableSlider(leftPos + 7, topPos + 57, 90, 13, speedTextComponent.plainCopy().append(" "), Component.literal(" ").append(ticksTextComponent.plainCopy()), 0, 100, drawBridge.getSpeed(), false, true, true, 0.75F) {
+		slider = addRenderableWidget(new USlider(leftPos + 7, topPos + 57, 90, 13, speedTextComponent.plainCopy().append(" "), Component.literal(" ").append(ticksTextComponent.plainCopy()), 0, 100, drawBridge.getSpeed(), false, true) {
 			
 			@Override
 			public void onRelease(double mouseX, double mouseY) {
@@ -83,31 +82,37 @@ public class DrawBridgeScreen extends UContainerMenuScreen<DrawBridgeMenu> {
 				menu.getSpeedMessage().triggerMessage(() -> new FriendlyByteBuf(Unpooled.buffer(1).writeByte(getValueInt())));
 			}
 		});
+		slider.setScale(0.75F);
 		
-		renderStateButton = addRenderableWidget(new ScalableButton(leftPos + 150, topPos + 57, 54, 13, cycleBlockStateTextComponent, 0.5F));
-		renderStateButton.setPressable(() -> {
-			menu.getCamouflageBlockStateMessage().triggerMessage();
-		});
-		renderStateButton.setTooltip((button, poseStack, mouseX, mouseY) -> {
-			if (WidgetUtil.isHovered(button)) {
-				if (drawBridge.hasRenderBlockState()) {
-					if (drawBridge.getRenderBlockState().getBlock().getStateDefinition().getPossibleStates().size() > 1) {
-						final String blockStateString = drawBridge.getRenderBlockState().getValues().entrySet().stream().map(StateHolder.PROPERTY_ENTRY_TO_STRING_FUNCTION).collect(Collectors.joining(","));
-						renderTooltip(poseStack, blockStateTextComponent.plainCopy().append(": ").append(Component.literal(blockStateString).withStyle(ChatFormatting.GREEN)), mouseX, mouseY);
-					} else {
-						renderTooltip(poseStack, noCycleBlockStateTextComponent, mouseX, mouseY);
+		renderStateButton = addRenderableWidget(new UButton(leftPos + 150, topPos + 57, 54, 13, cycleBlockStateTextComponent) {
+			
+			@Override
+			public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+				super.render(guiGraphics, mouseX, mouseY, partialTick);
+				if (isHovered) {
+					if (drawBridge.hasRenderBlockState()) {
+						if (drawBridge.getRenderBlockState().getBlock().getStateDefinition().getPossibleStates().size() > 1) {
+							final String blockStateString = drawBridge.getRenderBlockState().getValues().entrySet().stream().map(StateHolder.PROPERTY_ENTRY_TO_STRING_FUNCTION).collect(Collectors.joining(","));
+							guiGraphics.renderTooltip(font, blockStateTextComponent.plainCopy().append(": ").append(Component.literal(blockStateString).withStyle(ChatFormatting.GREEN)), mouseX, mouseY);
+						} else {
+							guiGraphics.renderTooltip(font, noCycleBlockStateTextComponent, mouseX, mouseY);
+						}
 					}
 				}
 			}
+		});
+		renderStateButton.setScale(0.5F);
+		renderStateButton.setPressable(() -> {
+			menu.getCamouflageBlockStateMessage().triggerMessage();
 		});
 		
 		updateRenderState();
 	}
 	
 	@Override
-	protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
-		super.renderLabels(poseStack, mouseX, mouseY);
-		font.draw(poseStack, camouflageTextComponent, 148, 6, 4210752);
+	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+		super.renderLabels(guiGraphics, mouseX, mouseY);
+		guiGraphics.drawString(font, camouflageTextComponent, 148, 6, 0x404040, false);
 	}
 	
 	@Override

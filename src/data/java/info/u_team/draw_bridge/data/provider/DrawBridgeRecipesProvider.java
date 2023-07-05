@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import info.u_team.u_team_core.data.CommonRecipeProvider;
 import info.u_team.u_team_core.data.GenerationData;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
@@ -19,7 +20,7 @@ public class DrawBridgeRecipesProvider extends CommonRecipeProvider {
 	
 	@Override
 	public void register(Consumer<FinishedRecipe> consumer) {
-		ShapedRecipeBuilder.shaped(DRAW_BRIDGE.get()) //
+		ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, DRAW_BRIDGE.get()) //
 				.pattern("ICI") //
 				.pattern("RPR") //
 				.pattern("RPR") //

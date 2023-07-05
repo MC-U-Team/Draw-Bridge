@@ -10,9 +10,10 @@ public class DrawBridgeClientConstruct implements ModConstruct {
 	
 	@Override
 	public void construct() {
+		DrawBridgeScreens.register();
+		
 		BusRegister.registerMod(DrawBridgeColors::registerMod);
 		BusRegister.registerMod(DrawBridgeModels::registerMod);
-		BusRegister.registerMod(DrawBridgeScreens::registerMod);
 	}
 	
 }
