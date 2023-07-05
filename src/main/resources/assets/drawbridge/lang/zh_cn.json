@@ -1,5 +1,5 @@
 {
-	"itemGroup.drawbridge.tab": "吊桥",
+	"creativetabs.drawbridge.tab": "吊桥",
 	"block.drawbridge.draw_bridge": "吊桥",
 	"container.drawbridge.draw_bridge": "吊桥",
 	"container.drawbridge.draw_bridge.speed": "速度:",
