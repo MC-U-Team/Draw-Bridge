@@ -28,5 +28,6 @@
 		"recipes": [
 			"drawbridge:draw_bridge"
 		]
-	}
+	},
+	"sends_telemetry_event": false
 }
