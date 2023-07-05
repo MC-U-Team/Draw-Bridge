@@ -31,7 +31,6 @@ public class DrawBridgeScreen extends UContainerMenuScreen<DrawBridgeMenu> {
 	private final Component noCycleBlockStateTextComponent;
 	private final Component camouflageTextComponent;
 	
-	private USlider slider;
 	private UButton renderStateButton;
 	
 	public DrawBridgeScreen(DrawBridgeMenu container, Inventory playerInventory, Component title) {
@@ -74,15 +73,10 @@ public class DrawBridgeScreen extends UContainerMenuScreen<DrawBridgeMenu> {
 		});
 		redstoneToggleButton.initTextureValues(0, 0, 18, 18, NEED_REDSTONE_TEXTURE);
 		
-		slider = addRenderableWidget(new USlider(leftPos + 7, topPos + 57, 90, 13, speedTextComponent.plainCopy().append(" "), Component.literal(" ").append(ticksTextComponent.plainCopy()), 0, 100, drawBridge.getSpeed(), false, true) {
-			
-			@Override
-			public void onRelease(double mouseX, double mouseY) {
-				super.onRelease(mouseX, mouseY);
-				menu.getSpeedMessage().triggerMessage(() -> new FriendlyByteBuf(Unpooled.buffer(1).writeByte(getValueInt())));
-			}
-		});
-		slider.setScale(0.75F);
+		final USlider speedSlider = addRenderableWidget(new USlider(leftPos + 7, topPos + 57, 90, 13, speedTextComponent.plainCopy().append(" "), Component.literal(" ").append(ticksTextComponent.plainCopy()), 0, 100, drawBridge.getSpeed(), false, true, slider -> {
+			menu.getSpeedMessage().triggerMessage(() -> new FriendlyByteBuf(Unpooled.buffer(1).writeByte(slider.getValueInt())));
+		}));
+		speedSlider.setScale(0.75F);
 		
 		renderStateButton = addRenderableWidget(new UButton(leftPos + 150, topPos + 57, 54, 13, cycleBlockStateTextComponent) {
 			
@@ -113,14 +107,6 @@ public class DrawBridgeScreen extends UContainerMenuScreen<DrawBridgeMenu> {
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
 		super.renderLabels(guiGraphics, mouseX, mouseY);
 		guiGraphics.drawString(font, camouflageTextComponent, 148, 6, 0x404040, false);
-	}
-	
-	@Override
-	public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
-		if (slider != null) {
-			slider.mouseReleased(mouseX, mouseY, mouseButton);
-		}
-		return super.mouseReleased(mouseX, mouseY, mouseButton);
 	}
 	
 	@Override
