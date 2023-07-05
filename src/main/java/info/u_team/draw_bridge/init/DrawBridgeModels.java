@@ -10,7 +10,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 
 public class DrawBridgeModels {
 	
-	private static void onModelBake(ModelEvent.BakingCompleted event) {
+	private static void onModelBake(ModelEvent.ModifyBakingResult event) {
 		final Map<ResourceLocation, BakedModel> modelRegistry = event.getModels();
 		final ResourceLocation registyName = DrawBridgeBlocks.DRAW_BRIDGE.getId();
 		modelRegistry.entrySet().stream().filter(entry -> {
