@@ -1,6 +1,7 @@
 package info.u_team.draw_bridge.menu;
 
 import info.u_team.draw_bridge.blockentity.DrawBridgeBlockEntity;
+import info.u_team.draw_bridge.init.DrawBridgeBlocks;
 import info.u_team.draw_bridge.init.DrawBridgeMenuTypes;
 import info.u_team.draw_bridge.menu.slot.DrawBridgeSlot;
 import info.u_team.u_team_core.api.network.NetworkEnvironment;
@@ -11,10 +12,13 @@ import info.u_team.u_team_core.menu.UBlockEntityContainerMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class DrawBridgeMenu extends UBlockEntityContainerMenu<DrawBridgeBlockEntity> {
+	
+	private final ContainerLevelAccess access;
 	
 	// Messages from the client to the server
 	private MessageHolder speedMessage;
@@ -24,11 +28,18 @@ public class DrawBridgeMenu extends UBlockEntityContainerMenu<DrawBridgeBlockEnt
 	// Client
 	public DrawBridgeMenu(int containerId, Inventory playerInventory, FriendlyByteBuf buffer) {
 		super(DrawBridgeMenuTypes.DRAW_BRIDGE.get(), containerId, playerInventory, buffer);
+		access = ContainerLevelAccess.NULL;
 	}
 	
 	// Server
 	public DrawBridgeMenu(int containerId, Inventory playerInventory, DrawBridgeBlockEntity blockEntity) {
 		super(DrawBridgeMenuTypes.DRAW_BRIDGE.get(), containerId, playerInventory, blockEntity);
+		access = ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos());
+	}
+	
+	@Override
+	public boolean stillValid(Player player) {
+		return stillValid(access, player, DrawBridgeBlocks.DRAW_BRIDGE.get());
 	}
 	
 	@Override
